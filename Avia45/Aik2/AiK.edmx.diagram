@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9f1ad69a27b54bc8b61110a775cfbcff" Name="Diagram1" ZoomLevel="97">
+        <EntityTypeShape EntityType="AiKModel.Arts" Width="1.5" PointX="5.25" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AiKModel.Countries" Width="1.5" PointX="7.875" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AiKModel.Links" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AiKModel.Mags" Width="1.5" PointX="7.875" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AiKModel.Pics" Width="1.5" PointX="3" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="AiKModel.WordLinks" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="AiKModel.Words" Width="1.5" PointX="7.875" PointY="3.75" IsExpanded="true" />
+        <AssociationConnector Association="AiKModel.FK_Pics_Arts" ManuallyRouted="false" />
+        <AssociationConnector Association="AiKModel.FK_Links_Pics" ManuallyRouted="false" />
+        <AssociationConnector Association="AiKModel.FK_Links_Pics1" ManuallyRouted="false" />
+        <AssociationConnector Association="AiKModel.FK_WordLinks_Pics" ManuallyRouted="false" />
+        <AssociationConnector Association="AiKModel.FK_WordLinks_Words" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="AiKModel.Crafts" Width="1.5" PointX="0.625" PointY="0.5" />
+        <AssociationConnector Association="AiKModel.FK_Crafts_Crafts" />
+        <AssociationConnector Association="AiKModel.FK_Crafts_Crafts1" />
+        <AssociationConnector Association="AiKModel.FK_Crafts_Crafts2" />
+        <AssociationConnector Association="AiKModel.FK_Pics_Crafts" />
+        <AssociationConnector Association="AiKModel.FK_WordLinks_Crafts" />
+        <EntityTypeShape EntityType="AiKModel.vwCrafts" Width="1.5" PointX="0.625" PointY="7.375" />
+        <EntityTypeShape EntityType="AiKModel.vwPics" Width="1.5" PointX="3" PointY="8" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
