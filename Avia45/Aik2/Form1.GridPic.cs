@@ -22,24 +22,32 @@ namespace Aik2
         private Position _picPosition = Position.Empty;
         private GridPicController _gridPicController = null;
         private PicDto _selectedPic = null;
+        private int? _selectedPicArtId = null;
+        private int? _selectedPicCraftId = null;
         private string _oldPicText;
         private bool _picTextChanging;
+        private List<PicDto> _pics;
 
-        public void LoadPics()
+        public void LoadPics(bool isClear)
         {
+            if (isClear)
+            {
+                _selectedPicArtId = null;
+                _selectedPicCraftId = null;
+            }
+
             var PicsQry = _ctx.vwPics.AsQueryable();
-            PicsQry = PicsQry.OrderBy(x => x.NType).ThenBy(x => x.NNN);
 
             var flt = false;
-            if (chPicSelArt.Checked && _artPosition != null)
+            if (chPicSelArt.Checked && (_selectedPicArtId.HasValue || _selectedArt != null))
             {
-                var artId = (int)gridArt[_artPosition.Row, Const.Columns.Art.ArtId].Value;
+                var artId = _selectedPicArtId ?? _selectedArt.ArtId;
                 PicsQry = PicsQry.Where(x => x.ArtId == artId);
                 flt = true;
             }
-            if (chPicSelCraft.Checked && _craftPosition != null)
+            if (chPicSelCraft.Checked && (_selectedPicCraftId.HasValue || _selectedCraft != null))
             {
-                var craftId = (int)gridCraft[_craftPosition.Row, Const.Columns.Craft.CraftId].Value;
+                var craftId = _selectedPicCraftId ?? _selectedCraft.CraftId;
                 PicsQry = PicsQry.Where(x => x.CraftId == craftId);
                 flt = true;
             }
@@ -47,9 +55,10 @@ namespace Aik2
             {
                 PicsQry = PicsQry.Where(x => false);
             }
+            PicsQry = PicsQry.OrderBy(x => x.NType).ThenBy(x => x.NNN);
 
             var Pics = PicsQry.ToList();
-            var _Pics = Mapper.Map<List<PicDto>>(Pics);
+            _pics = Mapper.Map<List<PicDto>>(Pics);
 
             var saved = -1;
             if (_picPosition != Position.Empty && _picPosition.Row > 0)
@@ -57,26 +66,32 @@ namespace Aik2
                 saved = (int)gridPic[_picPosition.Row, Const.Columns.Pic.PicId].Value;
             }
 
+            _selectedPicCraftId = null;
+            _selectedPicArtId = null;
+
             _gridPicController = new GridPicController(this);
-            gridPic.RowsCount = _Pics.Count + 1;
+            gridPic.RowsCount = _pics.Count + 1;
 
             var focused = false;
-            for (var r = 1; r <= _Pics.Count; r++)
+            for (var r = 1; r <= _pics.Count; r++)
             {
-                var Pic = _Pics[r - 1];
+                var Pic = _pics[r - 1];
                 UpdatePicRow(Pic, r);
 
                 if (Pic.PicId == saved && _picPosition != Position.Empty)
                 {
                     var focusPosn = new Position(r, _picPosition.Column);
                     gridPic.Selection.Focus(focusPosn, true);
+                    _selectedPicCraftId = Pic.CraftId;
+                    _selectedPicArtId = Pic.ArtId;
                     _picPosition = focusPosn;
                     focused = true;
                 }
             }
             if (!focused)
             {
-                _picPosition = _Pics.Any() ? new Position(1, 1) : new Position(0, 1);
+                _picPosition = _pics.Any() ? new Position(1, 1) : new Position(0, 1);
+                gridPic.Selection.Focus(_picPosition, true);
             }
 
             gridPic.Refresh();
@@ -111,8 +126,10 @@ namespace Aik2
             gridPic[r, 8].AddController(_gridPicController);
             gridPic[r, 9] = new SourceGrid.Cells.Cell(Pic.Grp, _editorsPic[9]);
             gridPic[r, 9].AddController(_gridPicController);
-            gridPic[r, 10] = new SourceGrid.Cells.Cell(Pic.ArtId);
-            gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.CraftId);
+            gridPic[r, 10] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[10]);
+            gridPic[r, 10].AddController(_gridPicController);
+            gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.ArtId);
+            gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
         }
 
@@ -208,7 +225,7 @@ namespace Aik2
                     if (rNew != row)
                     {
                         _form.gridPic.Rows.Move(row, rNew);
-                        var focusPosn = new Position(rNew, sender.Position.Column);
+                        var focusPosn = new Position(rNew, sender.Position.Column == Const.Columns.Pic.NType ? Const.Columns.Pic.Type : sender.Position.Column);
                         _form.gridPic.Selection.Focus(focusPosn, true);
                     }
 
@@ -236,7 +253,7 @@ namespace Aik2
             var editStr100 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
             editStr100.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 100); };
 
-            gridPic.ColumnsCount = 12;
+            gridPic.ColumnsCount = 13;
 
             gridPic.RowsCount = 1;
             gridPic.FixedRows = 1;
@@ -264,10 +281,12 @@ namespace Aik2
             _editorsPic.Add(_editCraft678);
             gridPic[0, 9] = new SourceGrid.Cells.ColumnHeader("Grp");
             _editorsPic.Add(editStr100);
-            gridPic[0, 10] = new SourceGrid.Cells.ColumnHeader("ArtId");
-            gridPic.Columns[10].Visible = false;
-            gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic[0, 10] = new SourceGrid.Cells.ColumnHeader("SText");
+            _editorsPic.Add(null);
+            gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("ArtId");
             gridPic.Columns[11].Visible = false;
+            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic.Columns[12].Visible = false;
 
             for (var i = 1; i < gridPic.ColumnsCount; i++)
             {
@@ -297,10 +316,37 @@ namespace Aik2
                 ColorizeText(edPicText, false);
                 _picTextChanging = false;
             }
+            _selectedPicCraftId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.CraftId].Value;
+            _selectedPicArtId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.ArtId].Value;
             if (_searchMode && !_searchChanging)
             {
                 _searchString = "";
                 lInfo.Text = $"Поиск: {_searchString}";
+            }
+
+            var art = Mapper.Map<ArtDto>(_ctx.Arts.FirstOrDefault(x => x.ArtId == _selectedPicArtId));
+            if (art != null) lArt.Text = art.FullName;
+
+            picPicImage.Visible = false;
+            try
+            {
+                var craft = _craftDtos.FirstOrDefault(x => x.CraftId == _selectedPicCraftId);
+                if (craft == null)
+                {
+                    craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.FirstOrDefault(x => x.CraftId == _selectedPicCraftId));
+                }
+                if (craft != null)
+                {
+                    lCraft.Text = craft.FullName;
+
+                    var picPath = $"{_imagesPath}Images{craft.Source}\\{(string)gridPic[_picPosition.Row, Const.Columns.Pic.Path].Value}";
+                    picPicImage.Load(picPath);
+                    picPicImage.Visible = true;
+                }
+            }
+            catch
+            {
+
             }
         }
 
@@ -387,7 +433,8 @@ namespace Aik2
                     }
                     else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Control)
                     {
-                        gridPic.Rows.Remove(pos.Row);
+                        if (MessageBox.Show("Delete pic?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            gridPic.Rows.Remove(pos.Row);
                     }
                     else if (_searchMode)
                     {
@@ -400,9 +447,16 @@ namespace Aik2
 
         private void pPicText_Resize(object sender, EventArgs e)
         {
-            _config["pPicTextWidth"] = ((Panel)sender).Width.ToString();
+            _config["pPicTextHeight"] = ((Panel)sender).Height.ToString();
             File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
         }
+
+        private void pPicImg_Resize(object sender, EventArgs e)
+        {
+            _config["pPicImgHeight"] = ((Panel)sender).Height.ToString();
+            File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
+        }
+
 
         private void edPicText_TextChanged(object sender, EventArgs e)
         {
@@ -481,6 +535,7 @@ namespace Aik2
             if (type == "p") return 110;
             return 120;
         }
+
 
     }
 

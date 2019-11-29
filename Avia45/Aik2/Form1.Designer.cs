@@ -49,12 +49,13 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.tabPagePics = new System.Windows.Forms.TabPage();
-            this.splitter3 = new System.Windows.Forms.Splitter();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.splitter4 = new System.Windows.Forms.Splitter();
             this.panel12 = new System.Windows.Forms.Panel();
             this.gridPic = new SourceGrid.Grid();
-            this.panel10 = new System.Windows.Forms.Panel();
+            this.splitter3 = new System.Windows.Forms.Splitter();
+            this.pPicImg = new System.Windows.Forms.Panel();
+            this.picPicImage = new System.Windows.Forms.PictureBox();
+            this.splitter4 = new System.Windows.Forms.Splitter();
+            this.pPicText = new System.Windows.Forms.Panel();
             this.edPicText = new System.Windows.Forms.RichTextBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.chPicSelCraft = new System.Windows.Forms.CheckBox();
@@ -65,6 +66,8 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.lArt = new System.Windows.Forms.Label();
+            this.lCraft = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -76,7 +79,9 @@
             this.panel9.SuspendLayout();
             this.tabPagePics.SuspendLayout();
             this.panel12.SuspendLayout();
-            this.panel10.SuspendLayout();
+            this.pPicImg.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPicImage)).BeginInit();
+            this.pPicText.SuspendLayout();
             this.panel5.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -88,7 +93,6 @@
             this.tabControl1.Controls.Add(this.tabPageArts);
             this.tabControl1.Controls.Add(this.tabPageCrafts);
             this.tabControl1.Controls.Add(this.tabPagePics);
-            this.tabControl1.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -173,7 +177,6 @@
             this.chArtSortYear.Appearance = System.Windows.Forms.Appearance.Button;
             this.chArtSortYear.AutoSize = true;
             this.chArtSortYear.Checked = true;
-            this.chArtSortYear.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.chArtSortYear.Location = new System.Drawing.Point(145, 1);
             this.chArtSortYear.Name = "chArtSortYear";
             this.chArtSortYear.Size = new System.Drawing.Size(39, 23);
@@ -187,7 +190,6 @@
             // 
             this.chArtSortSerie.Appearance = System.Windows.Forms.Appearance.Button;
             this.chArtSortSerie.AutoSize = true;
-            this.chArtSortSerie.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.chArtSortSerie.Location = new System.Drawing.Point(98, 1);
             this.chArtSortSerie.Name = "chArtSortSerie";
             this.chArtSortSerie.Size = new System.Drawing.Size(41, 23);
@@ -200,7 +202,6 @@
             // 
             this.chArtSortAuthor.Appearance = System.Windows.Forms.Appearance.Button;
             this.chArtSortAuthor.AutoSize = true;
-            this.chArtSortAuthor.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.chArtSortAuthor.Location = new System.Drawing.Point(44, 1);
             this.chArtSortAuthor.Name = "chArtSortAuthor";
             this.chArtSortAuthor.Size = new System.Drawing.Size(48, 23);
@@ -285,6 +286,7 @@
             this.edCraftText.TabIndex = 0;
             this.edCraftText.Text = "";
             this.edCraftText.TextChanged += new System.EventHandler(this.edCraftText_TextChanged);
+            this.edCraftText.DoubleClick += new System.EventHandler(this.edPicText_DoubleClick);
             // 
             // splitter2
             // 
@@ -313,11 +315,11 @@
             // 
             // tabPagePics
             // 
-            this.tabPagePics.Controls.Add(this.splitter3);
-            this.tabPagePics.Controls.Add(this.panel11);
-            this.tabPagePics.Controls.Add(this.splitter4);
             this.tabPagePics.Controls.Add(this.panel12);
-            this.tabPagePics.Controls.Add(this.panel10);
+            this.tabPagePics.Controls.Add(this.splitter3);
+            this.tabPagePics.Controls.Add(this.pPicImg);
+            this.tabPagePics.Controls.Add(this.splitter4);
+            this.tabPagePics.Controls.Add(this.pPicText);
             this.tabPagePics.Controls.Add(this.panel5);
             this.tabPagePics.Location = new System.Drawing.Point(4, 22);
             this.tabPagePics.Name = "tabPagePics";
@@ -327,39 +329,13 @@
             this.tabPagePics.Text = "Pics";
             this.tabPagePics.UseVisualStyleBackColor = true;
             // 
-            // splitter3
-            // 
-            this.splitter3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter3.Location = new System.Drawing.Point(3, 164);
-            this.splitter3.Name = "splitter3";
-            this.splitter3.Size = new System.Drawing.Size(786, 3);
-            this.splitter3.TabIndex = 4;
-            this.splitter3.TabStop = false;
-            // 
-            // panel11
-            // 
-            this.panel11.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel11.Location = new System.Drawing.Point(3, 167);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(786, 135);
-            this.panel11.TabIndex = 2;
-            // 
-            // splitter4
-            // 
-            this.splitter4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter4.Location = new System.Drawing.Point(3, 302);
-            this.splitter4.Name = "splitter4";
-            this.splitter4.Size = new System.Drawing.Size(786, 3);
-            this.splitter4.TabIndex = 5;
-            this.splitter4.TabStop = false;
-            // 
             // panel12
             // 
             this.panel12.Controls.Add(this.gridPic);
             this.panel12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel12.Location = new System.Drawing.Point(3, 53);
+            this.panel12.Location = new System.Drawing.Point(3, 57);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(786, 252);
+            this.panel12.Size = new System.Drawing.Size(786, 107);
             this.panel12.TabIndex = 3;
             // 
             // gridPic
@@ -370,20 +346,59 @@
             this.gridPic.Name = "gridPic";
             this.gridPic.OptimizeMode = SourceGrid.CellOptimizeMode.ForRows;
             this.gridPic.SelectionMode = SourceGrid.GridSelectionMode.Cell;
-            this.gridPic.Size = new System.Drawing.Size(786, 252);
+            this.gridPic.Size = new System.Drawing.Size(786, 107);
             this.gridPic.TabIndex = 0;
             this.gridPic.TabStop = true;
             this.gridPic.ToolTipText = "";
             this.gridPic.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.gridPic_PreviewKeyDown);
             // 
-            // panel10
+            // splitter3
             // 
-            this.panel10.Controls.Add(this.edPicText);
-            this.panel10.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel10.Location = new System.Drawing.Point(3, 305);
-            this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(786, 66);
-            this.panel10.TabIndex = 1;
+            this.splitter3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter3.Location = new System.Drawing.Point(3, 164);
+            this.splitter3.Name = "splitter3";
+            this.splitter3.Size = new System.Drawing.Size(786, 3);
+            this.splitter3.TabIndex = 4;
+            this.splitter3.TabStop = false;
+            // 
+            // pPicImg
+            // 
+            this.pPicImg.Controls.Add(this.picPicImage);
+            this.pPicImg.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pPicImg.Location = new System.Drawing.Point(3, 167);
+            this.pPicImg.Name = "pPicImg";
+            this.pPicImg.Size = new System.Drawing.Size(786, 135);
+            this.pPicImg.TabIndex = 2;
+            this.pPicImg.Resize += new System.EventHandler(this.pPicImg_Resize);
+            // 
+            // picPicImage
+            // 
+            this.picPicImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picPicImage.Location = new System.Drawing.Point(0, 0);
+            this.picPicImage.Name = "picPicImage";
+            this.picPicImage.Size = new System.Drawing.Size(786, 135);
+            this.picPicImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picPicImage.TabIndex = 0;
+            this.picPicImage.TabStop = false;
+            // 
+            // splitter4
+            // 
+            this.splitter4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter4.Location = new System.Drawing.Point(3, 302);
+            this.splitter4.Name = "splitter4";
+            this.splitter4.Size = new System.Drawing.Size(786, 3);
+            this.splitter4.TabIndex = 5;
+            this.splitter4.TabStop = false;
+            // 
+            // pPicText
+            // 
+            this.pPicText.Controls.Add(this.edPicText);
+            this.pPicText.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pPicText.Location = new System.Drawing.Point(3, 305);
+            this.pPicText.Name = "pPicText";
+            this.pPicText.Size = new System.Drawing.Size(786, 66);
+            this.pPicText.TabIndex = 1;
+            this.pPicText.Resize += new System.EventHandler(this.pPicText_Resize);
             // 
             // edPicText
             // 
@@ -393,15 +408,18 @@
             this.edPicText.Size = new System.Drawing.Size(786, 66);
             this.edPicText.TabIndex = 0;
             this.edPicText.Text = "";
+            this.edPicText.DoubleClick += new System.EventHandler(this.edPicText_DoubleClick);
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.lCraft);
+            this.panel5.Controls.Add(this.lArt);
             this.panel5.Controls.Add(this.chPicSelCraft);
             this.panel5.Controls.Add(this.chPicSelArt);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel5.Location = new System.Drawing.Point(3, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(786, 50);
+            this.panel5.Size = new System.Drawing.Size(786, 54);
             this.panel5.TabIndex = 0;
             // 
             // chPicSelCraft
@@ -483,6 +501,24 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
+            // lArt
+            // 
+            this.lArt.AutoSize = true;
+            this.lArt.Location = new System.Drawing.Point(124, 4);
+            this.lArt.Name = "lArt";
+            this.lArt.Size = new System.Drawing.Size(10, 13);
+            this.lArt.TabIndex = 2;
+            this.lArt.Text = ".";
+            // 
+            // lCraft
+            // 
+            this.lCraft.AutoSize = true;
+            this.lCraft.Location = new System.Drawing.Point(124, 17);
+            this.lCraft.Name = "lCraft";
+            this.lCraft.Size = new System.Drawing.Size(10, 13);
+            this.lCraft.TabIndex = 3;
+            this.lCraft.Text = ".";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -511,7 +547,9 @@
             this.panel9.ResumeLayout(false);
             this.tabPagePics.ResumeLayout(false);
             this.panel12.ResumeLayout(false);
-            this.panel10.ResumeLayout(false);
+            this.pPicImg.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picPicImage)).EndInit();
+            this.pPicText.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -554,8 +592,8 @@
         private System.Windows.Forms.ToolStripMenuItem miscToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem calcWordsToolStripMenuItem;
         private System.Windows.Forms.Panel panel12;
-        private System.Windows.Forms.Panel panel11;
-        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Panel pPicImg;
+        private System.Windows.Forms.Panel pPicText;
         private System.Windows.Forms.Panel panel5;
         private SourceGrid.Grid gridPic;
         private System.Windows.Forms.Splitter splitter3;
@@ -563,6 +601,9 @@
         private System.Windows.Forms.RichTextBox edPicText;
         private System.Windows.Forms.CheckBox chPicSelCraft;
         private System.Windows.Forms.CheckBox chPicSelArt;
+        private System.Windows.Forms.PictureBox picPicImage;
+        private System.Windows.Forms.Label lCraft;
+        private System.Windows.Forms.Label lArt;
     }
 }
 

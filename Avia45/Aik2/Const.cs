@@ -72,9 +72,9 @@ namespace Aik2
                 public const int Art = 7;
                 public const int Craft = 8;
                 public const int Grp = 9;
-                public const int ArtId = 10;
-                public const int CraftId = 11;
-                public const int Text = 12;
+                public const int SText = 10;
+                public const int ArtId = 11;
+                public const int CraftId = 12;
             }
         }
     }

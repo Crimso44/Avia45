@@ -30,6 +30,7 @@ namespace Aik2
         private List<Pair<int>> _crafts6;
         private List<Pair<int>> _crafts7;
         private List<Pair<int>> _crafts678;
+        private List<CraftDto> _craftDtos;
         private string _oldCraftText;
         private bool _craftTextChanging;
 
@@ -44,7 +45,7 @@ namespace Aik2
             else if (chCraftSortYear.Checked)
                 CraftsQry = CraftsQry.OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Author).ThenBy(x => x.Name);*/
             var Crafts = CraftsQry.ToList();
-            var _Crafts = Mapper.Map<List<CraftDto>>(Crafts);
+            _craftDtos = Mapper.Map<List<CraftDto>>(Crafts);
 
             var saved = -1;
             if (_craftPosition != Position.Empty)
@@ -53,14 +54,14 @@ namespace Aik2
             }
 
             _gridCraftController = new GridCraftController(this);
-            gridCraft.RowsCount = _Crafts.Count + 1;
+            gridCraft.RowsCount = _craftDtos.Count + 1;
 
-            _crafts = _Crafts.OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.CraftId, Name = x.FullName }).ToList();
+            _crafts = _craftDtos.OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.CraftId, Name = x.FullName }).ToList();
 
             var focused = false;
-            for (var r = 1; r <= _Crafts.Count; r++)
+            for (var r = 1; r <= _craftDtos.Count; r++)
             {
-                var Craft = _Crafts[r - 1];
+                var Craft = _craftDtos[r - 1];
                 UpdateCraftRow(Craft, r);
 
                 if (Craft.CraftId == saved && _craftPosition != Position.Empty)
@@ -71,20 +72,22 @@ namespace Aik2
                     focused = true;
                 }
             }
-            if (!focused)
+            if (!focused && _craftDtos.Any())
             {
                 _craftPosition = new Position(1, 1);
+                gridCraft.Selection.Focus(_craftPosition, true);
+                CraftCellGotFocus(null, new ChangeActivePositionEventArgs(_craftPosition, _craftPosition));
             }
 
-            _crafts6 = _Crafts.Where(x => x.Source == "6").OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.CraftId, Name = x.FullName }).ToList();
+            _crafts6 = _craftDtos.Where(x => x.Source == "6").OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.CraftId, Name = x.FullName }).ToList();
             _editCraft6.Control.Items.Clear();
             _editCraft6.Control.Items.AddRange(_crafts6.Select(x => x.Name).ToArray());
 
-            _crafts7 = _Crafts.Where(x => x.Source == "7").OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.CraftId, Name = x.FullName }).ToList();
+            _crafts7 = _craftDtos.Where(x => x.Source == "7").OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.CraftId, Name = x.FullName }).ToList();
             _editCraft7.Control.Items.Clear();
             _editCraft7.Control.Items.AddRange(_crafts7.Select(x => x.Name).ToArray());
 
-            _crafts678 = _Crafts.Where(x => x.Source == "6" || x.Source == "7" || x.Source == "8")
+            _crafts678 = _craftDtos.Where(x => x.Source == "6" || x.Source == "7" || x.Source == "8")
                 .OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.CraftId, Name = x.FullName }).ToList();
             _editCraft678.Control.Items.Clear();
             _editCraft678.Control.Items.AddRange(_crafts678.Select(x => x.Name).ToArray());
@@ -447,14 +450,28 @@ namespace Aik2
 
         }
 
+        private void SelectCraft(int? craftId)
+        {
+            if (!craftId.HasValue) return;
+            var craft = _craftDtos.Where(x => x.CraftId == craftId).SingleOrDefault();
+            if (craft != null)
+            {
+                var ind = _craftDtos.IndexOf(craft);
+                var pos = gridCraft.Selection.ActivePosition;
+                var newPos = new Position(ind + 1, pos == Position.Empty ? 1 : pos.Column);
+                gridCraft.Selection.Focus(newPos, true);
+            }
+        }
+
         private void CraftCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)
         {
             _craftPosition = e.NewFocusPosition;
-            var craftId = (int)gridCraft[_craftPosition.Row, Const.Columns.Craft.CraftId].Value;
-            if (craftId > 0 && 
-                (_selectedCraft == null || _selectedCraft.CraftId != (int)gridCraft[_craftPosition.Row, Const.Columns.Craft.CraftId].Value))
+            var craft = _craftDtos[_craftPosition.Row - 1];
+            lCraft.Text = craft.FullName;
+            if (craft.CraftId > 0 && 
+                (_selectedCraft == null || _selectedCraft.CraftId != craft.CraftId))
             {
-                _selectedCraft = Mapper.Map<CraftDto>(_ctx.Crafts.Single(x => x.CraftId == craftId));
+                _selectedCraft = Mapper.Map<CraftDto>(_ctx.Crafts.Single(x => x.CraftId == craft.CraftId));
                 _craftTextChanging = true;
                 edCraftText.Text = _selectedCraft.CText;
                 _oldCraftText = edCraftText.Text;
@@ -548,25 +565,28 @@ namespace Aik2
                     }
                     else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Control)
                     {
-                        var craftId = (int)gridCraft[pos.Row, Const.Columns.Craft.CraftId].Value;
-                        var craft = _crafts.FirstOrDefault(x => x.Id == craftId);
-                        if (craft != null) _crafts.Remove(craft);
-                        craft = _crafts6.FirstOrDefault(x => x.Id == craftId);
-                        if (craft != null)
+                        if (MessageBox.Show("Delete pic?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            _crafts6.Remove(craft);
-                            _editCraft6.Control.Items.Clear();
-                            _editCraft6.Control.Items.AddRange(_crafts6.Select(x => x.Name).ToArray());
-                        }
-                        craft = _crafts7.FirstOrDefault(x => x.Id == craftId);
-                        if (craft != null)
-                        {
-                            _crafts7.Remove(craft);
-                            _editCraft7.Control.Items.Clear();
-                            _editCraft7.Control.Items.AddRange(_crafts7.Select(x => x.Name).ToArray());
-                        }
+                            var craftId = (int)gridCraft[pos.Row, Const.Columns.Craft.CraftId].Value;
+                            var craft = _crafts.FirstOrDefault(x => x.Id == craftId);
+                            if (craft != null) _crafts.Remove(craft);
+                            craft = _crafts6.FirstOrDefault(x => x.Id == craftId);
+                            if (craft != null)
+                            {
+                                _crafts6.Remove(craft);
+                                _editCraft6.Control.Items.Clear();
+                                _editCraft6.Control.Items.AddRange(_crafts6.Select(x => x.Name).ToArray());
+                            }
+                            craft = _crafts7.FirstOrDefault(x => x.Id == craftId);
+                            if (craft != null)
+                            {
+                                _crafts7.Remove(craft);
+                                _editCraft7.Control.Items.Clear();
+                                _editCraft7.Control.Items.AddRange(_crafts7.Select(x => x.Name).ToArray());
+                            }
 
-                        gridCraft.Rows.Remove(pos.Row);
+                            gridCraft.Rows.Remove(pos.Row);
+                        }
                     }
                     else if (_searchMode)
                     {

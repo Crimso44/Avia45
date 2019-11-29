@@ -6,6 +6,7 @@ using SourceGrid.Selection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.IO;
@@ -28,6 +29,8 @@ namespace Aik2
 
         private Dictionary<string, string> _config;
         private string _confPath;
+        private string _imagesPath;
+        private List<WordLinks> _menuLinks;
 
         public Form1()
         {
@@ -42,11 +45,15 @@ namespace Aik2
             _ctx = new AiKEntities();
             LoadArts();
             LoadCrafts();
-            LoadPics();
+            LoadPics(false);
+
+            tabControl1.SelectedIndex = 1;
         }
 
         public void LoadConfig()
         {
+            _imagesPath = ConfigurationManager.AppSettings["AikPath"] + "\\";
+
             _confPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\Aik2.config";
             if (File.Exists(_confPath))
             {
@@ -64,6 +71,14 @@ namespace Aik2
             if (_config.ContainsKey("pCraftTextWidth"))
             {
                 pCraftText.Width = int.Parse(_config["pCraftTextWidth"]);
+            }
+            if (_config.ContainsKey("pPicTextHeight"))
+            {
+                pPicText.Height = int.Parse(_config["pPicTextHeight"]);
+            }
+            if (_config.ContainsKey("pPicImgHeight"))
+            {
+                pPicImg.Height = int.Parse(_config["pPicImgHeight"]);
             }
 
         }
@@ -101,6 +116,10 @@ namespace Aik2
                 {
                     if (editor != null) editor.EnableEdit = !_searchMode;
                 }
+                foreach (var editor in _editorsPic)
+                {
+                    if (editor != null) editor.EnableEdit = !_searchMode;
+                }
             }
             _shiftPressed = false;
         }
@@ -111,6 +130,8 @@ namespace Aik2
             if (_searchMode && gridArt.Focused) DoArtSearch((Keys)e.KeyChar, true);
             else
             if (_searchMode && gridCraft.Focused) DoCraftSearch((Keys)e.KeyChar, true);
+            else
+            if (_searchMode && gridPic.Focused) DoPicSearch((Keys)e.KeyChar, true);
         }
 
 
@@ -139,6 +160,23 @@ namespace Aik2
                 {
                     _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, CraftId) Values ({word.Id}, {craft.CraftId})");
                 }
+
+                var pics = _ctx.vwPics.Where(x => x.CraftId == crft.CraftId).ToList();
+                var cnt = 0;
+                foreach (var pic in pics)
+                {
+                    cnt++;
+                    lInfo.Text = $"{crft.FullName} {cnt}/{pics.Count}";
+                    Application.DoEvents();
+
+                    var ptext = _ctx.Pics.Single(x => x.PicId == pic.PicId).Text;
+                    wordsList = GetWords(ptext, true);
+                    foreach (var word in wordsList)
+                    {
+                        _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, PicId) Values ({word.Id}, {pic.PicId})");
+                    }
+                }
+
             }
             lInfo.Text = "";
 
@@ -186,7 +224,7 @@ namespace Aik2
                         var wordIdDec = _ctx.Database.SqlQuery<decimal>(
                             $"SET NOCOUNT ON; insert into Words (word) values ('{w}'); select SCOPE_IDENTITY(); SET NOCOUNT OFF;"
                         ).ToList().First();
-                        wordId = Convert.ToInt32(wordId);
+                        wordId = Convert.ToInt32(wordIdDec);
                     }
                     res.Add(new Pair<int>() { Id = wordId, Name = w });
                 }
@@ -214,7 +252,7 @@ namespace Aik2
             var uText = textBox.Text.ToUpper();
             foreach (var word in words)
             {
-                SetWordColor(edCraftText, word, uText);
+                SetWordColor(textBox, word, uText);
             }
 
             textBox.Select(0, 0);
@@ -304,13 +342,140 @@ namespace Aik2
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             var tab = (TabControl)sender;
-            if (tab.SelectedIndex == 2) LoadPics();
+            switch (tab.SelectedIndex)
+            {
+                case 0:
+                    SelectArt(_selectedPicArtId);
+                    break;
+                case 1:
+                    SelectCraft(_selectedPicCraftId);
+                    break;
+                case 2:
+                    LoadPics(true);
+                    break;
+            }
         }
 
         private void chPicSelArt_Click(object sender, EventArgs e)
         {
-            LoadPics();
+            LoadPics(false);
         }
 
+        private void edPicText_DoubleClick(object sender, EventArgs e)
+        {
+            var richText = (RichTextBox)sender;
+            var text = richText.Text;
+            var i0 = richText.SelectionStart;
+            while (i0 >= 0 && (text[i0] == '-' || char.IsLetterOrDigit(text[i0]))) i0--;
+            i0++;
+            var i1 = richText.SelectionStart;
+            while (i1 < text.Length && (text[i1] == '-' || char.IsLetterOrDigit(text[i1]))) i1++;
+            i1--;
+            if (i1 > i0)
+            {
+                var word = richText.Text.Substring(i0, i1 - i0 + 1).ToUpper();
+                if (word.Length > 3)
+                {
+                    var linkCnt = _ctx.Database.SqlQuery<int>(
+                        $"select count(*) from Words w join WordLinks wl on w.WordId = wl.WordId where w.Word = '{word}'").ToList().First();
+                    if (linkCnt > 0)
+                    {
+                        var menu = new ContextMenu();
+                        if (linkCnt > 15)
+                        {
+                            menu.MenuItems.Add($"{linkCnt} слов");
+                        }
+                        else
+                        {
+                            _menuLinks = _ctx.Database.SqlQuery<WordLinks>(
+                                $"select wl.* from Words w join WordLinks wl on w.WordId = wl.WordId where w.Word = '{word}'").ToList();
+                            var captions = new List<Pair<object>>();
+                            foreach (var link in _menuLinks)
+                            {
+                                if (link.PicId.HasValue)
+                                {
+                                    var pic = _ctx.vwPics.Single(x => x.PicId == link.PicId);
+                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == pic.CraftId));
+                                    captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName} {pic.Path}" });
+                                } else
+                                {
+                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == link.CraftId));
+                                    captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName}" });
+                                }
+                            }
+                            captions.Sort((f1, f2) =>
+                            {
+                                return f1.Name.CompareTo(f2.Name);
+                            });
+                            foreach(var cap in captions)
+                            {
+                                var mnuItem = new MenuItem() { Text = cap.Name, Tag = cap.Id };
+                                mnuItem.Click += OnWordMenuClick;
+                                menu.MenuItems.Add(mnuItem);
+                            }
+                        }
+                        menu.Show(richText, richText.PointToClient(Control.MousePosition));
+                    }
+                }
+            }
+
+        }
+
+        private void OnWordMenuClick(object sender, EventArgs e)
+        {
+            var mnuItem = (MenuItem)sender;
+            var link = (WordLinks)mnuItem.Tag;
+            if (link.CraftId.HasValue)
+            {
+                _selectedPicCraftId = link.CraftId;
+                if (tabControl1.SelectedIndex != 1)
+                {
+                    tabControl1.SelectedIndex = 1;
+                } else
+                {
+                    SelectCraft(_selectedPicCraftId);
+                }
+            }
+            else //if (link.PicId.HasValue)
+            {
+                int row;
+                var craftId = _ctx.vwPics.Single(x => x.PicId == link.PicId.Value).CraftId;
+                if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
+                {
+                    var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
+                    if (craftDto == null)
+                    {
+                        craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == craftId));
+                        _craftDtos.Add(craftDto);
+                        gridCraft.RowsCount++;
+                        row = gridCraft.RowsCount - 1;
+                        UpdateCraftRow(craftDto, row);
+                    } else
+                    {
+                        row = _craftDtos.IndexOf(craftDto) + 1;
+                    }
+                    var focusPosn = new Position(row, _craftPosition.Column);
+                    gridCraft.Selection.Focus(focusPosn, true);
+                    _craftPosition = focusPosn;
+                }
+                _selectedPicCraftId = link.CraftId;
+                if (tabControl1.SelectedIndex != 2)
+                {
+                    tabControl1.SelectedIndex = 2;
+                }
+                else
+                {
+                    LoadPics(true);
+                }
+                var pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
+                if (pic != null)
+                {
+                    row = _pics.IndexOf(pic) + 1;
+                    var focusPic = new Position(row, _craftPosition.Column);
+                    gridPic.Selection.Focus(focusPic, true);
+                    _picPosition = focusPic;
+                }
+            }
+        }
     }
 }

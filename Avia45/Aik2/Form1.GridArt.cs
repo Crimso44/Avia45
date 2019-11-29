@@ -21,7 +21,9 @@ namespace Aik2
         private Position _artPosition = Position.Empty;
         private GridArtController _gridArtController = null;
         private List<Pair<int>> _arts;
+        private List<ArtDto> _artDtos;
         private SourceGrid.Cells.Editors.ComboBox _editArt;
+        private ArtDto _selectedArt = null;
 
         public void LoadArts()
         {
@@ -33,7 +35,7 @@ namespace Aik2
             else if (chArtSortYear.Checked)
                 artsQry = artsQry.OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Author).ThenBy(x => x.Name);
             var arts = artsQry.ToList();
-            var _artDtos = Mapper.Map<List<ArtDto>>(arts);
+            _artDtos = Mapper.Map<List<ArtDto>>(arts);
 
 
             var saved = -1;
@@ -59,9 +61,11 @@ namespace Aik2
                     focused = true;
                 }
             }
-            if (!focused)
+            if (!focused && _artDtos.Any())
             {
                 _artPosition = new Position(1, 1);
+                gridArt.Selection.Focus(_artPosition, true);
+                ArtCellGotFocus(null, new ChangeActivePositionEventArgs(_artPosition, _artPosition));
             }
 
             _arts = _artDtos.OrderBy(x => x.FullName).Select(x => new Pair<int>() { Id = x.ArtId, Name = x.FullName }).ToList();
@@ -96,11 +100,11 @@ namespace Aik2
         {
             var art = new ArtDto()
             {
-                Mag = (string)gridCraft[row, Const.Columns.Art.Mag].Value,
-                IYear = (int?)gridCraft[row, Const.Columns.Art.IYear].Value,
-                IMonth = (string)gridCraft[row, Const.Columns.Art.IMonth].Value,
-                Author = (string)gridCraft[row, Const.Columns.Art.Author].Value,
-                Name = (string)gridCraft[row, Const.Columns.Art.Name].Value
+                Mag = (string)gridArt[row, Const.Columns.Art.Mag].Value,
+                IYear = (int?)gridArt[row, Const.Columns.Art.IYear].Value,
+                IMonth = (string)gridArt[row, Const.Columns.Art.IMonth].Value,
+                Author = (string)gridArt[row, Const.Columns.Art.Author].Value,
+                Name = (string)gridArt[row, Const.Columns.Art.Name].Value
             };
             return art.FullName;
         }
@@ -252,9 +256,24 @@ namespace Aik2
 
         }
 
+        private void SelectArt(int? artId)
+        {
+            if (!artId.HasValue) return;
+            var art = _artDtos.Where(x => x.ArtId == artId).SingleOrDefault();
+            if (art != null)
+            {
+                var ind = _artDtos.IndexOf(art);
+                var pos = gridArt.Selection.ActivePosition;
+                var newPos = new Position(ind + 1, pos == Position.Empty ? 1 : pos.Column);
+                gridArt.Selection.Focus(newPos, true);
+            }
+        }
+
         private void ArtCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)
         {
             _artPosition = e.NewFocusPosition;
+            _selectedArt = _artDtos[_artPosition.Row - 1];
+            lArt.Text = _selectedArt.FullName;
             if (_searchMode && !_searchChanging)
             {
                 _searchString = "";
@@ -342,7 +361,8 @@ namespace Aik2
                     }
                     else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Control)
                     {
-                        gridArt.Rows.Remove(pos.Row);
+                        if (MessageBox.Show("Delete art?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            gridArt.Rows.Remove(pos.Row);
                     }
                     else if (_searchMode)
                     {

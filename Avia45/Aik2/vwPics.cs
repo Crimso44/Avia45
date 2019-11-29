@@ -24,5 +24,6 @@ namespace Aik2
         public Nullable<int> NType { get; set; }
         public string Path { get; set; }
         public string Grp { get; set; }
+        public string SText { get; set; }
     }
 }
