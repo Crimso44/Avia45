@@ -76,6 +76,15 @@ namespace Aik2
                 public const int ArtId = 11;
                 public const int CraftId = 12;
             }
+
+            public static class Link
+            {
+                public const int LinkId = 0;
+                public const int Pic1 = 1;
+                public const int Pic2 = 2;
+                public const int Type1 = 3;
+                public const int Type2 = 4;
+            }
         }
     }
 }

@@ -25,6 +25,73 @@ namespace Aik2
         private SourceGrid.Cells.Editors.ComboBox _editArt;
         private ArtDto _selectedArt = null;
 
+        public void InitArtGrid()
+        {
+            _editorsArt = new List<SourceGrid.Cells.Editors.EditorBase>();
+
+            var editStr5 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
+            editStr5.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 5); };
+
+            var editStr50 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
+            editStr50.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 50); };
+
+            var editStr100 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
+            editStr100.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 100); };
+
+            var editInt = SourceGrid.Cells.Editors.Factory.Create(typeof(int));
+
+            var editIntNull = SourceGrid.Cells.Editors.Factory.Create(typeof(int));
+            editIntNull.AllowNull = true;
+
+            _editArt = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
+            _editArt.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
+            _editArt.Control.AutoCompleteMode = AutoCompleteMode.Append;
+            _editArt.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
+                var text = ((ComboBox)sender).Text;
+                if (!string.IsNullOrEmpty(text) && _arts.All(x => x.Name != text)) cancelEvent.Cancel = true;
+            };
+
+            _editorsArt.Add(null);
+            _editorsArt.Add(editStr5);
+            _editorsArt.Add(editInt);
+            _editorsArt.Add(editStr5);
+            _editorsArt.Add(editStr50);
+            _editorsArt.Add(editStr100);
+            _editorsArt.Add(editIntNull);
+            _editorsArt.Add(editStr50);
+            _editorsArt.Add(null);
+
+            gridArt.ColumnsCount = 9;
+            gridArt.RowsCount = 1;
+            gridArt.FixedRows = 1;
+
+            gridArt[0, 0] = new SourceGrid.Cells.ColumnHeader("ArtId");
+            gridArt.Columns[0].Visible = false;
+            gridArt[0, 1] = new SourceGrid.Cells.ColumnHeader("Mag");
+            gridArt[0, 2] = new SourceGrid.Cells.ColumnHeader("IYear");
+            gridArt[0, 3] = new SourceGrid.Cells.ColumnHeader("IMonth");
+            gridArt[0, 4] = new SourceGrid.Cells.ColumnHeader("Author");
+            gridArt[0, 5] = new SourceGrid.Cells.ColumnHeader("Name");
+            gridArt[0, 6] = new SourceGrid.Cells.ColumnHeader("NN");
+            gridArt[0, 7] = new SourceGrid.Cells.ColumnHeader("Serie");
+            gridArt[0, 8] = new SourceGrid.Cells.ColumnHeader("Art");
+
+            for (var i = 1; i < gridArt.ColumnsCount; i++)
+            {
+                var key = $"gridArt:ColumnWidth:{i}";
+                if (_config.ContainsKey(key))
+                {
+                    gridArt.Columns[i].Width = int.Parse(_config[key]);
+                }
+            }
+
+            _gridArtController = new GridArtController(this);
+
+            gridArt.Selection.CellGotFocus += ArtCellGotFocus;
+            gridArt.Columns.ColumnWidthChanged += ArtColumnWidthChanged;
+
+        }
+
         public void LoadArts()
         {
             var artsQry = _ctx.Arts.AsQueryable();
@@ -43,8 +110,6 @@ namespace Aik2
             {
                 saved = (int)gridArt[_artPosition.Row, Const.Columns.Art.ArtId].Value;
             }
-
-            _gridArtController = new GridArtController(this);
 
             gridArt.RowsCount = _artDtos.Count + 1;
             var focused = false;
@@ -182,6 +247,7 @@ namespace Aik2
                     if (rNew != row)
                     {
                         _form.gridArt.Rows.Move(row, rNew);
+                        _form._artDtos.Move(row - 1, rNew - 1);
                         var focusPosn = new Position(rNew, sender.Position.Column);
                         _form.gridArt.Selection.Focus(focusPosn, true);
                     }
@@ -189,71 +255,6 @@ namespace Aik2
                 }
 
             }
-        }
-
-        public void InitArtGrid()
-        {
-            _editorsArt = new List<SourceGrid.Cells.Editors.EditorBase>();
-
-            var editStr5 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
-            editStr5.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 5); };
-
-            var editStr50 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
-            editStr50.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 50); };
-
-            var editStr100 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
-            editStr100.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 100); };
-
-            var editInt = SourceGrid.Cells.Editors.Factory.Create(typeof(int));
-
-            var editIntNull = SourceGrid.Cells.Editors.Factory.Create(typeof(int));
-            editIntNull.AllowNull = true;
-
-            _editArt = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
-            _editArt.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
-            _editArt.Control.AutoCompleteMode = AutoCompleteMode.Append;
-            _editArt.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
-                var text = ((ComboBox)sender).Text;
-                if (!string.IsNullOrEmpty(text) && _arts.All(x => x.Name != text)) cancelEvent.Cancel = true;
-            };
-
-            _editorsArt.Add(null);
-            _editorsArt.Add(editStr5);
-            _editorsArt.Add(editInt);
-            _editorsArt.Add(editStr5);
-            _editorsArt.Add(editStr50);
-            _editorsArt.Add(editStr100);
-            _editorsArt.Add(editIntNull);
-            _editorsArt.Add(editStr50);
-            _editorsArt.Add(null);
-
-            gridArt.ColumnsCount = 9;
-            gridArt.RowsCount = 1;
-            gridArt.FixedRows = 1;
-
-            gridArt[0, 0] = new SourceGrid.Cells.ColumnHeader("ArtId");
-            gridArt.Columns[0].Visible = false;
-            gridArt[0, 1] = new SourceGrid.Cells.ColumnHeader("Mag");
-            gridArt[0, 2] = new SourceGrid.Cells.ColumnHeader("IYear");
-            gridArt[0, 3] = new SourceGrid.Cells.ColumnHeader("IMonth");
-            gridArt[0, 4] = new SourceGrid.Cells.ColumnHeader("Author");
-            gridArt[0, 5] = new SourceGrid.Cells.ColumnHeader("Name");
-            gridArt[0, 6] = new SourceGrid.Cells.ColumnHeader("NN");
-            gridArt[0, 7] = new SourceGrid.Cells.ColumnHeader("Serie");
-            gridArt[0, 8] = new SourceGrid.Cells.ColumnHeader("Art");
-
-            for (var i = 1; i < gridArt.ColumnsCount; i++)
-            {
-                var key = $"gridArt:ColumnWidth:{i}";
-                if (_config.ContainsKey(key))
-                {
-                    gridArt.Columns[i].Width = int.Parse(_config[key]);
-                }
-            }
-
-            gridArt.Selection.CellGotFocus += ArtCellGotFocus;
-            gridArt.Columns.ColumnWidthChanged += ArtColumnWidthChanged;
-
         }
 
         private void SelectArt(int? artId)
@@ -356,13 +357,17 @@ namespace Aik2
                             IYear = (int?)gridArt[pos.Row, Const.Columns.Art.IYear].Value,
                             IMonth = (string)gridArt[pos.Row, Const.Columns.Art.IMonth].Value
                         };
+                        _artDtos.Insert(pos.Row - 1, Mapper.Map<ArtDto>(art));
                         gridArt.Rows.Insert(pos.Row);
                         UpdateArtRow(art, pos.Row);
                     }
                     else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Control)
                     {
                         if (MessageBox.Show("Delete art?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
                             gridArt.Rows.Remove(pos.Row);
+                            _artDtos.RemoveAt(pos.Row - 1);
+                        }
                     }
                     else if (_searchMode)
                     {

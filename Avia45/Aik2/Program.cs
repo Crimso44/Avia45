@@ -36,6 +36,8 @@ namespace Aik2
                 cfg.CreateMap<PicDto, Pics>();
                 cfg.CreateMap<vwPics, PicDto>();
                 cfg.CreateMap<PicDto, vwPics>();
+                cfg.CreateMap<Links, LinkDto>();
+                cfg.CreateMap<LinkDto, Links>();
             });
 #pragma warning restore CS0618 // Type or member is obsolete
         }

@@ -92,6 +92,7 @@
     </Compile>
     <Compile Include="Dto\ArtDto.cs" />
     <Compile Include="Dto\CraftDto.cs" />
+    <Compile Include="Dto\LinkDto.cs" />
     <Compile Include="Dto\PicDto.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -178,6 +179,7 @@
       <DependentUpon>AiK.edmx</DependentUpon>
       <LastGenOutput>AiK.cs</LastGenOutput>
     </Content>
+    <Content Include="Images\baseline_lock_black_18dp.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

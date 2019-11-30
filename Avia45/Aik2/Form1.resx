@@ -117,6 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="bLockPic.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAADASURBVDhPrdAxDgFBFIDhTYgruAAFcQg3EIUbOIiKSu0SJBJRUGlpZbUqBZ1KRME/Zjaxk/d2
+        hviTL3m8N80mgcpoOWb+qQ4ueDpndPFVNTwwRxt9HHFHHdGNcULl/ctWxRVmF90KCzvmWmJtx7g2mNox
+        1wxmF2yI7OOGjKBmPrD0SGJu1aQHRdSk470j7dT8wx1Kztb990nNP5wgy8z+Xs0/vKHnmNnfq/mHIWrS
+        cRG1FNIDyQFqDQwiNfHvkuQFkm2GpdUTJYQAAAAASUVORK5CYII=
+</value>
+  </data>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

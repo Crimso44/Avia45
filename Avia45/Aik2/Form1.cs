@@ -26,6 +26,7 @@ namespace Aik2
         private bool _searchMode = false;
         private bool _searchChanging = false;
         private string _searchString = "";
+        private bool _init = false;
 
         private Dictionary<string, string> _config;
         private string _confPath;
@@ -41,6 +42,7 @@ namespace Aik2
             InitArtGrid();
             InitCraftGrid();
             InitPicGrid();
+            InitLinkGrid();
 
             _ctx = new AiKEntities();
             LoadArts();
@@ -67,10 +69,15 @@ namespace Aik2
 
         }
 
-        public void SetConfig() { 
+        public void SetConfig() {
+            _init = true;
             if (_config.ContainsKey("pCraftTextWidth"))
             {
                 pCraftText.Width = int.Parse(_config["pCraftTextWidth"]);
+            }
+            if (_config.ContainsKey("pCraftPicHeight"))
+            {
+                pCraftPic.Height = int.Parse(_config["pCraftPicHeight"]);
             }
             if (_config.ContainsKey("pPicTextHeight"))
             {
@@ -80,7 +87,11 @@ namespace Aik2
             {
                 pPicImg.Height = int.Parse(_config["pPicImgHeight"]);
             }
-
+            if (_config.ContainsKey("pLinkImgWidth"))
+            {
+                pLinkImage.Width = int.Parse(_config["pLinkImgWidth"]);
+            }
+            _init = false;
         }
 
 
@@ -266,7 +277,7 @@ namespace Aik2
             while (i >= 0)
             {
                 var cb = ' '; if (i > 0) cb = uText[i - 1];
-                var ce = ' '; if (i + word.Word.Length < uText.Length) cb = uText[i + word.Word.Length];
+                var ce = ' '; if (i + word.Word.Length < uText.Length) ce = uText[i + word.Word.Length];
                 if (cb != '-' && ce != '-' && !Char.IsLetterOrDigit(cb) && !Char.IsLetterOrDigit(ce))
                 {
                     Color col = Color.Black;
@@ -410,6 +421,11 @@ namespace Aik2
                             foreach(var cap in captions)
                             {
                                 var mnuItem = new MenuItem() { Text = cap.Name, Tag = cap.Id };
+                                if ((sender == edCraftText && _selectedCraft.CraftId == ((WordLinks)cap.Id).CraftId) ||
+                                    (sender == edPicText && _selectedPic.PicId == ((WordLinks)cap.Id).PicId))
+                                {
+                                    mnuItem.Checked = true;
+                                }
                                 mnuItem.Click += OnWordMenuClick;
                                 menu.MenuItems.Add(mnuItem);
                             }
@@ -439,33 +455,54 @@ namespace Aik2
             else //if (link.PicId.HasValue)
             {
                 int row;
-                var craftId = _ctx.vwPics.Single(x => x.PicId == link.PicId.Value).CraftId;
-                if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
+                if (chPicSelCraft.Checked)
                 {
-                    var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
-                    if (craftDto == null)
+                    var craftId = _ctx.vwPics.Single(x => x.PicId == link.PicId.Value).CraftId;
+                    if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
                     {
-                        craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == craftId));
-                        _craftDtos.Add(craftDto);
-                        gridCraft.RowsCount++;
-                        row = gridCraft.RowsCount - 1;
-                        UpdateCraftRow(craftDto, row);
-                    } else
-                    {
-                        row = _craftDtos.IndexOf(craftDto) + 1;
+                        var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
+                        if (craftDto == null)
+                        {
+                            craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == craftId));
+                            _craftDtos.Add(craftDto);
+                            gridCraft.RowsCount++;
+                            row = gridCraft.RowsCount - 1;
+                            UpdateCraftRow(craftDto, row);
+                        }
+                        else
+                        {
+                            row = _craftDtos.IndexOf(craftDto) + 1;
+                        }
+                        var focusPosn = new Position(row, _craftPosition.Column);
+                        gridCraft.Selection.Focus(focusPosn, true);
+                        _craftPosition = focusPosn;
+                        _selectedCraft = craftDto;
                     }
-                    var focusPosn = new Position(row, _craftPosition.Column);
-                    gridCraft.Selection.Focus(focusPosn, true);
-                    _craftPosition = focusPosn;
+                    _selectedPicCraftId = craftId;
+                } else
+                {
+                    var artId = _ctx.vwPics.Single(x => x.PicId == link.PicId.Value).ArtId;
+                    if (_selectedArt == null || _selectedArt.ArtId != artId)
+                    {
+                        var artDto = _artDtos.FirstOrDefault(x => x.ArtId == artId);
+                        if (artDto != null)
+                        {
+                            row = _artDtos.IndexOf(artDto) + 1;
+                            var focusPosn = new Position(row, _artPosition.Column);
+                            gridArt.Selection.Focus(focusPosn, true);
+                            _artPosition = focusPosn;
+                            _selectedArt = artDto;
+                        }
+                    }
+                    _selectedPicArtId = artId;
                 }
-                _selectedPicCraftId = link.CraftId;
                 if (tabControl1.SelectedIndex != 2)
                 {
                     tabControl1.SelectedIndex = 2;
                 }
                 else
                 {
-                    LoadPics(true);
+                    LoadPics(false);
                 }
                 var pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
                 if (pic != null)
@@ -477,5 +514,6 @@ namespace Aik2
                 }
             }
         }
+
     }
 }

@@ -42,6 +42,13 @@ namespace Aik2
             }
             source.Insert(index + 1, element);
         }
+
+        public static void Move<T>(this List<T> source, int oldIndex, int newIndex) 
+        {
+            T item = source[oldIndex];
+            source.RemoveAt(oldIndex);
+            source.Insert(newIndex, item);
+        }
     }
 
 }
