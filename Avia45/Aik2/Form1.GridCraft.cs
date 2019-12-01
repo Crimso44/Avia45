@@ -385,6 +385,11 @@ namespace Aik2
             return craft.FullName;
         }
 
+        private class GridCraftSelection : SourceGrid.Selection.FreeSelection
+        {
+
+        }
+
         private class GridCraftController : SourceGrid.Cells.Controllers.ControllerBase
         {
             private readonly Form1 _form;
@@ -553,10 +558,9 @@ namespace Aik2
             if (craft.CraftId > 0 && 
                 (_selectedCraft == null || _selectedCraft.CraftId != craft.CraftId))
             {
-                craft.CText = _ctx.Crafts.Single(x => x.CraftId == craft.CraftId).CText;
                 _selectedCraft = craft;
                 _craftTextChanging = true;
-                edCraftText.Text = _selectedCraft.CText;
+                edCraftText.Text = _ctx.Crafts.Single(x => x.CraftId == craft.CraftId).CText;
                 _oldCraftText = edCraftText.Text;
                 ColorizeText(edCraftText, true);
                 _craftTextChanging = false;

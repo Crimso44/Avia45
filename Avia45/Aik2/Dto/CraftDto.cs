@@ -21,7 +21,6 @@ namespace Aik2.Dto
         public bool? Proj { get; set; }
         public string Source { get; set; }
         public string Type { get; set; }
-        public string CText { get; set; }
         public int? SeeAlso { get; set; }
         public string Wiki { get; set; }
         public string Airwar { get; set; }

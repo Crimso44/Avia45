@@ -453,10 +453,9 @@ namespace Aik2
                 var picText = _ctx.Pics.SingleOrDefault(x => x.PicId == pic.PicId);
                 if (picText != null)
                 {
-                    pic.Text = picText.Text;
                     _selectedPic = pic;
                     _picTextChanging = true;
-                    edPicText.Text = _selectedPic.Text;
+                    edPicText.Text = _ctx.Pics.SingleOrDefault(x => x.PicId == pic.PicId).Text;
                     _oldPicText = edPicText.Text;
                     ColorizeText(edPicText, false);
                     _picTextChanging = false;

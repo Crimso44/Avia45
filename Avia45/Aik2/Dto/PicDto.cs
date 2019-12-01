@@ -18,7 +18,6 @@ namespace Aik2.Dto
         public int? NType { get; set; }
         public string Path { get; set; }
         public string Grp { get; set; }
-        public string Text { get; set; }
         public string SText { get; set; }
     }
 }
