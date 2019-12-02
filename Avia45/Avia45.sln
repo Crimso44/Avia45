@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.757
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aik2", "Aik2\Aik2.csproj", "{5E194DFF-E4D2-4CA5-AC8E-F61C645F4D5D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGrid", "SourceGrid4\SourceGrid\SourceGrid.csproj", "{DA47B108-21C8-4293-8D4E-56FFF1ED45A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5E194DFF-E4D2-4CA5-AC8E-F61C645F4D5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E194DFF-E4D2-4CA5-AC8E-F61C645F4D5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E194DFF-E4D2-4CA5-AC8E-F61C645F4D5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA47B108-21C8-4293-8D4E-56FFF1ED45A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA47B108-21C8-4293-8D4E-56FFF1ED45A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA47B108-21C8-4293-8D4E-56FFF1ED45A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA47B108-21C8-4293-8D4E-56FFF1ED45A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
