@@ -136,7 +136,7 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
             <PropertyRef Name="ArtId" />
             <PropertyRef Name="CraftId" />
           </Key>
-          <Property Name="PicId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PicId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="ArtId" Type="int" Nullable="false" />
           <Property Name="CraftId" Type="int" Nullable="false" />
           <Property Name="XPage" Type="nchar" MaxLength="4" />
@@ -147,6 +147,7 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <Property Name="Path" Type="nvarchar" MaxLength="50" />
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
           <Property Name="SText" Type="varchar" MaxLength="253" />
+          <Property Name="XType" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <Association Name="FK_Crafts_Crafts">
           <End Role="Crafts" Type="Self.Crafts" Multiplicity="0..1" />
@@ -313,7 +314,8 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
     [vwPics].[NType] AS [NType], 
     [vwPics].[Path] AS [Path], 
     [vwPics].[Grp] AS [Grp], 
-    [vwPics].[SText] AS [SText]
+    [vwPics].[SText] AS [SText], 
+    [vwPics].[XType] AS [XType]
     FROM [dbo].[vwPics] AS [vwPics]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_Crafts_Crafts" Association="Self.FK_Crafts_Crafts">
@@ -691,6 +693,7 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <Property Name="Path" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Grp" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="SText" Type="String" MaxLength="253" FixedLength="false" Unicode="false" />
+          <Property Name="XType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -831,6 +834,7 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <EntitySetMapping Name="vwPics">
             <EntityTypeMapping TypeName="AiKModel.vwPics">
               <MappingFragment StoreEntitySet="vwPics">
+                <ScalarProperty Name="XType" ColumnName="XType" />
                 <ScalarProperty Name="SText" ColumnName="SText" />
                 <ScalarProperty Name="Grp" ColumnName="Grp" />
                 <ScalarProperty Name="Path" ColumnName="Path" />

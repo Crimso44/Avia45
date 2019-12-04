@@ -571,6 +571,7 @@ namespace Aik2
                 {
                     imgCraftPic.Visible = true;
                     sbCraftPics.Visible = false;
+                    sbCraftPics.Value = 0;
                     _craftPicDtoIndex = 0;
                     if (_craftPicDtos.Count > 1)
                     {
@@ -589,6 +590,64 @@ namespace Aik2
                     imgCraftPic.Visible = false;
                     sbCraftPics.Visible = false;
                     _craftPicDtoIndex = -1;
+                }
+
+                if (string.IsNullOrEmpty(_selectedCraft.Airwar))
+                {
+                    bCraftAirwarLink.Enabled = false;
+                    bCraftAirwarLink.ForeColor = Color.Gray;
+                    bCraftAirwarLink.BackColor = Color.White;
+                } else
+                {
+                    bCraftAirwarLink.Enabled = true;
+                    bCraftAirwarLink.ForeColor = Color.Black;
+                    bCraftAirwarLink.BackColor = Color.LightGray;
+                }
+                if (string.IsNullOrEmpty(_selectedCraft.Wiki))
+                {
+                    bCraftWikiLink.Enabled = false;
+                    bCraftWikiLink.ForeColor = Color.Gray;
+                    bCraftWikiLink.BackColor = Color.White;
+                }
+                else
+                {
+                    bCraftWikiLink.Enabled = true;
+                    bCraftWikiLink.ForeColor = Color.Black;
+                    bCraftWikiLink.BackColor = Color.LightGray;
+                }
+                if (!_selectedCraft.FlyingM.HasValue)
+                {
+                    bCraftFlyingLink.Enabled = false;
+                    bCraftFlyingLink.ForeColor = Color.Gray;
+                    bCraftFlyingLink.BackColor = Color.White;
+                }
+                else
+                {
+                    bCraftFlyingLink.Enabled = true;
+                    bCraftFlyingLink.ForeColor = Color.Black;
+                    bCraftFlyingLink.BackColor = Color.LightGray;
+                }
+
+                lstCraftSeeAlso.Items.Clear();
+                if (_selectedCraft.SeeAlso.HasValue)
+                {
+                    var crft = _selectedCraft;
+                    var crafts = new List<CraftDto>() { craft };
+                    while(crft.SeeAlso.HasValue && !crafts.Any(x => x.CraftId == crft.SeeAlso))
+                    {
+                        crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == crft.SeeAlso));
+                        crafts.Add(crft);
+                    }
+                    var isOk = crafts.First().CraftId == crafts.Last().SeeAlso;
+                    crafts.Sort((f1, f2) =>
+                    {
+                        return (f1.IYear ?? 0).CompareTo(f2.IYear ?? 0);
+                    });
+                    foreach(var c in crafts)
+                    {
+                        lstCraftSeeAlso.Items.Add(new Pair<int>() { Id = c.CraftId, Name = c.FullName });
+                    }
+                    lstCraftSeeAlso.ForeColor = isOk ? Color.Black : Color.Red;
                 }
             }
             if (_searchMode && !_searchChanging)
@@ -808,6 +867,14 @@ namespace Aik2
             File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
         }
 
+        private void pCraftSeeAlso_Resize(object sender, EventArgs e)
+        {
+            if (_init) return;
+            _config["pCraftSeeAlsoHeight"] = ((Panel)sender).Height.ToString();
+            File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
+        }
+
+
         private void sbCraftPics_ValueChanged(object sender, EventArgs e)
         {
             var sb = (HScrollBar)sender;
@@ -826,7 +893,31 @@ namespace Aik2
 
             }
         }
+
+        private void bCraftAirwarLink_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(_selectedCraft.Airwar);
+        }
+
+        private void bCraftWikiLink_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(_selectedCraft.Wiki);
+        }
+
+        private void bCraftFlyingLink_Click(object sender, EventArgs e)
+        {
+            SelectCraft(_selectedCraft.FlyingM.Value);
+        }
+
+
+        private void lstCraftSeeAlso_DoubleClick(object sender, EventArgs e)
+        {
+            var item = (Pair<int>)lstCraftSeeAlso.SelectedItem;
+            if (item != null)
+            {
+                SelectCraft(item.Id);
+            }
+        }
+
     }
-
-
 }

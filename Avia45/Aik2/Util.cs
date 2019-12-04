@@ -12,6 +12,10 @@ namespace Aik2
         {
             public T Id;
             public string Name;
+            public override string ToString()
+            {
+                return Name;
+            }
         }
 
         public static string Reverse(string s)

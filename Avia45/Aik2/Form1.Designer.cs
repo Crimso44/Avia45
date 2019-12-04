@@ -45,10 +45,17 @@
             this.pCraftText = new System.Windows.Forms.Panel();
             this.panel9 = new System.Windows.Forms.Panel();
             this.edCraftText = new System.Windows.Forms.RichTextBox();
-            this.splitter2 = new System.Windows.Forms.Splitter();
+            this.splitter7 = new System.Windows.Forms.Splitter();
             this.pCraftPic = new System.Windows.Forms.Panel();
             this.imgCraftPic = new System.Windows.Forms.PictureBox();
             this.sbCraftPics = new System.Windows.Forms.HScrollBar();
+            this.splitter2 = new System.Windows.Forms.Splitter();
+            this.pCraftSeeAlso = new System.Windows.Forms.Panel();
+            this.lstCraftSeeAlso = new System.Windows.Forms.ListBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.bCraftFlyingLink = new System.Windows.Forms.Button();
+            this.bCraftWikiLink = new System.Windows.Forms.Button();
+            this.bCraftAirwarLink = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.tabPagePics = new System.Windows.Forms.TabPage();
             this.pPicTable = new System.Windows.Forms.Panel();
@@ -68,6 +75,15 @@
             this.pLinkTable = new System.Windows.Forms.Panel();
             this.gridLink = new SourceGrid.Grid();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.lblWingsEngs = new System.Windows.Forms.Label();
+            this.lblP = new System.Windows.Forms.Label();
+            this.lbl1 = new System.Windows.Forms.Label();
+            this.lblL = new System.Windows.Forms.Label();
+            this.lblG = new System.Windows.Forms.Label();
+            this.lblU = new System.Windows.Forms.Label();
+            this.lblV = new System.Windows.Forms.Label();
+            this.lCraft2 = new System.Windows.Forms.Label();
+            this.lArt2 = new System.Windows.Forms.Label();
             this.lCraft = new System.Windows.Forms.Label();
             this.lArt = new System.Windows.Forms.Label();
             this.chPicSelCraft = new System.Windows.Forms.CheckBox();
@@ -75,9 +91,14 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.calcWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.focusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAlt1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAlt2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAlt3 = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.mnuPicsFillPath = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -88,6 +109,8 @@
             this.panel9.SuspendLayout();
             this.pCraftPic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgCraftPic)).BeginInit();
+            this.pCraftSeeAlso.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.tabPagePics.SuspendLayout();
             this.pPicTable.SuspendLayout();
             this.panel10.SuspendLayout();
@@ -259,8 +282,10 @@
             // pCraftText
             // 
             this.pCraftText.Controls.Add(this.panel9);
-            this.pCraftText.Controls.Add(this.splitter2);
+            this.pCraftText.Controls.Add(this.splitter7);
             this.pCraftText.Controls.Add(this.pCraftPic);
+            this.pCraftText.Controls.Add(this.splitter2);
+            this.pCraftText.Controls.Add(this.pCraftSeeAlso);
             this.pCraftText.Dock = System.Windows.Forms.DockStyle.Right;
             this.pCraftText.Location = new System.Drawing.Point(589, 31);
             this.pCraftText.Name = "pCraftText";
@@ -274,7 +299,7 @@
             this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel9.Location = new System.Drawing.Point(0, 0);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(200, 237);
+            this.panel9.Size = new System.Drawing.Size(200, 134);
             this.panel9.TabIndex = 3;
             // 
             // edCraftText
@@ -283,27 +308,27 @@
             this.edCraftText.Location = new System.Drawing.Point(0, 0);
             this.edCraftText.Margin = new System.Windows.Forms.Padding(1);
             this.edCraftText.Name = "edCraftText";
-            this.edCraftText.Size = new System.Drawing.Size(200, 237);
+            this.edCraftText.Size = new System.Drawing.Size(200, 134);
             this.edCraftText.TabIndex = 0;
             this.edCraftText.Text = "";
             this.edCraftText.TextChanged += new System.EventHandler(this.edCraftText_TextChanged);
             this.edCraftText.DoubleClick += new System.EventHandler(this.edPicText_DoubleClick);
             // 
-            // splitter2
+            // splitter7
             // 
-            this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter2.Location = new System.Drawing.Point(0, 237);
-            this.splitter2.Name = "splitter2";
-            this.splitter2.Size = new System.Drawing.Size(200, 3);
-            this.splitter2.TabIndex = 2;
-            this.splitter2.TabStop = false;
+            this.splitter7.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter7.Location = new System.Drawing.Point(0, 134);
+            this.splitter7.Name = "splitter7";
+            this.splitter7.Size = new System.Drawing.Size(200, 3);
+            this.splitter7.TabIndex = 0;
+            this.splitter7.TabStop = false;
             // 
             // pCraftPic
             // 
             this.pCraftPic.Controls.Add(this.imgCraftPic);
             this.pCraftPic.Controls.Add(this.sbCraftPics);
             this.pCraftPic.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pCraftPic.Location = new System.Drawing.Point(0, 240);
+            this.pCraftPic.Location = new System.Drawing.Point(0, 137);
             this.pCraftPic.Name = "pCraftPic";
             this.pCraftPic.Size = new System.Drawing.Size(200, 100);
             this.pCraftPic.TabIndex = 1;
@@ -328,6 +353,91 @@
             this.sbCraftPics.Size = new System.Drawing.Size(200, 17);
             this.sbCraftPics.TabIndex = 2;
             this.sbCraftPics.ValueChanged += new System.EventHandler(this.sbCraftPics_ValueChanged);
+            // 
+            // splitter2
+            // 
+            this.splitter2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter2.Location = new System.Drawing.Point(0, 237);
+            this.splitter2.Name = "splitter2";
+            this.splitter2.Size = new System.Drawing.Size(200, 3);
+            this.splitter2.TabIndex = 2;
+            this.splitter2.TabStop = false;
+            // 
+            // pCraftSeeAlso
+            // 
+            this.pCraftSeeAlso.Controls.Add(this.lstCraftSeeAlso);
+            this.pCraftSeeAlso.Controls.Add(this.panel3);
+            this.pCraftSeeAlso.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pCraftSeeAlso.Location = new System.Drawing.Point(0, 240);
+            this.pCraftSeeAlso.Name = "pCraftSeeAlso";
+            this.pCraftSeeAlso.Size = new System.Drawing.Size(200, 100);
+            this.pCraftSeeAlso.TabIndex = 1;
+            this.pCraftSeeAlso.Resize += new System.EventHandler(this.pCraftSeeAlso_Resize);
+            // 
+            // lstCraftSeeAlso
+            // 
+            this.lstCraftSeeAlso.DisplayMember = "Name";
+            this.lstCraftSeeAlso.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstCraftSeeAlso.FormattingEnabled = true;
+            this.lstCraftSeeAlso.Location = new System.Drawing.Point(0, 29);
+            this.lstCraftSeeAlso.Name = "lstCraftSeeAlso";
+            this.lstCraftSeeAlso.Size = new System.Drawing.Size(200, 71);
+            this.lstCraftSeeAlso.TabIndex = 1;
+            this.lstCraftSeeAlso.ValueMember = "Id";
+            this.lstCraftSeeAlso.DoubleClick += new System.EventHandler(this.lstCraftSeeAlso_DoubleClick);
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.bCraftFlyingLink);
+            this.panel3.Controls.Add(this.bCraftWikiLink);
+            this.panel3.Controls.Add(this.bCraftAirwarLink);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(200, 29);
+            this.panel3.TabIndex = 0;
+            // 
+            // bCraftFlyingLink
+            // 
+            this.bCraftFlyingLink.BackColor = System.Drawing.Color.LightGray;
+            this.bCraftFlyingLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bCraftFlyingLink.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bCraftFlyingLink.ForeColor = System.Drawing.Color.Black;
+            this.bCraftFlyingLink.Location = new System.Drawing.Point(61, 3);
+            this.bCraftFlyingLink.Name = "bCraftFlyingLink";
+            this.bCraftFlyingLink.Size = new System.Drawing.Size(23, 23);
+            this.bCraftFlyingLink.TabIndex = 2;
+            this.bCraftFlyingLink.Text = "F";
+            this.bCraftFlyingLink.UseVisualStyleBackColor = false;
+            this.bCraftFlyingLink.Click += new System.EventHandler(this.bCraftFlyingLink_Click);
+            // 
+            // bCraftWikiLink
+            // 
+            this.bCraftWikiLink.BackColor = System.Drawing.Color.LightGray;
+            this.bCraftWikiLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bCraftWikiLink.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bCraftWikiLink.ForeColor = System.Drawing.Color.Black;
+            this.bCraftWikiLink.Location = new System.Drawing.Point(32, 3);
+            this.bCraftWikiLink.Name = "bCraftWikiLink";
+            this.bCraftWikiLink.Size = new System.Drawing.Size(23, 23);
+            this.bCraftWikiLink.TabIndex = 1;
+            this.bCraftWikiLink.Text = "W";
+            this.bCraftWikiLink.UseVisualStyleBackColor = false;
+            this.bCraftWikiLink.Click += new System.EventHandler(this.bCraftWikiLink_Click);
+            // 
+            // bCraftAirwarLink
+            // 
+            this.bCraftAirwarLink.BackColor = System.Drawing.Color.LightGray;
+            this.bCraftAirwarLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bCraftAirwarLink.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.bCraftAirwarLink.ForeColor = System.Drawing.Color.Black;
+            this.bCraftAirwarLink.Location = new System.Drawing.Point(3, 3);
+            this.bCraftAirwarLink.Name = "bCraftAirwarLink";
+            this.bCraftAirwarLink.Size = new System.Drawing.Size(23, 23);
+            this.bCraftAirwarLink.TabIndex = 0;
+            this.bCraftAirwarLink.Text = "A";
+            this.bCraftAirwarLink.UseVisualStyleBackColor = false;
+            this.bCraftAirwarLink.Click += new System.EventHandler(this.bCraftAirwarLink_Click);
             // 
             // panel4
             // 
@@ -524,6 +634,15 @@
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.lblWingsEngs);
+            this.panel5.Controls.Add(this.lblP);
+            this.panel5.Controls.Add(this.lbl1);
+            this.panel5.Controls.Add(this.lblL);
+            this.panel5.Controls.Add(this.lblG);
+            this.panel5.Controls.Add(this.lblU);
+            this.panel5.Controls.Add(this.lblV);
+            this.panel5.Controls.Add(this.lCraft2);
+            this.panel5.Controls.Add(this.lArt2);
             this.panel5.Controls.Add(this.lCraft);
             this.panel5.Controls.Add(this.lArt);
             this.panel5.Controls.Add(this.chPicSelCraft);
@@ -533,6 +652,99 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(786, 54);
             this.panel5.TabIndex = 0;
+            // 
+            // lblWingsEngs
+            // 
+            this.lblWingsEngs.AutoSize = true;
+            this.lblWingsEngs.Location = new System.Drawing.Point(220, 35);
+            this.lblWingsEngs.Name = "lblWingsEngs";
+            this.lblWingsEngs.Size = new System.Drawing.Size(12, 13);
+            this.lblWingsEngs.TabIndex = 12;
+            this.lblWingsEngs.Text = "/";
+            // 
+            // lblP
+            // 
+            this.lblP.AutoSize = true;
+            this.lblP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblP.ForeColor = System.Drawing.Color.Gray;
+            this.lblP.Location = new System.Drawing.Point(199, 35);
+            this.lblP.Name = "lblP";
+            this.lblP.Size = new System.Drawing.Size(15, 13);
+            this.lblP.TabIndex = 11;
+            this.lblP.Text = "P";
+            // 
+            // lbl1
+            // 
+            this.lbl1.AutoSize = true;
+            this.lbl1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lbl1.ForeColor = System.Drawing.Color.Gray;
+            this.lbl1.Location = new System.Drawing.Point(184, 35);
+            this.lbl1.Name = "lbl1";
+            this.lbl1.Size = new System.Drawing.Size(14, 13);
+            this.lbl1.TabIndex = 10;
+            this.lbl1.Text = "1";
+            // 
+            // lblL
+            // 
+            this.lblL.AutoSize = true;
+            this.lblL.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblL.ForeColor = System.Drawing.Color.Gray;
+            this.lblL.Location = new System.Drawing.Point(169, 35);
+            this.lblL.Name = "lblL";
+            this.lblL.Size = new System.Drawing.Size(14, 13);
+            this.lblL.TabIndex = 9;
+            this.lblL.Text = "L";
+            // 
+            // lblG
+            // 
+            this.lblG.AutoSize = true;
+            this.lblG.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblG.ForeColor = System.Drawing.Color.Gray;
+            this.lblG.Location = new System.Drawing.Point(154, 35);
+            this.lblG.Name = "lblG";
+            this.lblG.Size = new System.Drawing.Size(16, 13);
+            this.lblG.TabIndex = 8;
+            this.lblG.Text = "G";
+            // 
+            // lblU
+            // 
+            this.lblU.AutoSize = true;
+            this.lblU.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblU.ForeColor = System.Drawing.Color.Gray;
+            this.lblU.Location = new System.Drawing.Point(139, 35);
+            this.lblU.Name = "lblU";
+            this.lblU.Size = new System.Drawing.Size(16, 13);
+            this.lblU.TabIndex = 7;
+            this.lblU.Text = "U";
+            // 
+            // lblV
+            // 
+            this.lblV.AutoSize = true;
+            this.lblV.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lblV.ForeColor = System.Drawing.Color.Gray;
+            this.lblV.Location = new System.Drawing.Point(124, 35);
+            this.lblV.Name = "lblV";
+            this.lblV.Size = new System.Drawing.Size(15, 13);
+            this.lblV.TabIndex = 6;
+            this.lblV.Text = "V";
+            // 
+            // lCraft2
+            // 
+            this.lCraft2.AutoSize = true;
+            this.lCraft2.Location = new System.Drawing.Point(500, 17);
+            this.lCraft2.Name = "lCraft2";
+            this.lCraft2.Size = new System.Drawing.Size(10, 13);
+            this.lCraft2.TabIndex = 5;
+            this.lCraft2.Text = ".";
+            // 
+            // lArt2
+            // 
+            this.lArt2.AutoSize = true;
+            this.lArt2.Location = new System.Drawing.Point(500, 4);
+            this.lArt2.Name = "lArt2";
+            this.lArt2.Size = new System.Drawing.Size(10, 13);
+            this.lArt2.TabIndex = 4;
+            this.lArt2.Text = ".";
             // 
             // lCraft
             // 
@@ -593,7 +805,8 @@
             // miscToolStripMenuItem
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.calcWordsToolStripMenuItem});
+            this.calcWordsToolStripMenuItem,
+            this.focusToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -601,9 +814,44 @@
             // calcWordsToolStripMenuItem
             // 
             this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
-            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.calcWordsToolStripMenuItem.Text = "Calc words";
             this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
+            // 
+            // focusToolStripMenuItem
+            // 
+            this.focusToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuAlt1,
+            this.mnuAlt2,
+            this.mnuAlt3,
+            this.mnuPicsFillPath});
+            this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
+            this.focusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.focusToolStripMenuItem.Text = "Pics";
+            // 
+            // mnuAlt1
+            // 
+            this.mnuAlt1.Name = "mnuAlt1";
+            this.mnuAlt1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
+            this.mnuAlt1.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt1.Text = "Focus pics";
+            this.mnuAlt1.Click += new System.EventHandler(this.mnuAlt1_Click);
+            // 
+            // mnuAlt2
+            // 
+            this.mnuAlt2.Name = "mnuAlt2";
+            this.mnuAlt2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
+            this.mnuAlt2.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt2.Text = "Focus text";
+            this.mnuAlt2.Click += new System.EventHandler(this.mnuAlt2_Click);
+            // 
+            // mnuAlt3
+            // 
+            this.mnuAlt3.Name = "mnuAlt3";
+            this.mnuAlt3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
+            this.mnuAlt3.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt3.Text = "Focus links";
+            this.mnuAlt3.Click += new System.EventHandler(this.mnuAlt3_Click);
             // 
             // panel2
             // 
@@ -630,6 +878,14 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
+            // 
+            // mnuPicsFillPath
+            // 
+            this.mnuPicsFillPath.Name = "mnuPicsFillPath";
+            this.mnuPicsFillPath.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
+            this.mnuPicsFillPath.Size = new System.Drawing.Size(180, 22);
+            this.mnuPicsFillPath.Text = "Fill path";
+            this.mnuPicsFillPath.Click += new System.EventHandler(this.mnuPicsFillPath_Click);
             // 
             // Form1
             // 
@@ -658,6 +914,8 @@
             this.panel9.ResumeLayout(false);
             this.pCraftPic.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgCraftPic)).EndInit();
+            this.pCraftSeeAlso.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
             this.tabPagePics.ResumeLayout(false);
             this.pPicTable.ResumeLayout(false);
             this.panel10.ResumeLayout(false);
@@ -730,6 +988,27 @@
         private System.Windows.Forms.PictureBox picLinkImage;
         private System.Windows.Forms.PictureBox imgCraftPic;
         private System.Windows.Forms.HScrollBar sbCraftPics;
+        private System.Windows.Forms.Panel pCraftSeeAlso;
+        private System.Windows.Forms.Splitter splitter7;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button bCraftAirwarLink;
+        private System.Windows.Forms.Button bCraftFlyingLink;
+        private System.Windows.Forms.Button bCraftWikiLink;
+        private System.Windows.Forms.ListBox lstCraftSeeAlso;
+        private System.Windows.Forms.Label lCraft2;
+        private System.Windows.Forms.Label lArt2;
+        private System.Windows.Forms.Label lblP;
+        private System.Windows.Forms.Label lbl1;
+        private System.Windows.Forms.Label lblL;
+        private System.Windows.Forms.Label lblG;
+        private System.Windows.Forms.Label lblU;
+        private System.Windows.Forms.Label lblV;
+        private System.Windows.Forms.Label lblWingsEngs;
+        private System.Windows.Forms.ToolStripMenuItem focusToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuAlt1;
+        private System.Windows.Forms.ToolStripMenuItem mnuAlt2;
+        private System.Windows.Forms.ToolStripMenuItem mnuAlt3;
+        private System.Windows.Forms.ToolStripMenuItem mnuPicsFillPath;
     }
 }
 

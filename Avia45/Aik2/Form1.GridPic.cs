@@ -53,7 +53,7 @@ namespace Aik2
             var editStr100 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
             editStr100.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 100); };
 
-            gridPic.ColumnsCount = 13;
+            gridPic.ColumnsCount = 14;
 
             gridPic.RowsCount = 1;
             gridPic.FixedRows = 1;
@@ -75,18 +75,20 @@ namespace Aik2
             _editorsPic.Add(null);
             gridPic[0, 6] = new SourceGrid.Cells.ColumnHeader("Path");
             _editorsPic.Add(editStr50);
-            gridPic[0, 7] = new SourceGrid.Cells.ColumnHeader("Art");
-            _editorsPic.Add(_editArt);
-            gridPic[0, 8] = new SourceGrid.Cells.ColumnHeader("Craft");
-            _editorsPic.Add(_editCraft678);
-            gridPic[0, 9] = new SourceGrid.Cells.ColumnHeader("Grp");
-            _editorsPic.Add(editStr100);
-            gridPic[0, 10] = new SourceGrid.Cells.ColumnHeader("SText");
+            gridPic[0, 7] = new SourceGrid.Cells.ColumnHeader("Links");
             _editorsPic.Add(null);
-            gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("ArtId");
-            gridPic.Columns[11].Visible = false;
-            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic[0, 8] = new SourceGrid.Cells.ColumnHeader("Art");
+            _editorsPic.Add(_editArt);
+            gridPic[0, 9] = new SourceGrid.Cells.ColumnHeader("Craft");
+            _editorsPic.Add(_editCraft678);
+            gridPic[0, 10] = new SourceGrid.Cells.ColumnHeader("Grp");
+            _editorsPic.Add(editStr100);
+            gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("SText");
+            _editorsPic.Add(null);
+            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("ArtId");
             gridPic.Columns[12].Visible = false;
+            gridPic[0, 13] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic.Columns[13].Visible = false;
 
             for (var i = 1; i < gridPic.ColumnsCount; i++)
             {
@@ -166,7 +168,8 @@ namespace Aik2
                         focused = true;
                     }
                 }
-            } else
+            }
+            else
             {
                 gridPic.RowsCount = 2;
                 var Pic = new PicDto() { PicId = -1 };
@@ -222,6 +225,8 @@ namespace Aik2
         public void LoadLinks()
         {
             picLinkImage.Visible = false;
+            lArt2.Text = "";
+            lCraft2.Text = "";
 
             var LinksQry = _ctx.Links.AsQueryable();
 
@@ -286,22 +291,23 @@ namespace Aik2
             gridPic[r, 5].AddController(_gridPicController);
             gridPic[r, 6] = new SourceGrid.Cells.Cell(Pic.Path, _editorsPic[6]);
             gridPic[r, 6].AddController(_gridPicController);
+            gridPic[r, 7] = new SourceGrid.Cells.Cell(Pic.XType, _editorsPic[7]);
             var artName = "";
             var art = _arts.FirstOrDefault(x => x.Id == Pic.ArtId);
             if (art != null) artName = art.Name;
-            gridPic[r, 7] = new SourceGrid.Cells.Cell(artName, _editorsPic[7]);
-            gridPic[r, 7].AddController(_gridPicController);
+            gridPic[r, 8] = new SourceGrid.Cells.Cell(artName, _editorsPic[8]);
+            gridPic[r, 8].AddController(_gridPicController);
             var craftName = "";
             var craft = _crafts678.FirstOrDefault(x => x.Id == Pic.CraftId);
             if (craft != null) craftName = craft.Name;
-            gridPic[r, 8] = new SourceGrid.Cells.Cell(craftName, _editorsPic[8]);
-            gridPic[r, 8].AddController(_gridPicController);
-            gridPic[r, 9] = new SourceGrid.Cells.Cell(Pic.Grp, _editorsPic[9]);
+            gridPic[r, 9] = new SourceGrid.Cells.Cell(craftName, _editorsPic[9]);
             gridPic[r, 9].AddController(_gridPicController);
-            gridPic[r, 10] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[10]);
+            gridPic[r, 10] = new SourceGrid.Cells.Cell(Pic.Grp, _editorsPic[10]);
             gridPic[r, 10].AddController(_gridPicController);
-            gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.ArtId);
-            gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.CraftId);
+            gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[11]);
+            gridPic[r, 11].AddController(_gridPicController);
+            gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.ArtId);
+            gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
         }
 
@@ -460,44 +466,63 @@ namespace Aik2
                     ColorizeText(edPicText, false);
                     _picTextChanging = false;
                 }
-            }
 
-            LoadLinks();
 
-            _selectedPicCraftId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.CraftId].Value;
-            _selectedPicArtId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.ArtId].Value;
-            if (_searchMode && !_searchChanging)
-            {
-                _searchString = "";
-                lInfo.Text = $"Поиск: {_searchString}";
-            }
+                LoadLinks();
 
-            var art = Mapper.Map<ArtDto>(_ctx.Arts.FirstOrDefault(x => x.ArtId == _selectedPicArtId));
-            if (art != null) lArt.Text = art.FullName;
-
-            picPicImage.Visible = false;
-            try
-            {
-                var craft = _craftDtos.FirstOrDefault(x => x.CraftId == _selectedPicCraftId);
-                if (craft == null)
+                _selectedPicCraftId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.CraftId].Value;
+                _selectedPicArtId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.ArtId].Value;
+                if (_searchMode && !_searchChanging)
                 {
-                    craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.FirstOrDefault(x => x.CraftId == _selectedPicCraftId));
+                    _searchString = "";
+                    lInfo.Text = $"Поиск: {_searchString}";
                 }
-                if (craft != null)
-                {
-                    lCraft.Text = craft.FullName;
 
+                var art = Mapper.Map<ArtDto>(_ctx.Arts.FirstOrDefault(x => x.ArtId == _selectedPicArtId));
+                if (art != null) lArt.Text = art.FullName;
+
+                ShowPicImage();
+            }
+        }
+
+        private void ShowPicImage()
+        {
+            picPicImage.Visible = false;
+            lblV.ForeColor = Color.LightGray;
+            lblU.ForeColor = Color.LightGray;
+            lblG.ForeColor = Color.LightGray;
+            lblL.ForeColor = Color.LightGray;
+            lbl1.ForeColor = Color.LightGray;
+            lblP.ForeColor = Color.LightGray;
+            lblWingsEngs.Text = "";
+            var craft = _craftDtos.FirstOrDefault(x => x.CraftId == _selectedPicCraftId);
+            if (craft == null)
+            {
+                craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.FirstOrDefault(x => x.CraftId == _selectedPicCraftId));
+            }
+            if (craft != null)
+            {
+                lCraft.Text = craft.FullName;
+                lblV.ForeColor = craft.Vert ?? false ? Color.Black : Color.LightGray;
+                lblU.ForeColor = craft.Uav ?? false ? Color.Black : Color.LightGray;
+                lblG.ForeColor = craft.Glider ?? false ? Color.Black : Color.LightGray;
+                lblL.ForeColor = craft.LL ?? false ? Color.Black : Color.LightGray;
+                lbl1.ForeColor = craft.Single ?? false ? Color.Black : Color.LightGray;
+                lblP.ForeColor = craft.Proj ?? false ? Color.Black : Color.LightGray;
+                lblWingsEngs.Text = $"{craft.Wings} / {craft.Engines}";
+
+                try
+                {
                     var picPath = $"{_imagesPath}Images{craft.Source}\\{(string)gridPic[_picPosition.Row, Const.Columns.Pic.Path].Value}";
                     picPicImage.Load(picPath);
                     picPicImage.Visible = true;
                 }
-            }
-            catch
-            {
+                catch
+                {
 
+                }
             }
         }
-
 
         private void LinkCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)
         {
@@ -513,13 +538,20 @@ namespace Aik2
             picLinkImage.Visible = false;
             try
             {
-                var pic2 = _ctx.Pics.Single(x => x.PicId == link.Pict2);
+                var picId = link.Pict1 == _selectedPic.PicId ? link.Pict2 : link.Pict1;
+                var pic2 = _ctx.Pics.Single(x => x.PicId == picId);
                 var craft = _craftDtos.FirstOrDefault(x => x.CraftId == pic2.CraftId);
                 if (craft != null)
                 {
                     var picPath = $"{_imagesPath}Images{craft.Source}\\{pic2.Path}";
                     picLinkImage.Load(picPath);
                     picLinkImage.Visible = true;
+                    lCraft2.Text = craft.FullName;
+                }
+                var art = _artDtos.FirstOrDefault(x => x.ArtId == pic2.ArtId);
+                if (art != null)
+                {
+                    lArt2.Text = art.FullName;
                 }
             }
             catch
@@ -816,6 +848,59 @@ namespace Aik2
             }
         }
 
-    }
+        private void mnuAlt1_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 2)
+            {
+                gridPic.Focus();
+            }
+        }
 
+        private void mnuAlt2_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 2)
+            {
+                edPicText.Focus();
+            }
+        }
+
+        private void mnuAlt3_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 2)
+            {
+                gridLink.Focus();
+            }
+        }
+
+        private void mnuPicsFillPath_Click(object sender, EventArgs e)
+        {
+            if (_selectedPic != null)
+            {
+                var art = _artDtos.Single(x => x.ArtId == _selectedPic.ArtId);
+                string path;
+                if (art.Mag.Trim() == "AK")
+                {
+                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear}-{art.IMonth.Trim()}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
+                }
+                else if (art.Mag.Trim() == "FT")
+                {
+                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear}\\{art.IMonth.Trim()}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
+                }
+                else if (art.Mag.Trim() == "IN")
+                {
+                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}-{art.IYear}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
+                }
+                else
+                {
+                    int.TryParse(art.IMonth.Trim(), out int artMonth);
+                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear % 100}-{artMonth}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
+                }
+                _selectedPic.Path = path;
+                var pos = gridPic.Selection.ActivePosition;
+                gridPic[pos.Row, Const.Columns.Pic.Path].Value = path;
+
+                ShowPicImage();
+            }
+        }
+    }
 }

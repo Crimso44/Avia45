@@ -83,6 +83,10 @@ namespace Aik2
             {
                 pPicText.Height = int.Parse(_config["pPicTextHeight"]);
             }
+            if (_config.ContainsKey("pCraftSeeAlsoHeight"))
+            {
+                pCraftSeeAlso.Height = int.Parse(_config["pCraftSeeAlsoHeight"]);
+            }
             if (_config.ContainsKey("pPicImgHeight"))
             {
                 pPicImg.Height = int.Parse(_config["pPicImgHeight"]);

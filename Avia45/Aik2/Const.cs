@@ -69,12 +69,13 @@ namespace Aik2
                 public const int Type = 4;
                 public const int NType = 5;
                 public const int Path = 6;
-                public const int Art = 7;
-                public const int Craft = 8;
-                public const int Grp = 9;
-                public const int SText = 10;
-                public const int ArtId = 11;
-                public const int CraftId = 12;
+                public const int XType = 7;
+                public const int Art = 8;
+                public const int Craft = 9;
+                public const int Grp = 10;
+                public const int SText = 11;
+                public const int ArtId = 12;
+                public const int CraftId = 13;
             }
 
             public static class Link
