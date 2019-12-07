@@ -41,6 +41,7 @@ namespace Aik2
         private int _craftPicDtoIndex;
         private string _oldCraftText;
         private bool _craftTextChanging;
+        private bool _craftTextChanged;
 
         public void InitCraftGrid()
         {
@@ -297,31 +298,6 @@ namespace Aik2
             SetCraftRowColor(Craft, r);
         }
 
-        private void RefreshCraftFromGrid(CraftDto Craft, int r)
-        {
-            Craft.CraftId = (int)gridCraft[r, 0].Value;
-            Craft.Construct = (string)gridCraft[r, 1].Value;
-            Craft.Name = (string)gridCraft[r, 2].Value;
-            Craft.Country = (string)gridCraft[r, 3].Value;
-            Craft.IYear = (int?)gridCraft[r, 4].Value;
-            Craft.Vert = (bool)gridCraft[r, 5].Value;
-            Craft.Uav = (bool)gridCraft[r, 6].Value;
-            Craft.Glider = (bool)gridCraft[r, 7].Value;
-            Craft.LL = (bool)gridCraft[r, 8].Value;
-            Craft.Single = (bool)gridCraft[r, 9].Value;
-            Craft.Proj = (bool)gridCraft[r, 10].Value;
-            Craft.Wings = (string)gridCraft[r, 11].Value;
-            Craft.Engines = (string)gridCraft[r, 12].Value;
-            Craft.Source = (string)gridCraft[r, 13].Value;
-            Craft.Type = (string)gridCraft[r, 14].Value;
-            Craft.Wiki = (string)gridCraft[r, 17].Value;
-            Craft.Airwar = (string)gridCraft[r, 18].Value;
-            Craft.SeeAlso = (int?)gridCraft[r, 21].Value;
-            Craft.FlyingM = (int?)gridCraft[r, 22].Value;
-            Craft.Same = (int?)gridCraft[r, 23].Value;
-        }
-
-
         private void SetCraftRowColor(CraftDto Craft, int r)
         {
             var view = _normCraftCellView;
@@ -372,17 +348,32 @@ namespace Aik2
 
         }
 
-        public string GetCraftFullName(int row)
+        public CraftDto GetCraftFromTable(int r)
         {
             var craft = new CraftDto()
             {
-                Construct = (string)gridCraft[row, Const.Columns.Craft.Construct].Value,
-                Name = (string)gridCraft[row, Const.Columns.Craft.Name].Value,
-                Source = (string)gridCraft[row, Const.Columns.Craft.Source].Value,
-                IYear = (int?)gridCraft[row, Const.Columns.Craft.IYear].Value,
-                Country = (string)gridCraft[row, Const.Columns.Craft.Country].Value
+                CraftId = (int)gridCraft[r, 0].Value,
+                Construct = (string)gridCraft[r, 1].Value,
+                Name = (string)gridCraft[r, 2].Value,
+                Country = (string)gridCraft[r, 3].Value,
+                IYear = (int?)gridCraft[r, 4].Value,
+                Vert = (bool)gridCraft[r, 5].Value,
+                Uav = (bool)gridCraft[r, 6].Value,
+                Glider = (bool)gridCraft[r, 7].Value,
+                LL = (bool)gridCraft[r, 8].Value,
+                Single = (bool)gridCraft[r, 9].Value,
+                Proj = (bool)gridCraft[r, 10].Value,
+                Wings = (string)gridCraft[r, 11].Value,
+                Engines = (string)gridCraft[r, 12].Value,
+                Source = (string)gridCraft[r, 13].Value,
+                Type = (string)gridCraft[r, 14].Value,
+                Wiki = (string)gridCraft[r, 17].Value,
+                Airwar = (string)gridCraft[r, 18].Value,
+                SeeAlso = (int?)gridCraft[r, 21].Value,
+                FlyingM = (int?)gridCraft[r, 22].Value,
+                Same = (int?)gridCraft[r, 23].Value
             };
-            return craft.FullName;
+            return craft;
         }
 
         private class GridCraftSelection : SourceGrid.Selection.FreeSelection
@@ -401,7 +392,7 @@ namespace Aik2
 
             public override void OnEditStarted(SourceGrid.CellContext sender, EventArgs e)
             {
-                _form._editingCraftFullName = _form.GetCraftFullName(sender.Position.Row);
+                _form._editingCraftFullName = _form.gridCraft[sender.Position.Row, Const.Columns.Craft.FullName].DisplayText;
                 base.OnEditStarted(sender, e);
                 _form.SearchModeOff();
                 if (sender.Position.Column == Const.Columns.Craft.SeeAlso || sender.Position.Column == Const.Columns.Craft.Same)
@@ -422,7 +413,6 @@ namespace Aik2
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
                 var val = (string)cell.DisplayText;
 
-
                 switch (sender.Position.Column)
                 {
                     case Const.Columns.Craft.SeeAlso:
@@ -437,43 +427,57 @@ namespace Aik2
                         _form.gridCraft[row, Const.Columns.Craft.FlyingMId].Value = string.IsNullOrEmpty(val) ? null :
                             _form._crafts7.SingleOrDefault(x => x.Name == val)?.Id;
                         break;
-                    default:
-                        var newCraft = new Pair<int>()
-                        {
-                            Id = (int)_form.gridCraft[row, Const.Columns.Craft.CraftId].Value,
-                            Name = _form.GetCraftFullName(row)
-                        };
-
-                        if (newCraft.Name != _form._editingCraftFullName)
-                        {
-                            var isRefresh = false;
-                            _form.gridCraft[row, Const.Columns.Craft.FullName].Value = newCraft.Name;
-                            var craft = _form._crafts.FirstOrDefault(x => x.Id == newCraft.Id);
-                            if (craft != null) _form._crafts.Remove(craft);
-                            craft = _form._crafts6.FirstOrDefault(x => x.Id == newCraft.Id);
-                            if (craft != null) { _form._crafts6.Remove(craft); isRefresh = true; }
-                            craft = _form._crafts7.FirstOrDefault(x => x.Id == newCraft.Id);
-                            if (craft != null) { _form._crafts7.Remove(craft); isRefresh = true; }
-                            var source = (string)_form.gridCraft[row, Const.Columns.Craft.Source].Value;
-                            var list = source == "6" ? _form._crafts6 : source == "7" ? _form._crafts7 : null;
-                            if (list != null)
-                            {
-                                list.InsertCraftSorted(newCraft);
-                                isRefresh = true;
-                            }
-                            if (isRefresh)
-                            {
-                                _form._editCraft6.Control.Items.Clear();
-                                _form._editCraft6.Control.Items.AddRange(_form._crafts6.Select(x => x.Name).ToArray());
-
-                                _form._editCraft7.Control.Items.Clear();
-                                _form._editCraft7.Control.Items.AddRange(_form._crafts7.Select(x => x.Name).ToArray());
-                            }
-                        }
-                        break;
                 }
 
-                _form.RefreshCraftFromGrid(_form._selectedCraft, row);
+                var craftDto = _form.GetCraftFromTable(row);
+                if (craftDto.CraftId == 0)
+                {
+                    var entity = Mapper.Map<Crafts>(craftDto);
+                    _form._ctx.Crafts.Add(entity);
+                    _form._ctx.SaveChanges();
+                    craftDto.CraftId = entity.CraftId;
+                    _form.gridCraft[row, Const.Columns.Craft.CraftId].Value = entity.CraftId;
+                } else
+                {
+                    var entity = _form._ctx.Crafts.Single(x => x.CraftId == craftDto.CraftId);
+                    Mapper.Map(craftDto, entity);
+                    _form._ctx.SaveChanges();
+                }
+                _form._selectedCraft = craftDto;
+                _form._craftDtos[row - 1] = craftDto;
+                var newCraft = new Pair<int>()
+                {
+                    Id = (int)_form.gridCraft[row, Const.Columns.Craft.CraftId].Value,
+                    Name = craftDto.FullName
+                };
+
+                if (newCraft.Name != _form._editingCraftFullName)
+                {
+                    var isRefresh = false;
+                    _form.gridCraft[row, Const.Columns.Craft.FullName].Value = newCraft.Name;
+                    var craft = _form._crafts.FirstOrDefault(x => x.Id == newCraft.Id);
+                    if (craft != null) _form._crafts.Remove(craft);
+                    craft = _form._crafts6.FirstOrDefault(x => x.Id == newCraft.Id);
+                    if (craft != null) { _form._crafts6.Remove(craft); isRefresh = true; }
+                    craft = _form._crafts7.FirstOrDefault(x => x.Id == newCraft.Id);
+                    if (craft != null) { _form._crafts7.Remove(craft); isRefresh = true; }
+                    var source = (string)_form.gridCraft[row, Const.Columns.Craft.Source].Value;
+                    var list = source == "6" ? _form._crafts6 : source == "7" ? _form._crafts7 : null;
+                    if (list != null)
+                    {
+                        list.InsertCraftSorted(newCraft);
+                        isRefresh = true;
+                    }
+                    if (isRefresh)
+                    {
+                        _form._editCraft6.Control.Items.Clear();
+                        _form._editCraft6.Control.Items.AddRange(_form._crafts6.Select(x => x.Name).ToArray());
+
+                        _form._editCraft7.Control.Items.Clear();
+                        _form._editCraft7.Control.Items.AddRange(_form._crafts7.Select(x => x.Name).ToArray());
+                    }
+                }
+
                 _form.SetCraftRowColor(_form._selectedCraft, row);
 
                 int[] sortIndexes;
@@ -555,99 +559,131 @@ namespace Aik2
             _craftPosition = e.NewFocusPosition;
             var craft = _craftDtos[_craftPosition.Row - 1];
             lCraft.Text = craft.FullName;
-            if (craft.CraftId > 0 && 
-                (_selectedCraft == null || _selectedCraft.CraftId != craft.CraftId))
+
+            if (_selectedCraft == null || _selectedCraft.CraftId != craft.CraftId)
             {
+                if (_selectedCraft != null && _craftTextChanged)
+                {
+                    var craftOld = _ctx.Crafts.SingleOrDefault(x => x.CraftId == _selectedCraft.CraftId);
+                    if (craftOld != null)
+                    {
+                        craftOld.CText = _oldCraftText;
+                        _ctx.SaveChanges();
+
+                        _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where CraftId ={craftOld.CraftId}");
+                        var wordsList = GetWords(_oldCraftText, true);
+                        foreach (var word in wordsList)
+                        {
+                            _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, CraftId) Values ({word.Id}, {craftOld.CraftId})");
+                        }
+                        _ctx.Database.ExecuteSqlCommand($"delete from Words where Cnt = 0");
+                    }
+                    _craftTextChanging = true;
+                    edCraftText.Text = "";
+                    _oldCraftText = edCraftText.Text;
+                    _craftTextChanging = false;
+                    _craftTextChanged = false;
+                }
+
                 _selectedCraft = craft;
                 _craftTextChanging = true;
-                edCraftText.Text = _ctx.Crafts.Single(x => x.CraftId == craft.CraftId).CText;
-                _oldCraftText = edCraftText.Text;
-                ColorizeText(edCraftText, true);
-                _craftTextChanging = false;
+                var craftText = _ctx.Crafts.SingleOrDefault(x => x.CraftId == craft.CraftId);
+                if (craftText != null)
+                {
+                    edCraftText.Text = craftText.CText;
+                    _oldCraftText = edCraftText.Text;
+                    ColorizeText(edCraftText, true);
+                    _craftTextChanging = false;
+                    _craftTextChanged = false;
+                }
 
-                _craftPicDtos = _ctx.vwPics.Where(x => x.CraftId == craft.CraftId).OrderBy(x => x.NType).ThenBy(x => x.NNN)
+                if (craft.CraftId > 0)
+                {
+                    _craftPicDtos = _ctx.vwPics.Where(x => x.CraftId == craft.CraftId).OrderBy(x => x.NType).ThenBy(x => x.NNN)
                     .Select(Mapper.Map<PicDto>).ToList();
-                if (_craftPicDtos.Any())
-                {
-                    imgCraftPic.Visible = true;
-                    sbCraftPics.Visible = false;
-                    sbCraftPics.Value = 0;
-                    _craftPicDtoIndex = 0;
-                    if (_craftPicDtos.Count > 1)
+                    if (_craftPicDtos.Any())
                     {
-                        sbCraftPics.Maximum = _craftPicDtos.Count - 1;
-                        while (_craftPicDtoIndex < _craftPicDtos.Count && _craftPicDtos[_craftPicDtoIndex].Type?.Trim() == "s")
-                            _craftPicDtoIndex++;
-                        if (_craftPicDtoIndex >= _craftPicDtos.Count)
-                            _craftPicDtoIndex = 0;
-                        sbCraftPics.Value = _craftPicDtoIndex;
-                        sbCraftPics.Visible = true;
+                        imgCraftPic.Visible = true;
+                        sbCraftPics.Visible = false;
+                        sbCraftPics.Value = 0;
+                        _craftPicDtoIndex = 0;
+                        if (_craftPicDtos.Count > 1)
+                        {
+                            sbCraftPics.Maximum = _craftPicDtos.Count - 1;
+                            while (_craftPicDtoIndex < _craftPicDtos.Count && _craftPicDtos[_craftPicDtoIndex].Type?.Trim() == "s")
+                                _craftPicDtoIndex++;
+                            if (_craftPicDtoIndex >= _craftPicDtos.Count)
+                                _craftPicDtoIndex = 0;
+                            sbCraftPics.Value = _craftPicDtoIndex;
+                            sbCraftPics.Visible = true;
+                        }
+                        ShowCraftPic();
                     }
-                    ShowCraftPic();
-                }
-                else
-                {
-                    imgCraftPic.Visible = false;
-                    sbCraftPics.Visible = false;
-                    _craftPicDtoIndex = -1;
-                }
+                    else
+                    {
+                        imgCraftPic.Visible = false;
+                        sbCraftPics.Visible = false;
+                        _craftPicDtoIndex = -1;
+                    }
 
-                if (string.IsNullOrEmpty(_selectedCraft.Airwar))
-                {
-                    bCraftAirwarLink.Enabled = false;
-                    bCraftAirwarLink.ForeColor = Color.Gray;
-                    bCraftAirwarLink.BackColor = Color.White;
-                } else
-                {
-                    bCraftAirwarLink.Enabled = true;
-                    bCraftAirwarLink.ForeColor = Color.Black;
-                    bCraftAirwarLink.BackColor = Color.LightGray;
-                }
-                if (string.IsNullOrEmpty(_selectedCraft.Wiki))
-                {
-                    bCraftWikiLink.Enabled = false;
-                    bCraftWikiLink.ForeColor = Color.Gray;
-                    bCraftWikiLink.BackColor = Color.White;
-                }
-                else
-                {
-                    bCraftWikiLink.Enabled = true;
-                    bCraftWikiLink.ForeColor = Color.Black;
-                    bCraftWikiLink.BackColor = Color.LightGray;
-                }
-                if (!_selectedCraft.FlyingM.HasValue)
-                {
-                    bCraftFlyingLink.Enabled = false;
-                    bCraftFlyingLink.ForeColor = Color.Gray;
-                    bCraftFlyingLink.BackColor = Color.White;
-                }
-                else
-                {
-                    bCraftFlyingLink.Enabled = true;
-                    bCraftFlyingLink.ForeColor = Color.Black;
-                    bCraftFlyingLink.BackColor = Color.LightGray;
-                }
+                    if (string.IsNullOrEmpty(_selectedCraft.Airwar))
+                    {
+                        bCraftAirwarLink.Enabled = false;
+                        bCraftAirwarLink.ForeColor = Color.Gray;
+                        bCraftAirwarLink.BackColor = Color.White;
+                    }
+                    else
+                    {
+                        bCraftAirwarLink.Enabled = true;
+                        bCraftAirwarLink.ForeColor = Color.Black;
+                        bCraftAirwarLink.BackColor = Color.LightGray;
+                    }
+                    if (string.IsNullOrEmpty(_selectedCraft.Wiki))
+                    {
+                        bCraftWikiLink.Enabled = false;
+                        bCraftWikiLink.ForeColor = Color.Gray;
+                        bCraftWikiLink.BackColor = Color.White;
+                    }
+                    else
+                    {
+                        bCraftWikiLink.Enabled = true;
+                        bCraftWikiLink.ForeColor = Color.Black;
+                        bCraftWikiLink.BackColor = Color.LightGray;
+                    }
+                    if (!_selectedCraft.FlyingM.HasValue)
+                    {
+                        bCraftFlyingLink.Enabled = false;
+                        bCraftFlyingLink.ForeColor = Color.Gray;
+                        bCraftFlyingLink.BackColor = Color.White;
+                    }
+                    else
+                    {
+                        bCraftFlyingLink.Enabled = true;
+                        bCraftFlyingLink.ForeColor = Color.Black;
+                        bCraftFlyingLink.BackColor = Color.LightGray;
+                    }
 
-                lstCraftSeeAlso.Items.Clear();
-                if (_selectedCraft.SeeAlso.HasValue)
-                {
-                    var crft = _selectedCraft;
-                    var crafts = new List<CraftDto>() { craft };
-                    while(crft.SeeAlso.HasValue && !crafts.Any(x => x.CraftId == crft.SeeAlso))
+                    lstCraftSeeAlso.Items.Clear();
+                    if (_selectedCraft.SeeAlso.HasValue)
                     {
-                        crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == crft.SeeAlso));
-                        crafts.Add(crft);
+                        var crft = _selectedCraft;
+                        var crafts = new List<CraftDto>() { craft };
+                        while (crft.SeeAlso.HasValue && !crafts.Any(x => x.CraftId == crft.SeeAlso))
+                        {
+                            crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == crft.SeeAlso));
+                            crafts.Add(crft);
+                        }
+                        var isOk = crafts.First().CraftId == crafts.Last().SeeAlso;
+                        crafts.Sort((f1, f2) =>
+                        {
+                            return (f1.IYear ?? 0).CompareTo(f2.IYear ?? 0);
+                        });
+                        foreach (var c in crafts)
+                        {
+                            lstCraftSeeAlso.Items.Add(new Pair<int>() { Id = c.CraftId, Name = c.FullName });
+                        }
+                        lstCraftSeeAlso.ForeColor = isOk ? Color.Black : Color.Red;
                     }
-                    var isOk = crafts.First().CraftId == crafts.Last().SeeAlso;
-                    crafts.Sort((f1, f2) =>
-                    {
-                        return (f1.IYear ?? 0).CompareTo(f2.IYear ?? 0);
-                    });
-                    foreach(var c in crafts)
-                    {
-                        lstCraftSeeAlso.Items.Add(new Pair<int>() { Id = c.CraftId, Name = c.FullName });
-                    }
-                    lstCraftSeeAlso.ForeColor = isOk ? Color.Black : Color.Red;
                 }
             }
             if (_searchMode && !_searchChanging)
@@ -741,6 +777,13 @@ namespace Aik2
                         if (MessageBox.Show("Delete pic?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             var craftId = (int)gridCraft[pos.Row, Const.Columns.Craft.CraftId].Value;
+                            if (craftId > 0)
+                            {
+                                var entity = _ctx.Crafts.Single(x => x.CraftId == craftId);
+                                _ctx.Crafts.Remove(entity);
+                                _ctx.SaveChanges();
+                            }
+
                             var craft = _crafts.FirstOrDefault(x => x.Id == craftId);
                             if (craft != null) _crafts.Remove(craft);
                             craft = _crafts6.FirstOrDefault(x => x.Id == craftId);
@@ -802,6 +845,7 @@ namespace Aik2
         private void edCraftText_TextChanged(object sender, EventArgs e)
         {
             if (_craftTextChanging) return;
+            _craftTextChanging = true;
 
             var selStart = edCraftText.SelectionStart;
             var selLength = edCraftText.SelectionLength;
@@ -825,7 +869,7 @@ namespace Aik2
                 while (j < oldTextRev.Length && j < newTextRev.Length && oldTextRev[j] == newTextRev[j]) j++;
                 if (j > 0) j--;
                 while (j > 0 && (Char.IsLetterOrDigit(newTextRev[j]) || newTextRev[j] == '-')) j--;
-                j = newText.Length - j - 1;
+                j = newText.Length - j;
 
                 if (i < j) changed = newText.Substring(i, j - i);
 
@@ -858,6 +902,8 @@ namespace Aik2
             }
 
             _oldCraftText = newText;
+            _craftTextChanging = false;
+            _craftTextChanged = true;
         }
 
         private void pCraftPic_Resize(object sender, EventArgs e)

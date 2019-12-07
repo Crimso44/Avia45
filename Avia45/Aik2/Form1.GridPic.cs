@@ -30,6 +30,7 @@ namespace Aik2
         private int? _selectedPicCraftId = null;
         private string _oldPicText;
         private bool _picTextChanging;
+        private bool _picTextChanged;
         private List<PicDto> _pics;
         private List<LinkDto> _links;
         private int? _lockedPicId = null;
@@ -328,6 +329,24 @@ namespace Aik2
         }
 
 
+        public PicDto GetPicFromTable(int r)
+        {
+            var pic = new PicDto()
+            {
+                PicId = (int)gridPic[r, 0].Value,
+                XPage = (string)gridPic[r, 1].Value,
+                NN = (string)gridPic[r, 2].Value,
+                NNN = (int?)gridPic[r, 3].Value,
+                Type = (string)gridPic[r, 4].Value,
+                NType = (int?)gridPic[r, 5].Value,
+                Path = (string)gridPic[r, 6].Value,
+                Grp = (string)gridPic[r, 10].Value,
+                ArtId = (int)gridPic[r, 12].Value,
+                CraftId = (int)gridPic[r, 13].Value
+            };
+            return pic;
+        }
+
         private class GridPicController : SourceGrid.Cells.Controllers.ControllerBase
         {
             private readonly Form1 _form;
@@ -373,7 +392,28 @@ namespace Aik2
                     case Const.Columns.Pic.Type:
                         _form.gridPic[row, Const.Columns.Pic.NType].Value = _form.GetNType(val);
                         break;
+                    case Const.Columns.Pic.Path:
+                        _form.ShowPicImage();
+                        break;
                 }
+
+                var picDto = _form.GetPicFromTable(row);
+                if (picDto.PicId == 0)
+                {
+                    var entity = Mapper.Map<Pics>(picDto);
+                    _form._ctx.Pics.Add(entity);
+                    _form._ctx.SaveChanges();
+                    picDto.PicId = entity.PicId;
+                    _form.gridPic[row, Const.Columns.Pic.PicId].Value = entity.PicId;
+                }
+                else
+                {
+                    var entity = _form._ctx.Pics.Single(x => x.PicId == picDto.PicId);
+                    Mapper.Map(picDto, entity);
+                    _form._ctx.SaveChanges();
+                }
+                _form._selectedPic = picDto;
+                _form._pics[row - 1] = picDto;
 
                 var sortIndexes = new int[] { Const.Columns.Pic.NType, Const.Columns.Pic.NNN };
                 var sortXIndexes = new int[] { Const.Columns.Pic.Type, Const.Columns.Pic.NType, Const.Columns.Pic.NNN };
@@ -450,21 +490,46 @@ namespace Aik2
 
         private void PicCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)
         {
+
             _picPosition = e.NewFocusPosition;
             var pic = _pics[_picPosition.Row - 1];
             if (pic.PicId == -1) return;
 
             if (_selectedPic == null || _selectedPic.PicId != pic.PicId)
             {
+                if (_selectedPic != null && _picTextChanged)
+                {
+                    var picOld = _ctx.Pics.SingleOrDefault(x => x.PicId == _selectedPic.PicId);
+                    if (picOld != null)
+                    {
+                        picOld.Text = _oldPicText;
+                        _ctx.SaveChanges();
+
+                        _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where PicId ={picOld.PicId}");
+                        var wordsList = GetWords(_oldPicText, true);
+                        foreach (var word in wordsList)
+                        {
+                            _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, PicId) Values ({word.Id}, {picOld.PicId})");
+                        }
+                        _ctx.Database.ExecuteSqlCommand($"delete from Words where Cnt = 0");
+                    }
+                    _picTextChanging = true;
+                    edPicText.Text = "";
+                    _oldPicText = edPicText.Text;
+                    _picTextChanging = false;
+                    _picTextChanged = false;
+                }
+
                 var picText = _ctx.Pics.SingleOrDefault(x => x.PicId == pic.PicId);
                 if (picText != null)
                 {
                     _selectedPic = pic;
                     _picTextChanging = true;
-                    edPicText.Text = _ctx.Pics.SingleOrDefault(x => x.PicId == pic.PicId).Text;
+                    edPicText.Text = picText.Text;
                     _oldPicText = edPicText.Text;
                     ColorizeText(edPicText, false);
                     _picTextChanging = false;
+                    _picTextChanged = false;
                 }
 
 
@@ -672,8 +737,29 @@ namespace Aik2
                     {
                         if (MessageBox.Show("Delete pic?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
+                            var pic = _pics[pos.Row - 1];
+                            if (pic.PicId > 0)
+                            {
+                                var entity = _ctx.Pics.Single(x => x.PicId == pic.PicId);
+                                _ctx.Pics.Remove(entity);
+                                _ctx.SaveChanges();
+                            }
                             gridPic.Rows.Remove(pos.Row);
                             _pics.RemoveAt(pos.Row - 1);
+                            if (_pics.Count == 0)
+                            {
+                                gridPic.RowsCount = 2;
+                                var Pic = new PicDto() { PicId = -1 };
+                                _pics.Add(Pic);
+                                UpdatePicRow(Pic, 1);
+                            }
+                            else
+                            {
+                                var row = pos.Row < gridPic.RowsCount ? pos.Row : gridPic.RowsCount - 1;
+                                var focusPosn = new Position(row, _picPosition.Column);
+                                gridPic.Selection.Focus(focusPosn, true);
+                                ShowPicImage();
+                            }
                         }
                     }
                     else if (_searchMode)
@@ -746,6 +832,7 @@ namespace Aik2
         private void edPicText_TextChanged(object sender, EventArgs e)
         {
             if (_picTextChanging) return;
+            _picTextChanging = true;
 
             var selStart = edPicText.SelectionStart;
             var selLength = edPicText.SelectionLength;
@@ -769,7 +856,7 @@ namespace Aik2
                 while (j < oldTextRev.Length && j < newTextRev.Length && oldTextRev[j] == newTextRev[j]) j++;
                 if (j > 0) j--;
                 while (j > 0 && (Char.IsLetterOrDigit(newTextRev[j]) || newTextRev[j] == '-')) j--;
-                j = newText.Length - j - 1;
+                j = newText.Length - j;
 
                 if (i < j) changed = newText.Substring(i, j - i);
 
@@ -803,6 +890,8 @@ namespace Aik2
             }
 
             _oldPicText = newText;
+            _picTextChanging = false;
+            _picTextChanged = true;
         }
 
         private int GetNType(string type)

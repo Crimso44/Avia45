@@ -161,17 +161,18 @@ namespace Aik2
             gridArt[r, 8] = new SourceGrid.Cells.Cell(art.FullName, _editorsArt[8]);
         }
 
-        public string GetArtFullName(int row)
+        public ArtDto GetArtFromTable(int row)
         {
             var art = new ArtDto()
             {
+                ArtId = (int)gridArt[row, Const.Columns.Art.ArtId].Value,
                 Mag = (string)gridArt[row, Const.Columns.Art.Mag].Value,
                 IYear = (int?)gridArt[row, Const.Columns.Art.IYear].Value,
                 IMonth = (string)gridArt[row, Const.Columns.Art.IMonth].Value,
                 Author = (string)gridArt[row, Const.Columns.Art.Author].Value,
                 Name = (string)gridArt[row, Const.Columns.Art.Name].Value
             };
-            return art.FullName;
+            return art;
         }
 
         private class GridArtController : SourceGrid.Cells.Controllers.ControllerBase
@@ -195,8 +196,9 @@ namespace Aik2
 
                 int row = sender.Position.Row;
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
-                string val = (string)cell.DisplayText;
-                _form.gridArt[row, Const.Columns.Art.FullName].Value = _form.GetArtFullName(row);
+                var art = _form.GetArtFromTable(row);
+                _form.UpdateArtEntity(art, row);
+                _form.gridArt[row, Const.Columns.Art.FullName].Value = art.FullName;
 
                 int[] sortIndexes;
                 if (_form.chArtSortAuthor.Checked)
@@ -255,6 +257,27 @@ namespace Aik2
                 }
 
             }
+        }
+
+        private void UpdateArtEntity(ArtDto art, int row)
+        {
+            if (art.ArtId == 0)
+            {
+                var entity = Mapper.Map<Arts>(art);
+                _ctx.Arts.Add(entity);
+                _ctx.SaveChanges();
+                art.ArtId = entity.ArtId;
+                gridArt[row, Const.Columns.Art.ArtId].Value = entity.ArtId;
+            }
+            else
+            {
+                var entity = _ctx.Arts.Single(x => x.ArtId == art.ArtId);
+                Mapper.Map(art, entity);
+                _ctx.SaveChanges();
+            }
+
+            _selectedArt = art;
+            _artDtos[row - 1] = art;
         }
 
         private void SelectArt(int? artId)
@@ -365,6 +388,13 @@ namespace Aik2
                     {
                         if (MessageBox.Show("Delete art?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
+                            var art = _artDtos[pos.Row - 1];
+                            if (art.ArtId > 0)
+                            {
+                                var entity = _ctx.Arts.Single(x => x.ArtId == art.ArtId);
+                                _ctx.Arts.Remove(entity);
+                                _ctx.SaveChanges();
+                            }
                             gridArt.Rows.Remove(pos.Row);
                             _artDtos.RemoveAt(pos.Row - 1);
                         }
