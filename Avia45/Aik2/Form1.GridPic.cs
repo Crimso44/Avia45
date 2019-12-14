@@ -1209,15 +1209,5 @@ namespace Aik2
             LoadPics(false);
         }
 
-        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            StoreEditedPicText();
-            LoadPics(false);
-            edPicText.SelectionStart = 0;
-            edPicText.SelectionLength = edPicText.TextLength;
-            edPicText.SelectionFont = new Font(edPicText.SelectionFont, FontStyle.Regular);
-            edPicText.SelectionColor = Color.Black;
-            edPicText.SelectionBackColor = Color.White;
-        }
     }
 }

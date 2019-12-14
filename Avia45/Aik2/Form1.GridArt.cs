@@ -22,6 +22,9 @@ namespace Aik2
         private GridArtController _gridArtController = null;
         private List<Pair<int>> _arts;
         private List<ArtDto> _artDtos;
+        private List<int> _filteredMags;
+        private List<int> _filteredMagCrafts;
+        private int _filteredArtId = -1;
         private SourceGrid.Cells.Editors.ComboBox _editArt;
         private ArtDto _selectedArt = null;
 

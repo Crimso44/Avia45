@@ -597,5 +597,31 @@ namespace Aik2
             }
             frep.ShowDialog(this);
         }
+
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switch (tabControl1.SelectedIndex)
+            {
+                case 1:
+                    StoreEditedCraftText();
+                    LoadCrafts();
+                    edCraftText.SelectionStart = 0;
+                    edCraftText.SelectionLength = edCraftText.TextLength;
+                    edCraftText.SelectionFont = new Font(edCraftText.SelectionFont, FontStyle.Regular);
+                    edCraftText.SelectionColor = Color.Black;
+                    edCraftText.SelectionBackColor = Color.White;
+                    break;
+                case 2:
+                    StoreEditedPicText();
+                    LoadPics(false);
+                    edPicText.SelectionStart = 0;
+                    edPicText.SelectionLength = edPicText.TextLength;
+                    edPicText.SelectionFont = new Font(edPicText.SelectionFont, FontStyle.Regular);
+                    edPicText.SelectionColor = Color.Black;
+                    edPicText.SelectionBackColor = Color.White;
+                    break;
+            }
+        }
+
     }
 }

@@ -172,6 +172,15 @@ namespace Aik2
         public void LoadCrafts()
         {
             var CraftsQry = _ctx.vwCrafts.AsNoTracking().AsQueryable();
+
+            _filteredMags = null;
+            _filteredArtId = -1;
+            if (chFilterCraftsByMag.Checked && _selectedArt != null)
+            {
+                if (_filteredArtId != _selectedArt.ArtId) LoadFilteredMags();
+                CraftsQry = CraftsQry.Where(x => _filteredMagCrafts.Contains(x.CraftId));
+            }
+
             CraftsQry = CraftsQry.OrderBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name);
             /*if (chCraftSortAuthor.Checked)
                 CraftsQry = CraftsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth);
@@ -564,13 +573,8 @@ namespace Aik2
             DoCraftCellGotFocus(e.NewFocusPosition);
         }
 
-        private void DoCraftCellGotFocus(Position pos)
+        private void StoreEditedCraftText()
         {
-            _craftPosition = pos;
-            _needLoadCraft = false;
-            var craft = _craftDtos[_craftPosition.Row - 1];
-            lCraft.Text = craft.FullName;
-
             if (_selectedCraft != null && _craftTextChanged)
             {
                 var craftOld = _ctx.Crafts.SingleOrDefault(x => x.CraftId == _selectedCraft.CraftId);
@@ -588,6 +592,17 @@ namespace Aik2
                     _ctx.Database.ExecuteSqlCommand($"delete from Words where Cnt = 0");
                 }
             }
+        }
+
+        private void DoCraftCellGotFocus(Position pos)
+        {
+            _craftPosition = pos;
+            _needLoadCraft = false;
+            var craft = _craftDtos[_craftPosition.Row - 1];
+            lCraft.Text = craft.FullName;
+
+            StoreEditedCraftText();
+
             if (_selectedCraft == null || _selectedCraft.CraftId != craft.CraftId)
             {
                 _craftTextChanging = true;
@@ -608,15 +623,20 @@ namespace Aik2
                 {
                     edCraftText.Text = craftText.CText;
                     _oldCraftText = edCraftText.Text;
-                    ColorizeText(edCraftText, true);
+                    if (!chFilterCraftsByMag.Checked) ColorizeText(edCraftText, true);
                     _craftTextChanging = false;
                     _craftTextChanged = false;
                 }
 
                 if (craft.CraftId > 0)
                 {
-                    _craftPicDtos = _ctx.vwPics.AsNoTracking().Where(x => x.CraftId == craft.CraftId).OrderBy(x => x.NType).ThenBy(x => x.NNN)
-                    .Select(Mapper.Map<PicDto>).ToList();
+                    var picQry = _ctx.vwPics.AsNoTracking().Where(x => x.CraftId == craft.CraftId);
+                    if (chFilterCraftsByMag.Checked && _filteredMags != null)
+                    {
+                        picQry = picQry.Where(x => _filteredMags.Contains(x.ArtId));
+                    }
+                    _craftPicDtos = picQry.OrderBy(x => x.NType).ThenBy(x => x.NNN)
+                        .Select(Mapper.Map<PicDto>).ToList();
                     if (_craftPicDtos.Any())
                     {
                         imgCraftPic.Visible = true;
@@ -992,6 +1012,7 @@ namespace Aik2
 
         private void ShowCraftPic()
         {
+            lCraftPicNum.Text = $"{_craftPicDtoIndex + 1}/{_craftPicDtos.Count}";
             try
             {
                 var picPath = $"{_imagesPath}Images{_selectedCraft.Source}\\{_craftPicDtos[_craftPicDtoIndex].Path}";
@@ -1025,6 +1046,60 @@ namespace Aik2
             {
                 SelectCraft(item.Id);
             }
+        }
+
+        private void nextCraftInMagToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 1 && !chFilterCraftsByMag.Checked && _selectedArt != null && _craftPosition != Position.Empty)
+            {
+                if (_filteredArtId != _selectedArt.ArtId) LoadFilteredMags();
+
+                var r = _craftPosition.Row + 1;
+                while (r < gridCraft.RowsCount)
+                {
+                    if (_filteredMagCrafts.Contains((int)gridCraft[r, Const.Columns.Craft.CraftId].Value))
+                    {
+                        var focusPosn = new Position(r, _craftPosition.Column);
+                        gridCraft.Selection.Focus(focusPosn, true);
+                        _craftPosition = focusPosn;
+                        break;
+                    }
+                    r++;
+                }
+            }
+        }
+
+        private void priorCraftInMagToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 1 && !chFilterCraftsByMag.Checked && _selectedArt != null && _craftPosition != Position.Empty)
+            {
+                if (_filteredArtId != _selectedArt.ArtId) LoadFilteredMags();
+
+                var r = _craftPosition.Row - 1;
+                while (r > 0)
+                {
+                    if (_filteredMagCrafts.Contains((int)gridCraft[r, Const.Columns.Craft.CraftId].Value))
+                    {
+                        var focusPosn = new Position(r, _craftPosition.Column);
+                        gridCraft.Selection.Focus(focusPosn, true);
+                        _craftPosition = focusPosn;
+                        break;
+                    }
+                    r--;
+                }
+            }
+        }
+
+        private void LoadFilteredMags()
+        {
+            _filteredMags = _ctx.Arts
+                .Where(x => x.Mag == _selectedArt.Mag && x.IYear == _selectedArt.IYear && x.IMonth == _selectedArt.IMonth)
+                .Select(x => x.ArtId)
+                .ToList();
+
+            _filteredMagCrafts = _ctx.vwPics.AsNoTracking().Where(x => _filteredMags.Contains(x.ArtId)).Select(x => x.CraftId).Distinct().ToList();
+
+            _filteredArtId = _selectedArt.ArtId;
         }
 
     }

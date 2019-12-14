@@ -198,6 +198,7 @@
     <Content Include="Images\baseline_arrow_upward_black_18dp.png" />
     <Content Include="Images\baseline_forward_black_18dp.png" />
     <Content Include="Images\baseline_lock_black_18dp.png" />
+    <Content Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

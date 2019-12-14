@@ -34,6 +34,7 @@
             this.pArtTable = new System.Windows.Forms.Panel();
             this.gridArt = new SourceGrid.Grid();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chFilterCraftsByMag = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.chArtSortYear = new System.Windows.Forms.RadioButton();
             this.chArtSortSerie = new System.Windows.Forms.RadioButton();
@@ -96,18 +97,22 @@
             this.chPicSelArt = new System.Windows.Forms.CheckBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.miscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.calcWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.focusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt2 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.picsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.fillPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.calcWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.craftsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nextCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.priorCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.picsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.fillPathToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.reportNewPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.reportNewPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lCraftPicNum = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -185,6 +190,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chFilterCraftsByMag);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.chArtSortYear);
             this.panel1.Controls.Add(this.chArtSortSerie);
@@ -194,6 +200,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(786, 28);
             this.panel1.TabIndex = 0;
+            // 
+            // chFilterCraftsByMag
+            // 
+            this.chFilterCraftsByMag.AutoSize = true;
+            this.chFilterCraftsByMag.Location = new System.Drawing.Point(206, 5);
+            this.chFilterCraftsByMag.Name = "chFilterCraftsByMag";
+            this.chFilterCraftsByMag.Size = new System.Drawing.Size(115, 17);
+            this.chFilterCraftsByMag.TabIndex = 4;
+            this.chFilterCraftsByMag.Text = "Filter crafts by Mag";
+            this.chFilterCraftsByMag.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -397,6 +413,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.lCraftPicNum);
             this.panel3.Controls.Add(this.bCraftFlyingLink);
             this.panel3.Controls.Add(this.bCraftWikiLink);
             this.panel3.Controls.Add(this.bCraftAirwarLink);
@@ -874,7 +891,9 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miscToolStripMenuItem});
+            this.miscToolStripMenuItem,
+            this.craftsToolStripMenuItem,
+            this.picsToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -887,19 +906,11 @@
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.focusToolStripMenuItem,
-            this.picsToolStripMenuItem,
             this.calcWordsToolStripMenuItem,
-            this.reportNewPicsToolStripMenuItem});
+            this.reloadToolStripMenuItem1});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.miscToolStripMenuItem.Text = "Misc";
-            // 
-            // calcWordsToolStripMenuItem
-            // 
-            this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
-            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.calcWordsToolStripMenuItem.Text = "Calc words";
-            this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
             // 
             // focusToolStripMenuItem
             // 
@@ -908,7 +919,7 @@
             this.mnuAlt2,
             this.mnuAlt3});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
-            this.focusToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.focusToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.focusToolStripMenuItem.Text = "Focus";
             // 
             // mnuAlt1
@@ -935,30 +946,71 @@
             this.mnuAlt3.Text = "Focus links";
             this.mnuAlt3.Click += new System.EventHandler(this.mnuAlt3_Click);
             // 
-            // picsToolStripMenuItem
+            // calcWordsToolStripMenuItem
             // 
-            this.picsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fillPathToolStripMenuItem,
-            this.reloadToolStripMenuItem});
-            this.picsToolStripMenuItem.Name = "picsToolStripMenuItem";
-            this.picsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.picsToolStripMenuItem.Text = "Pics";
+            this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
+            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.calcWordsToolStripMenuItem.Text = "Calc words";
+            this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
             // 
-            // fillPathToolStripMenuItem
+            // reloadToolStripMenuItem1
             // 
-            this.fillPathToolStripMenuItem.Name = "fillPathToolStripMenuItem";
-            this.fillPathToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
-            this.fillPathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.fillPathToolStripMenuItem.Text = "Fill path";
-            this.fillPathToolStripMenuItem.Click += new System.EventHandler(this.mnuPicsFillPath_Click);
+            this.reloadToolStripMenuItem1.Name = "reloadToolStripMenuItem1";
+            this.reloadToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
+            this.reloadToolStripMenuItem1.Text = "Reload";
+            this.reloadToolStripMenuItem1.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
             // 
-            // reloadToolStripMenuItem
+            // craftsToolStripMenuItem
             // 
-            this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
-            this.reloadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.reloadToolStripMenuItem.Text = "Reload";
-            this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
+            this.craftsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.nextCraftInMagToolStripMenuItem,
+            this.priorCraftInMagToolStripMenuItem});
+            this.craftsToolStripMenuItem.Name = "craftsToolStripMenuItem";
+            this.craftsToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.craftsToolStripMenuItem.Text = "Crafts";
+            // 
+            // nextCraftInMagToolStripMenuItem
+            // 
+            this.nextCraftInMagToolStripMenuItem.Name = "nextCraftInMagToolStripMenuItem";
+            this.nextCraftInMagToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.nextCraftInMagToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.nextCraftInMagToolStripMenuItem.Text = "Next craft in Mag";
+            this.nextCraftInMagToolStripMenuItem.Click += new System.EventHandler(this.nextCraftInMagToolStripMenuItem_Click);
+            // 
+            // priorCraftInMagToolStripMenuItem
+            // 
+            this.priorCraftInMagToolStripMenuItem.Name = "priorCraftInMagToolStripMenuItem";
+            this.priorCraftInMagToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.N)));
+            this.priorCraftInMagToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.priorCraftInMagToolStripMenuItem.Text = "Prior craft in Mag";
+            this.priorCraftInMagToolStripMenuItem.Click += new System.EventHandler(this.priorCraftInMagToolStripMenuItem_Click);
+            // 
+            // picsToolStripMenuItem1
+            // 
+            this.picsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fillPathToolStripMenuItem1,
+            this.reportNewPicsToolStripMenuItem});
+            this.picsToolStripMenuItem1.Name = "picsToolStripMenuItem1";
+            this.picsToolStripMenuItem1.Size = new System.Drawing.Size(40, 20);
+            this.picsToolStripMenuItem1.Text = "Pics";
+            // 
+            // fillPathToolStripMenuItem1
+            // 
+            this.fillPathToolStripMenuItem1.Name = "fillPathToolStripMenuItem1";
+            this.fillPathToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
+            this.fillPathToolStripMenuItem1.Size = new System.Drawing.Size(199, 22);
+            this.fillPathToolStripMenuItem1.Text = "Fill path";
+            this.fillPathToolStripMenuItem1.Click += new System.EventHandler(this.mnuPicsFillPath_Click);
+            // 
+            // reportNewPicsToolStripMenuItem
+            // 
+            this.reportNewPicsToolStripMenuItem.Name = "reportNewPicsToolStripMenuItem";
+            this.reportNewPicsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.reportNewPicsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.reportNewPicsToolStripMenuItem.Text = "Report new pics";
+            this.reportNewPicsToolStripMenuItem.Click += new System.EventHandler(this.reportNewPicsToolStripMenuItem_Click);
             // 
             // panel2
             // 
@@ -986,13 +1038,15 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // reportNewPicsToolStripMenuItem
+            // lCraftPicNum
             // 
-            this.reportNewPicsToolStripMenuItem.Name = "reportNewPicsToolStripMenuItem";
-            this.reportNewPicsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.reportNewPicsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.reportNewPicsToolStripMenuItem.Text = "Report new pics";
-            this.reportNewPicsToolStripMenuItem.Click += new System.EventHandler(this.reportNewPicsToolStripMenuItem_Click);
+            this.lCraftPicNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lCraftPicNum.Location = new System.Drawing.Point(105, 7);
+            this.lCraftPicNum.Name = "lCraftPicNum";
+            this.lCraftPicNum.Size = new System.Drawing.Size(90, 19);
+            this.lCraftPicNum.TabIndex = 3;
+            this.lCraftPicNum.Text = ".";
+            this.lCraftPicNum.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // Form1
             // 
@@ -1120,11 +1174,16 @@
         private System.Windows.Forms.Button bUp10;
         private System.Windows.Forms.Button bHere;
         private System.Windows.Forms.Button bDown;
-        private System.Windows.Forms.ToolStripMenuItem picsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fillPathToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
         private System.Windows.Forms.Label lPicCnt;
+        private System.Windows.Forms.CheckBox chFilterCraftsByMag;
+        private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem picsToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem fillPathToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem craftsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nextCraftInMagToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportNewPicsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem priorCraftInMagToolStripMenuItem;
+        private System.Windows.Forms.Label lCraftPicNum;
     }
 }
 
