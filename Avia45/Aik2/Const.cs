@@ -26,9 +26,9 @@ namespace Aik2
                 public const int Serie = 7;
                 public const int FullName = 8;
     
-                public static int[] SortAuthor = { Art.Author, Art.Name, Art.IYear, Art.IMonth };
+                public static int[] SortAuthor = { Art.Author, Art.Name, Art.IYear, Art.IMonth, Art.Mag };
                 public static int[] SortSerie = { Art.Serie, Art.Name, Art.IYear, Art.IMonth };
-                public static int[] SortYear = { Art.IYear, Art.IMonth, Art.Author, Art.Name };
+                public static int[] SortYear = { Art.IYear, Art.IMonth, Art.Mag, Art.Author, Art.Name };
 
             }
 

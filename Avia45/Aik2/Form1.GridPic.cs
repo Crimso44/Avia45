@@ -26,11 +26,11 @@ namespace Aik2
         private GridLinkController _gridLinkController = null;
         private PicDto _selectedPic = null;
         private LinkDto _selectedLink = null;
-        private int? _selectedPicArtId = null;
-        private int? _selectedPicCraftId = null;
         private string _oldPicText;
         private bool _picTextChanging;
         private bool _picTextChanged;
+        private bool _needLoadArt = false;
+        private bool _needLoadCraft = false;
         private List<PicDto> _pics;
         private List<LinkDto> _links;
         private int? _lockedPicId = null;
@@ -108,26 +108,20 @@ namespace Aik2
         }
 
 
-        public void LoadPics(bool isClear)
+        public void LoadPics(bool isFromOtherTabs)
         {
-            if (isClear)
-            {
-                _selectedPicArtId = null;
-                _selectedPicCraftId = null;
-            }
-
-            var PicsQry = _ctx.vwPics.AsQueryable();
+            var PicsQry = _ctx.vwPics.AsNoTracking().AsQueryable();
 
             var flt = false;
-            if (chPicSelArt.Checked && (_selectedPicArtId.HasValue || _selectedArt != null))
+            if (chPicSelArt.Checked && (_selectedPic != null || _selectedArt != null))
             {
-                var artId = _selectedPicArtId ?? _selectedArt.ArtId;
+                var artId = isFromOtherTabs ? _selectedArt.ArtId : _selectedPic?.ArtId ?? _selectedArt.ArtId;
                 PicsQry = PicsQry.Where(x => x.ArtId == artId);
                 flt = true;
             }
-            if (chPicSelCraft.Checked && (_selectedPicCraftId.HasValue || _selectedCraft != null))
+            if (chPicSelCraft.Checked && (_selectedPic != null || _selectedCraft != null))
             {
-                var craftId = _selectedPicCraftId ?? _selectedCraft.CraftId;
+                var craftId = isFromOtherTabs ? _selectedCraft.CraftId : _selectedPic?.CraftId ?? _selectedCraft.CraftId;
                 PicsQry = PicsQry.Where(x => x.CraftId == craftId);
                 flt = true;
             }
@@ -139,15 +133,13 @@ namespace Aik2
 
             var Pics = PicsQry.ToList();
             _pics = Mapper.Map<List<PicDto>>(Pics);
+            lPicCnt.Text = _pics.Count.ToString();
 
             var saved = -1;
             if (_picPosition != Position.Empty && _picPosition.Row > 0)
             {
                 saved = (int)gridPic[_picPosition.Row, Const.Columns.Pic.PicId].Value;
             }
-
-            _selectedPicCraftId = null;
-            _selectedPicArtId = null;
 
             gridPic.RowsCount = _pics.Count + 1;
 
@@ -163,8 +155,6 @@ namespace Aik2
                     {
                         var focusPosn = new Position(r, _picPosition.Column);
                         gridPic.Selection.Focus(focusPosn, true);
-                        _selectedPicCraftId = Pic.CraftId;
-                        _selectedPicArtId = Pic.ArtId;
                         _picPosition = focusPosn;
                         focused = true;
                     }
@@ -299,8 +289,8 @@ namespace Aik2
             gridPic[r, 8] = new SourceGrid.Cells.Cell(artName, _editorsPic[8]);
             gridPic[r, 8].AddController(_gridPicController);
             var craftName = "";
-            var craft = _crafts678.FirstOrDefault(x => x.Id == Pic.CraftId);
-            if (craft != null) craftName = craft.Name;
+            var craft = _crafts678.FirstOrDefault(x => x.CraftId == Pic.CraftId);
+            if (craft != null) craftName = craft.FullName;
             gridPic[r, 9] = new SourceGrid.Cells.Cell(craftName, _editorsPic[9]);
             gridPic[r, 9].AddController(_gridPicController);
             gridPic[r, 10] = new SourceGrid.Cells.Cell(Pic.Grp, _editorsPic[10]);
@@ -310,6 +300,7 @@ namespace Aik2
             gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.ArtId);
             gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
+            ShowPicImage();
         }
 
         public void UpdateLinkRow(LinkDto Link, int r)
@@ -347,6 +338,19 @@ namespace Aik2
             return pic;
         }
 
+        public LinkDto GetLinkFromTable(int r)
+        {
+            var link = new LinkDto()
+            {
+                LinkId = (int)gridLink[r, 0].Value,
+                Pict1 = (int)gridLink[r, 1].Value,
+                Pict2 = (int)gridLink[r, 2].Value,
+                Type1 = (string)gridLink[r, 3].Value,
+                Type2 = (string)gridLink[r, 4].Value
+            };
+            return link;
+        }
+
         private class GridPicController : SourceGrid.Cells.Controllers.ControllerBase
         {
             private readonly Form1 _form;
@@ -360,11 +364,11 @@ namespace Aik2
             {
                 base.OnEditStarted(sender, e);
                 _form.SearchModeOff();
-                if (sender.Position.Column == Const.Columns.Pic.CraftId)
+                if (sender.Position.Column == Const.Columns.Pic.Craft)
                 {
                     _form._editCraft678.Control.DroppedDown = true;
                 }
-                if (sender.Position.Column == Const.Columns.Pic.ArtId)
+                if (sender.Position.Column == Const.Columns.Pic.Art)
                 {
                     _form._editArt.Control.DroppedDown = true;
                 }
@@ -383,7 +387,7 @@ namespace Aik2
                 {
                     case Const.Columns.Pic.Craft:
                         _form.gridPic[row, Const.Columns.Pic.CraftId].Value = string.IsNullOrEmpty(val) ? null :
-                            _form._crafts678.SingleOrDefault(x => x.Name == val)?.Id;
+                            _form._crafts678.SingleOrDefault(x => x.FullName == val)?.CraftId;
                         break;
                     case Const.Columns.Pic.Art:
                         _form.gridPic[row, Const.Columns.Pic.ArtId].Value = string.IsNullOrEmpty(val) ? null :
@@ -397,6 +401,7 @@ namespace Aik2
                         break;
                 }
 
+                var isForce = false;
                 var picDto = _form.GetPicFromTable(row);
                 if (picDto.PicId == 0)
                 {
@@ -405,6 +410,7 @@ namespace Aik2
                     _form._ctx.SaveChanges();
                     picDto.PicId = entity.PicId;
                     _form.gridPic[row, Const.Columns.Pic.PicId].Value = entity.PicId;
+                    isForce = true;
                 }
                 else
                 {
@@ -415,58 +421,63 @@ namespace Aik2
                 _form._selectedPic = picDto;
                 _form._pics[row - 1] = picDto;
 
-                var sortIndexes = new int[] { Const.Columns.Pic.NType, Const.Columns.Pic.NNN };
-                var sortXIndexes = new int[] { Const.Columns.Pic.Type, Const.Columns.Pic.NType, Const.Columns.Pic.NNN };
+                _form.CheckPicSort(sender.Position, isForce);
+            }
+        }
 
-                if (sortXIndexes.Contains(cell.Column.Index))
+        private void CheckPicSort(Position pos, bool isForce)
+        {
+            var sortIndexes = new int[] { Const.Columns.Pic.NType, Const.Columns.Pic.NNN };
+            var sortXIndexes = new int[] { Const.Columns.Pic.Type, Const.Columns.Pic.NType, Const.Columns.Pic.NNN };
+
+            if (isForce || sortXIndexes.Contains(pos.Column))
+            {
+                var sortVal = "";
+                var rNew = pos.Row;
+                foreach (var col in sortIndexes) sortVal += PadLeft(gridPic[pos.Row, col].DisplayText, '0', 15) + " ";
+                if (pos.Row < gridPic.RowsCount)
                 {
-                    var sortVal = "";
-                    var rNew = row;
-                    foreach (var col in sortIndexes) sortVal += PadLeft(_form.gridPic[row, col].DisplayText, '0', 5) + " ";
-                    if (row < _form.gridPic.RowsCount)
+                    var found = false;
+                    for (var r = pos.Row + 1; r < gridPic.RowsCount; r++)
                     {
-                        var found = false;
-                        for (var r = row + 1; r < _form.gridPic.RowsCount; r++)
+                        var sortRVal = "";
+                        foreach (var col in sortIndexes) sortRVal += PadLeft(gridPic[r, col].DisplayText, '0', 15) + " ";
+                        if (string.Compare(sortVal, sortRVal) <= 0)
                         {
-                            var sortRVal = "";
-                            foreach (var col in sortIndexes) sortRVal += PadLeft(_form.gridPic[r, col].DisplayText, '0', 5) + " ";
-                            if (string.Compare(sortVal, sortRVal) <= 0)
-                            {
-                                rNew = r - 1;
-                                found = true;
-                                break;
-                            }
+                            rNew = r - 1;
+                            found = true;
+                            break;
                         }
-                        if (!found) rNew = _form.gridPic.RowsCount - 1;
                     }
-                    if (rNew == row && row > 1)
+                    if (!found) rNew = gridPic.RowsCount - 1;
+                }
+                if (rNew == pos.Row && pos.Row > 1)
+                {
+                    var found = false;
+                    for (var r = pos.Row - 1; r >= 1; r--)
                     {
-                        var found = false;
-                        for (var r = row - 1; r >= 1; r--)
+                        var sortRVal = "";
+                        foreach (var col in sortIndexes) sortRVal += PadLeft(gridPic[r, col].DisplayText, '0', 15) + " ";
+                        if (string.Compare(sortRVal, sortVal) <= 0)
                         {
-                            var sortRVal = "";
-                            foreach (var col in sortIndexes) sortRVal += PadLeft(_form.gridPic[r, col].DisplayText, '0', 5) + " ";
-                            if (string.Compare(sortRVal, sortVal) <= 0)
-                            {
-                                rNew = r + 1;
-                                found = true;
-                                break;
-                            }
+                            rNew = r + 1;
+                            found = true;
+                            break;
                         }
-                        if (!found) rNew = 1;
                     }
+                    if (!found) rNew = 1;
+                }
 
-                    if (rNew != row)
-                    {
-                        _form.gridPic.Rows.Move(row, rNew);
-                        _form._pics.Move(row - 1, rNew - 1);
-                        var focusPosn = new Position(rNew, sender.Position.Column == Const.Columns.Pic.NType ? Const.Columns.Pic.Type : sender.Position.Column);
-                        _form.gridPic.Selection.Focus(focusPosn, true);
-                    }
-
+                if (rNew != pos.Row)
+                {
+                    gridPic.Rows.Move(pos.Row, rNew);
+                    _pics.Move(pos.Row - 1, rNew - 1);
+                    var focusPosn = new Position(rNew, pos.Column == Const.Columns.Pic.NType ? Const.Columns.Pic.Type : pos.Column);
+                    gridPic.Selection.Focus(focusPosn, true);
                 }
 
             }
+
         }
 
         private class GridLinkController : SourceGrid.Cells.Controllers.ControllerBase
@@ -482,43 +493,59 @@ namespace Aik2
             {
                 base.OnValueChanged(sender, e);
 
-                /*var row = sender.Position.Row;
+                var row = sender.Position.Row;
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
-                var val = (string)cell.DisplayText;*/
+                var val = (string)cell.DisplayText;
+
+                var linkDto = _form.GetLinkFromTable(row);
+                if (linkDto.LinkId == 0)
+                {
+                    var entity = Mapper.Map<Links>(linkDto);
+                    _form._ctx.Links.Add(entity);
+                    _form._ctx.SaveChanges();
+                    linkDto.LinkId = entity.LinkId;
+                    _form.gridLink[row, Const.Columns.Link.LinkId].Value = entity.LinkId;
+                }
+                else
+                {
+                    var entity = _form._ctx.Links.Single(x => x.LinkId == linkDto.LinkId);
+                    Mapper.Map(linkDto, entity);
+                    _form._ctx.SaveChanges();
+                }
+                _form._selectedLink = linkDto;
+                _form._links[row] = linkDto;
+
+
             }
         }
 
         private void PicCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)
         {
+            DoPicCellGotFocus(e.NewFocusPosition);
+        }
 
-            _picPosition = e.NewFocusPosition;
+        private void DoPicCellGotFocus(Position newPos)
+        {
+            _picPosition = newPos;
             var pic = _pics[_picPosition.Row - 1];
             if (pic.PicId == -1) return;
 
-            if (_selectedPic == null || _selectedPic.PicId != pic.PicId)
-            {
-                if (_selectedPic != null && _picTextChanged)
-                {
-                    var picOld = _ctx.Pics.SingleOrDefault(x => x.PicId == _selectedPic.PicId);
-                    if (picOld != null)
-                    {
-                        picOld.Text = _oldPicText;
-                        _ctx.SaveChanges();
+            _needLoadArt = true;
+            _needLoadCraft = true;
+            StoreEditedPicText();
 
-                        _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where PicId ={picOld.PicId}");
-                        var wordsList = GetWords(_oldPicText, true);
-                        foreach (var word in wordsList)
-                        {
-                            _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, PicId) Values ({word.Id}, {picOld.PicId})");
-                        }
-                        _ctx.Database.ExecuteSqlCommand($"delete from Words where Cnt = 0");
-                    }
-                    _picTextChanging = true;
-                    edPicText.Text = "";
-                    _oldPicText = edPicText.Text;
-                    _picTextChanging = false;
-                    _picTextChanged = false;
-                }
+            if (_selectedPic == null || _selectedPic.PicId == 0 || _selectedPic.PicId != pic.PicId)
+            {
+                _picTextChanging = true;
+                edPicText.Text = "";
+                _oldPicText = edPicText.Text;
+                edPicText.SelectionStart = 0;
+                edPicText.SelectionLength = 1;
+                edPicText.SelectionFont = new Font(edPicText.SelectionFont, FontStyle.Regular);
+                edPicText.SelectionColor = Color.Black;
+                edPicText.SelectionBackColor = Color.White;
+                _picTextChanging = false;
+                _picTextChanged = false;
 
                 var picText = _ctx.Pics.SingleOrDefault(x => x.PicId == pic.PicId);
                 if (picText != null)
@@ -530,23 +557,49 @@ namespace Aik2
                     ColorizeText(edPicText, false);
                     _picTextChanging = false;
                     _picTextChanged = false;
+                } else
+                {
+                    _selectedPic = GetPicFromTable(_picPosition.Row);
                 }
 
 
                 LoadLinks();
 
-                _selectedPicCraftId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.CraftId].Value;
-                _selectedPicArtId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.ArtId].Value;
                 if (_searchMode && !_searchChanging)
                 {
                     _searchString = "";
                     lInfo.Text = $"Поиск: {_searchString}";
                 }
 
-                var art = Mapper.Map<ArtDto>(_ctx.Arts.FirstOrDefault(x => x.ArtId == _selectedPicArtId));
+                var artId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.ArtId].Value;
+                var art = Mapper.Map<ArtDto>(_ctx.Arts.FirstOrDefault(x => x.ArtId == artId));
                 if (art != null) lArt.Text = art.FullName;
+                var craftId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.CraftId].Value;
+                var craft = Mapper.Map<CraftDto>(_ctx.Crafts.FirstOrDefault(x => x.CraftId == craftId));
+                if (craft != null) lCraft.Text = craft.FullName;
 
                 ShowPicImage();
+            }
+        }
+
+        private void StoreEditedPicText()
+        {
+            if (_selectedPic != null && _picTextChanged)
+            {
+                var picOld = _ctx.Pics.SingleOrDefault(x => x.PicId == _selectedPic.PicId);
+                if (picOld != null)
+                {
+                    picOld.Text = _oldPicText;
+                    _ctx.SaveChanges();
+
+                    _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where PicId ={picOld.PicId}");
+                    var wordsList = GetWords(_oldPicText, true);
+                    foreach (var word in wordsList)
+                    {
+                        _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, PicId) Values ({word.Id}, {picOld.PicId})");
+                    }
+                    _ctx.Database.ExecuteSqlCommand($"delete from Words where Cnt = 0");
+                }
             }
         }
 
@@ -560,10 +613,10 @@ namespace Aik2
             lbl1.ForeColor = Color.LightGray;
             lblP.ForeColor = Color.LightGray;
             lblWingsEngs.Text = "";
-            var craft = _craftDtos.FirstOrDefault(x => x.CraftId == _selectedPicCraftId);
-            if (craft == null)
+            var craft = _craftDtos.FirstOrDefault(x => x.CraftId == _selectedPic?.CraftId);
+            if (craft == null && _selectedPic != null)
             {
-                craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.FirstOrDefault(x => x.CraftId == _selectedPicCraftId));
+                craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().FirstOrDefault(x => x.CraftId == _selectedPic.CraftId));
             }
             if (craft != null)
             {
@@ -701,7 +754,7 @@ namespace Aik2
                 var pos = gridPic.Selection.ActivePosition;
                 if (pos != Position.Empty)
                 {
-                    if (e.KeyCode == Keys.Insert)
+                    if (e.KeyCode == Keys.Insert && e.Modifiers == Keys.None)
                     {
                         SearchModeOff();
                         var fromEmpty = (int)gridPic[pos.Row, Const.Columns.Pic.PicId].Value == -1;
@@ -712,7 +765,9 @@ namespace Aik2
                             Pic.Type = "f";
                             Pic.NType = GetNType("f");
                             Pic.NN = "1";
-                            Pic.NNN = _ctx.vwPics.OrderByDescending(x => x.NNN).First().NNN + 1;
+                            Pic.NNN = _ctx.vwPics.AsNoTracking().OrderByDescending(x => x.NNN).First().NNN + 1;
+                            Pic.CraftId = _selectedCraft?.CraftId ?? -1;
+                            Pic.ArtId = _selectedArt?.ArtId ?? -1;
                         }
                         else
                         {
@@ -720,10 +775,10 @@ namespace Aik2
                             Pic.Type = (string)gridPic[pos.Row, Const.Columns.Pic.Type].Value;
                             Pic.NType = (int?)gridPic[pos.Row, Const.Columns.Pic.NType].Value;
                             Pic.NN = (int.Parse((string)gridPic[pos.Row, Const.Columns.Pic.NN].Value) + 1).ToString();
-                            Pic.NNN = _ctx.vwPics.OrderByDescending(x => x.NNN).First().NNN + 1;
+                            Pic.NNN = _ctx.vwPics.AsNoTracking().OrderByDescending(x => x.NNN).First().NNN + 1;
+                            Pic.CraftId = (int)gridPic[pos.Row, Const.Columns.Pic.CraftId].Value;
+                            Pic.ArtId = (int)gridPic[pos.Row, Const.Columns.Pic.ArtId].Value;
                         };
-                        Pic.CraftId = _selectedCraft?.CraftId ?? -1;
-                        Pic.ArtId = _selectedArt?.ArtId ?? -1;
                         _pics.Insert(pos.Row - 1, Mapper.Map<PicDto>(Pic));
                         gridPic.Rows.Insert(pos.Row);
                         if (fromEmpty)
@@ -732,35 +787,74 @@ namespace Aik2
                             gridPic.Rows.Remove(1);
                         }
                         UpdatePicRow(Pic, pos.Row);
+                        DoPicCellGotFocus(pos);
+                        CheckPicSort(pos, true);
                     }
                     else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Control)
                     {
                         if (MessageBox.Show("Delete pic?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            var pic = _pics[pos.Row - 1];
-                            if (pic.PicId > 0)
+                            try
                             {
-                                var entity = _ctx.Pics.Single(x => x.PicId == pic.PicId);
-                                _ctx.Pics.Remove(entity);
-                                _ctx.SaveChanges();
+                                var pic = _pics[pos.Row - 1];
+                                if (pic.PicId > 0)
+                                {
+                                    _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where PicId ={pic.PicId}");
+                                    var entity = _ctx.Pics.Single(x => x.PicId == pic.PicId);
+                                    _ctx.Pics.Remove(entity);
+                                    _ctx.SaveChanges();
+                                }
+                                gridPic.Rows.Remove(pos.Row);
+                                _pics.RemoveAt(pos.Row - 1);
+                                if (_pics.Count == 0)
+                                {
+                                    gridPic.RowsCount = 2;
+                                    var Pic = new PicDto() { PicId = -1 };
+                                    _pics.Add(Pic);
+                                    UpdatePicRow(Pic, 1);
+                                    DoPicCellGotFocus(new Position(1, 0));
+                                }
+                                else
+                                {
+                                    var row = pos.Row < gridPic.RowsCount ? pos.Row : gridPic.RowsCount - 1;
+                                    var focusPosn = new Position(row, _picPosition.Column);
+                                    gridPic.Selection.Focus(focusPosn, true);
+                                    ShowPicImage();
+                                }
                             }
-                            gridPic.Rows.Remove(pos.Row);
-                            _pics.RemoveAt(pos.Row - 1);
-                            if (_pics.Count == 0)
+                            catch (Exception ex)
                             {
-                                gridPic.RowsCount = 2;
-                                var Pic = new PicDto() { PicId = -1 };
-                                _pics.Add(Pic);
-                                UpdatePicRow(Pic, 1);
-                            }
-                            else
-                            {
-                                var row = pos.Row < gridPic.RowsCount ? pos.Row : gridPic.RowsCount - 1;
-                                var focusPosn = new Position(row, _picPosition.Column);
-                                gridPic.Selection.Focus(focusPosn, true);
-                                ShowPicImage();
+                                MessageBox.Show(GetInnerestException(ex));
                             }
                         }
+                    }
+                    else if (e.KeyCode == Keys.Home && e.Modifiers == Keys.None)
+                    {
+                        var col = 0;
+                        while (!gridPic.Columns[col].Visible) col++;
+                        var focusPosn = new Position(pos.Row, col);
+                        gridPic.Selection.Focus(focusPosn, true);
+                    }
+                    else if (e.KeyCode == Keys.End && e.Modifiers == Keys.None)
+                    {
+                        var col = gridPic.Columns.Count - 1;
+                        while (!gridPic.Columns[col].Visible) col--;
+                        var focusPosn = new Position(pos.Row, col);
+                        gridPic.Selection.Focus(focusPosn, true);
+                    }
+                    else if (e.KeyCode == Keys.Home && e.Modifiers == Keys.Control)
+                    {
+                        var col = 0;
+                        while (!gridPic.Columns[col].Visible) col++;
+                        var focusPosn = new Position(1, col);
+                        gridPic.Selection.Focus(focusPosn, true);
+                    }
+                    else if (e.KeyCode == Keys.End && e.Modifiers == Keys.Control)
+                    {
+                        var col = gridPic.Columns.Count - 1;
+                        while (!gridPic.Columns[col].Visible) col--;
+                        var focusPosn = new Position(gridPic.RowsCount - 1, col);
+                        gridPic.Selection.Focus(focusPosn, true);
                     }
                     else if (_searchMode)
                     {
@@ -802,6 +896,13 @@ namespace Aik2
                     {
                         if (MessageBox.Show("Delete link?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
+                            var link = _links[pos.Row - 1];
+                            if (link.LinkId > 0)
+                            {
+                                var entity = _ctx.Links.Single(x => x.LinkId == link.LinkId);
+                                _ctx.Links.Remove(entity);
+                                _ctx.SaveChanges();
+                            }
                             gridLink.Rows.Remove(pos.Row);
                             _links.RemoveAt(pos.Row);
                         }
@@ -965,31 +1066,152 @@ namespace Aik2
         {
             if (_selectedPic != null)
             {
-                var art = _artDtos.Single(x => x.ArtId == _selectedPic.ArtId);
-                string path;
-                if (art.Mag.Trim() == "AK")
-                {
-                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear}-{art.IMonth.Trim()}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
-                }
-                else if (art.Mag.Trim() == "FT")
-                {
-                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear}\\{art.IMonth.Trim()}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
-                }
-                else if (art.Mag.Trim() == "IN")
-                {
-                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}-{art.IYear}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
-                }
-                else
-                {
-                    int.TryParse(art.IMonth.Trim(), out int artMonth);
-                    path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear % 100}-{artMonth}\\{_selectedPic.XPage.Trim()}-{_selectedPic.NN.Trim()}.jpg";
-                }
-                _selectedPic.Path = path;
                 var pos = gridPic.Selection.ActivePosition;
-                gridPic[pos.Row, Const.Columns.Pic.Path].Value = path;
+                if (pos != Position.Empty)
+                {
+                    var art = _artDtos.Single(x => x.ArtId == _selectedPic.ArtId);
+                    string path;
+                    if (art.Mag.Trim() == "AK")
+                    {
+                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear}-{art.IMonth.Trim()}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
+                    }
+                    else if (art.Mag.Trim() == "FT")
+                    {
+                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{art.IYear}\\{art.IMonth.Trim()}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
+                    }
+                    else if (art.Mag.Trim() == "IN")
+                    {
+                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}-{art.IYear}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
+                    }
+                    else
+                    {
+                        int.TryParse(art.IMonth.Trim(), out int artMonth);
+                        var year = art.IYear == 0 ? "" : (art.IYear % 100).ToString();
+                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{year}-{artMonth}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
+                    }
+                    _selectedPic.Path = path;
+                    gridPic[pos.Row, Const.Columns.Pic.Path].Value = path;
 
-                ShowPicImage();
+                    ShowPicImage();
+                }
             }
+        }
+
+        private void MovePicUp(Position pos)
+        {
+            var nnn = (int)gridPic[pos.Row, Const.Columns.Pic.NType].Value;
+            if (pos.Row > 1 && nnn == (int)gridPic[pos.Row - 1, Const.Columns.Pic.NType].Value)
+            {
+                var picFrom = _pics[pos.Row - 1];
+                var nnnFrom = picFrom.NNN;
+                var picTo = _pics[pos.Row - 2];
+                var nnnTo = picTo.NNN;
+                picFrom.NNN = nnnTo;
+                picTo.NNN = nnnFrom;
+
+                var entFrom = _ctx.Pics.FirstOrDefault(x => x.PicId == picFrom.PicId);
+                var entTo = _ctx.Pics.FirstOrDefault(x => x.PicId == picTo.PicId);
+                if (entFrom != null) Mapper.Map(picFrom, entFrom);
+                if (entTo != null) Mapper.Map(picTo, entTo);
+                _ctx.SaveChanges();
+
+                _pics.Move(pos.Row - 1, pos.Row - 2);
+                gridPic.Rows.Move(pos.Row, pos.Row - 1);
+                var newPos = new Position(pos.Row - 1, pos.Column);
+                gridPic.Selection.Focus(newPos, true);
+
+                Application.DoEvents();
+            }
+        }
+
+        private void bUp_Click(object sender, EventArgs e)
+        {
+            var pos = _picPosition;
+            if (pos != Position.Empty)
+            {
+                MovePicUp(pos);
+            }
+        }
+
+        private void bUp10_Click(object sender, EventArgs e)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                bUp_Click(sender, e);
+            }
+        }
+
+        private void bDown_Click(object sender, EventArgs e)
+        {
+            var pos = _picPosition;
+            if (pos != Position.Empty)
+            {
+                var nnn = (int)gridPic[pos.Row, Const.Columns.Pic.NType].Value;
+                if (pos.Row < (gridPic.RowsCount - 1) && nnn == (int)gridPic[pos.Row + 1, Const.Columns.Pic.NType].Value)
+                {
+                    var picFrom = _pics[pos.Row - 1];
+                    var nnnFrom = picFrom.NNN;
+                    var picTo = _pics[pos.Row];
+                    var nnnTo = picTo.NNN;
+                    picFrom.NNN = nnnTo;
+                    picTo.NNN = nnnFrom;
+
+                    var entFrom = _ctx.Pics.FirstOrDefault(x => x.PicId == picFrom.PicId);
+                    var entTo = _ctx.Pics.FirstOrDefault(x => x.PicId == picTo.PicId);
+                    if (entFrom != null) Mapper.Map(picFrom, entFrom);
+                    if (entTo != null) Mapper.Map(picTo, entTo);
+                    _ctx.SaveChanges();
+
+                    _pics.Move(pos.Row - 1, pos.Row);
+                    gridPic.Rows.Move(pos.Row, pos.Row + 1);
+                    var newPos = new Position(pos.Row + 1, pos.Column);
+                    gridPic.Selection.Focus(newPos, true);
+
+                    Application.DoEvents();
+                }
+            }
+        }
+
+        private void bDown10_Click(object sender, EventArgs e)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                bDown_Click(sender, e);
+            }
+        }
+
+        private void bHere_Click(object sender, EventArgs e)
+        {
+            var pos = _picPosition;
+            if (pos != Position.Empty)
+            {
+                var nType = (int)gridPic[pos.Row, Const.Columns.Pic.NType].Value;
+                var r = pos.Row + 1;
+                while (r - 1 < _pics.Count && _pics[r - 1].NType == nType) r++;
+                r--;
+                while (pos.Row != r)
+                {
+                    var newPos = new Position(r, pos.Column);
+                    MovePicUp(newPos);
+                    r--;
+                }
+            }
+        }
+
+        private void chPicSelArt_Click(object sender, EventArgs e)
+        {
+            LoadPics(false);
+        }
+
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StoreEditedPicText();
+            LoadPics(false);
+            edPicText.SelectionStart = 0;
+            edPicText.SelectionLength = edPicText.TextLength;
+            edPicText.SelectionFont = new Font(edPicText.SelectionFont, FontStyle.Regular);
+            edPicText.SelectionColor = Color.Black;
+            edPicText.SelectionBackColor = Color.White;
         }
     }
 }

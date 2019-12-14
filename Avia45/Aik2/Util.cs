@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aik2.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,18 @@ namespace Aik2
 
     public static class Extensions
     {
-        public static void InsertCraftSorted(this List<Util.Pair<int>> source,
+        public static void InsertCraftSorted(this List<CraftDto> source, CraftDto element)
+        {
+            int index = source.FindLastIndex(e => string.Compare(e.Sort, element.Sort) < 0);
+            if (index == 0 || index == -1)
+            {
+                source.Insert(0, element);
+                return;
+            }
+            source.Insert(index + 1, element);
+        }
+
+        public static void InsertPairSorted(this List<Util.Pair<int>> source,
                 Util.Pair<int> element)
         {
             int index = source.FindLastIndex(e => string.Compare(e.Name, element.Name) < 0);

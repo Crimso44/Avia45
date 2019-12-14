@@ -96,11 +96,11 @@ namespace Aik2
         {
             var artsQry = _ctx.Arts.AsQueryable();
             if (chArtSortAuthor.Checked)
-                artsQry = artsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth);
+                artsQry = artsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag);
             else if (chArtSortSerie.Checked)
                 artsQry = artsQry.OrderBy(x => x.Serie).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth);
             else if (chArtSortYear.Checked)
-                artsQry = artsQry.OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Author).ThenBy(x => x.Name);
+                artsQry = artsQry.OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Author).ThenBy(x => x.Name);
             var arts = artsQry.ToList();
             _artDtos = Mapper.Map<List<ArtDto>>(arts);
 
@@ -170,7 +170,9 @@ namespace Aik2
                 IYear = (int?)gridArt[row, Const.Columns.Art.IYear].Value,
                 IMonth = (string)gridArt[row, Const.Columns.Art.IMonth].Value,
                 Author = (string)gridArt[row, Const.Columns.Art.Author].Value,
-                Name = (string)gridArt[row, Const.Columns.Art.Name].Value
+                Name = (string)gridArt[row, Const.Columns.Art.Name].Value,
+                NN = (int?)gridArt[row, Const.Columns.Art.NN].Value,
+                Serie = (string)gridArt[row, Const.Columns.Art.Serie].Value
             };
             return art;
         }
@@ -197,70 +199,76 @@ namespace Aik2
                 int row = sender.Position.Row;
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
                 var art = _form.GetArtFromTable(row);
-                _form.UpdateArtEntity(art, row);
+                var isForce = _form.UpdateArtEntity(art, row);
                 _form.gridArt[row, Const.Columns.Art.FullName].Value = art.FullName;
 
-                int[] sortIndexes;
-                if (_form.chArtSortAuthor.Checked)
-                    sortIndexes = Const.Columns.Art.SortAuthor;
-                else if (_form.chArtSortSerie.Checked)
-                    sortIndexes = Const.Columns.Art.SortSerie;
-                else //if (_form.chArtSortYear.Checked)
-                    sortIndexes = Const.Columns.Art.SortYear;
 
-                if (sortIndexes.Contains(cell.Column.Index))
+                _form.CheckArtSort(sender.Position, isForce);
+            }
+        }
+
+        private void CheckArtSort(Position pos, bool isForce)
+        {
+            int[] sortIndexes;
+            if (chArtSortAuthor.Checked)
+                sortIndexes = Const.Columns.Art.SortAuthor;
+            else if (chArtSortSerie.Checked)
+                sortIndexes = Const.Columns.Art.SortSerie;
+            else //if (_form.chArtSortYear.Checked)
+                sortIndexes = Const.Columns.Art.SortYear;
+
+            if (isForce || sortIndexes.Contains(pos.Column))
+            {
+                var sortVal = "";
+                var rNew = pos.Row;
+                foreach (var col in sortIndexes) sortVal += gridArt[pos.Row, col].DisplayText + " ";
+                if (pos.Row < gridArt.RowsCount)
                 {
-                    var sortVal = "";
-                    var rNew = row;
-                    foreach (var col in sortIndexes) sortVal += _form.gridArt[row, col].DisplayText + " ";
-                    if (row < _form.gridArt.RowsCount)
+                    var found = false;
+                    for (var r = pos.Row + 1; r < gridArt.RowsCount; r++)
                     {
-                        var found = false;
-                        for (var r = row + 1; r < _form.gridArt.RowsCount; r++)
+                        var sortRVal = "";
+                        foreach (var col in sortIndexes) sortRVal += gridArt[r, col].DisplayText + " ";
+                        if (string.Compare(sortVal, sortRVal) <= 0)
                         {
-                            var sortRVal = "";
-                            foreach (var col in sortIndexes) sortRVal += _form.gridArt[r, col].DisplayText + " ";
-                            if (string.Compare(sortVal, sortRVal) <= 0)
-                            {
-                                rNew = r - 1;
-                                found = true;
-                                break;
-                            }
+                            rNew = r - 1;
+                            found = true;
+                            break;
                         }
-                        if (!found) rNew = _form.gridArt.RowsCount - 1;
                     }
-                    if (rNew == row && row > 1)
+                    if (!found) rNew = gridArt.RowsCount - 1;
+                }
+                if (rNew == pos.Row && pos.Row > 1)
+                {
+                    var found = false;
+                    for (var r = pos.Row - 1; r >= 1; r--)
                     {
-                        var found = false;
-                        for (var r = row - 1; r >= 1; r--)
+                        var sortRVal = "";
+                        foreach (var col in sortIndexes) sortRVal += gridArt[r, col].DisplayText + " ";
+                        if (string.Compare(sortRVal, sortVal) <= 0)
                         {
-                            var sortRVal = "";
-                            foreach (var col in sortIndexes) sortRVal += _form.gridArt[r, col].DisplayText + " ";
-                            if (string.Compare(sortRVal, sortVal) <= 0)
-                            {
-                                rNew = r + 1;
-                                found = true;
-                                break;
-                            }
+                            rNew = r + 1;
+                            found = true;
+                            break;
                         }
-                        if (!found) rNew = 1;
                     }
+                    if (!found) rNew = 1;
+                }
 
-                    if (rNew != row)
-                    {
-                        _form.gridArt.Rows.Move(row, rNew);
-                        _form._artDtos.Move(row - 1, rNew - 1);
-                        var focusPosn = new Position(rNew, sender.Position.Column);
-                        _form.gridArt.Selection.Focus(focusPosn, true);
-                    }
-
+                if (rNew != pos.Row)
+                {
+                    gridArt.Rows.Move(pos.Row, rNew);
+                    _artDtos.Move(pos.Row - 1, rNew - 1);
+                    var focusPosn = new Position(rNew, pos.Column);
+                    gridArt.Selection.Focus(focusPosn, true);
                 }
 
             }
         }
 
-        private void UpdateArtEntity(ArtDto art, int row)
+        private bool UpdateArtEntity(ArtDto art, int row)
         {
+            var isAdded = false;
             if (art.ArtId == 0)
             {
                 var entity = Mapper.Map<Arts>(art);
@@ -268,6 +276,7 @@ namespace Aik2
                 _ctx.SaveChanges();
                 art.ArtId = entity.ArtId;
                 gridArt[row, Const.Columns.Art.ArtId].Value = entity.ArtId;
+                isAdded = true;
             }
             else
             {
@@ -278,6 +287,12 @@ namespace Aik2
 
             _selectedArt = art;
             _artDtos[row - 1] = art;
+
+            var pArt = _arts.FirstOrDefault(x => x.Id == art.ArtId);
+            if (pArt != null) _arts.Remove(pArt);
+            _arts.InsertPairSorted(new Pair<int>() { Id = art.ArtId, Name = art.FullName });
+
+            return isAdded;
         }
 
         private void SelectArt(int? artId)
@@ -295,6 +310,7 @@ namespace Aik2
 
         private void ArtCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)
         {
+            _needLoadArt = false;
             _artPosition = e.NewFocusPosition;
             _selectedArt = _artDtos[_artPosition.Row - 1];
             lArt.Text = _selectedArt.FullName;
@@ -383,21 +399,59 @@ namespace Aik2
                         _artDtos.Insert(pos.Row - 1, Mapper.Map<ArtDto>(art));
                         gridArt.Rows.Insert(pos.Row);
                         UpdateArtRow(art, pos.Row);
+                        CheckArtSort(pos, true);
                     }
                     else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Control)
                     {
                         if (MessageBox.Show("Delete art?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            var art = _artDtos[pos.Row - 1];
-                            if (art.ArtId > 0)
+                            try
                             {
-                                var entity = _ctx.Arts.Single(x => x.ArtId == art.ArtId);
-                                _ctx.Arts.Remove(entity);
-                                _ctx.SaveChanges();
+                                var art = _artDtos[pos.Row - 1];
+                                if (art.ArtId > 0)
+                                {
+                                    var entity = _ctx.Arts.Single(x => x.ArtId == art.ArtId);
+                                    _ctx.Arts.Remove(entity);
+                                    _ctx.SaveChanges();
+                                }
+                                gridArt.Rows.Remove(pos.Row);
+                                _artDtos.RemoveAt(pos.Row - 1);
+                                var pArt = _arts.FirstOrDefault(x => x.Id == art.ArtId);
+                                if (pArt != null) _arts.Remove(pArt);
                             }
-                            gridArt.Rows.Remove(pos.Row);
-                            _artDtos.RemoveAt(pos.Row - 1);
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(GetInnerestException(ex));
+                            }
                         }
+                    }
+                    else if (e.KeyCode == Keys.Home && e.Modifiers == Keys.None)
+                    {
+                        var col = 0;
+                        while (!gridArt.Columns[col].Visible) col++;
+                        var focusPosn = new Position(pos.Row, col);
+                        gridArt.Selection.Focus(focusPosn, true);
+                    }
+                    else if (e.KeyCode == Keys.End && e.Modifiers == Keys.None)
+                    {
+                        var col = gridArt.Columns.Count - 1;
+                        while (!gridArt.Columns[col].Visible) col--;
+                        var focusPosn = new Position(pos.Row, col);
+                        gridArt.Selection.Focus(focusPosn, true);
+                    }
+                    else if (e.KeyCode == Keys.Home && e.Modifiers == Keys.Control)
+                    {
+                        var col = 0;
+                        while (!gridArt.Columns[col].Visible) col++;
+                        var focusPosn = new Position(1, col);
+                        gridArt.Selection.Focus(focusPosn, true);
+                    }
+                    else if (e.KeyCode == Keys.End && e.Modifiers == Keys.Control)
+                    {
+                        var col = gridArt.Columns.Count - 1;
+                        while (!gridArt.Columns[col].Visible) col--;
+                        var focusPosn = new Position(gridArt.RowsCount - 1, col);
+                        gridArt.Selection.Focus(focusPosn, true);
                     }
                     else if (_searchMode)
                     {

@@ -118,6 +118,42 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="bDown10.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAABlSURBVDhPYxjZ4AAUUwxGDUIFFUDcD2HCATaDQGoKIEzsoIGRkfE/kEY2DN2gfqiaBggXN+hG
+        MwzZIJgh3RAuYQAzrB2IYQa1k2oIDMAM+wHC5BoCA2DDKDUEBkAGUGzIkAUMDABv+SVD4UMwTwAAAABJ
+        RU5ErkJggg==
+</value>
+  </data>
+  <data name="bUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAtSURBVDhPYxgFwxQkAPF8CJN8ADLkPxSTbRiyIWQbhs0QGKbYm6NgFGAHDAwAgwoP8W1eh6UA
+        AAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="bUp10.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAABeSURBVDhPYxjZoB6KKQIlQPwfikFssgDMkB9QTJZhMEPagfgAFIPYJBmGbAgIwAwCgX4gJsow
+        mCEgDTCAbBAIEGVYBRAjGwIC6AaBwDQgBqklCWAziCwwatAwBQwMAAQBJEQ+iq0pAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="bHere.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAABSSURBVDhP7YyxCgAgCAX96Pba++hSqiWeVuQSdHDo8o4+sd9rChvae4eEjmJjYLkVQ0PkMoZG
+        mmYMDTQTq4IGyMyaoNHsMmLhEhFcIoJL5EmIKtyTR7mxFqIdAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="bDown.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAvSURBVDhPYxgFo4CGIAGI/+PAC4CYJIDNMJINgQFkw8g2BAZAhlFsyCgYfICBAQAjQw/1qW6Y
+        fgAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="bLockPic.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

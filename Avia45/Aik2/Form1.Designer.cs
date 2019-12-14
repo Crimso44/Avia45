@@ -61,6 +61,11 @@
             this.pPicTable = new System.Windows.Forms.Panel();
             this.gridPic = new SourceGrid.Grid();
             this.panel10 = new System.Windows.Forms.Panel();
+            this.bDown10 = new System.Windows.Forms.Button();
+            this.bUp = new System.Windows.Forms.Button();
+            this.bUp10 = new System.Windows.Forms.Button();
+            this.bHere = new System.Windows.Forms.Button();
+            this.bDown = new System.Windows.Forms.Button();
             this.bLockPic = new System.Windows.Forms.Button();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.pPicImg = new System.Windows.Forms.Panel();
@@ -95,10 +100,13 @@
             this.mnuAlt1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt2 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.picsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fillPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.mnuPicsFillPath = new System.Windows.Forms.ToolStripMenuItem();
+            this.lPicCnt = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -489,12 +497,72 @@
             // 
             // panel10
             // 
+            this.panel10.Controls.Add(this.bDown10);
+            this.panel10.Controls.Add(this.bUp);
+            this.panel10.Controls.Add(this.bUp10);
+            this.panel10.Controls.Add(this.bHere);
+            this.panel10.Controls.Add(this.bDown);
             this.panel10.Controls.Add(this.bLockPic);
             this.panel10.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel10.Location = new System.Drawing.Point(755, 0);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(31, 208);
             this.panel10.TabIndex = 4;
+            // 
+            // bDown10
+            // 
+            this.bDown10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bDown10.Image = ((System.Drawing.Image)(resources.GetObject("bDown10.Image")));
+            this.bDown10.Location = new System.Drawing.Point(4, 122);
+            this.bDown10.Name = "bDown10";
+            this.bDown10.Size = new System.Drawing.Size(24, 23);
+            this.bDown10.TabIndex = 5;
+            this.bDown10.UseVisualStyleBackColor = true;
+            this.bDown10.Click += new System.EventHandler(this.bDown10_Click);
+            // 
+            // bUp
+            // 
+            this.bUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bUp.Image = ((System.Drawing.Image)(resources.GetObject("bUp.Image")));
+            this.bUp.Location = new System.Drawing.Point(4, 35);
+            this.bUp.Name = "bUp";
+            this.bUp.Size = new System.Drawing.Size(24, 23);
+            this.bUp.TabIndex = 4;
+            this.bUp.UseVisualStyleBackColor = true;
+            this.bUp.Click += new System.EventHandler(this.bUp_Click);
+            // 
+            // bUp10
+            // 
+            this.bUp10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bUp10.Image = ((System.Drawing.Image)(resources.GetObject("bUp10.Image")));
+            this.bUp10.Location = new System.Drawing.Point(4, 6);
+            this.bUp10.Name = "bUp10";
+            this.bUp10.Size = new System.Drawing.Size(24, 23);
+            this.bUp10.TabIndex = 3;
+            this.bUp10.UseVisualStyleBackColor = true;
+            this.bUp10.Click += new System.EventHandler(this.bUp10_Click);
+            // 
+            // bHere
+            // 
+            this.bHere.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bHere.Image = ((System.Drawing.Image)(resources.GetObject("bHere.Image")));
+            this.bHere.Location = new System.Drawing.Point(4, 64);
+            this.bHere.Name = "bHere";
+            this.bHere.Size = new System.Drawing.Size(24, 23);
+            this.bHere.TabIndex = 2;
+            this.bHere.UseVisualStyleBackColor = true;
+            this.bHere.Click += new System.EventHandler(this.bHere_Click);
+            // 
+            // bDown
+            // 
+            this.bDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bDown.Image = ((System.Drawing.Image)(resources.GetObject("bDown.Image")));
+            this.bDown.Location = new System.Drawing.Point(4, 93);
+            this.bDown.Name = "bDown";
+            this.bDown.Size = new System.Drawing.Size(24, 23);
+            this.bDown.TabIndex = 1;
+            this.bDown.UseVisualStyleBackColor = true;
+            this.bDown.Click += new System.EventHandler(this.bDown_Click);
             // 
             // bLockPic
             // 
@@ -606,6 +674,7 @@
             this.edPicText.Size = new System.Drawing.Size(586, 50);
             this.edPicText.TabIndex = 0;
             this.edPicText.Text = "";
+            this.edPicText.TextChanged += new System.EventHandler(this.edPicText_TextChanged);
             this.edPicText.DoubleClick += new System.EventHandler(this.edPicText_DoubleClick);
             // 
             // pLinkTable
@@ -634,6 +703,7 @@
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.lPicCnt);
             this.panel5.Controls.Add(this.lblWingsEngs);
             this.panel5.Controls.Add(this.lblP);
             this.panel5.Controls.Add(this.lbl1);
@@ -806,7 +876,8 @@
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.calcWordsToolStripMenuItem,
-            this.focusToolStripMenuItem});
+            this.focusToolStripMenuItem,
+            this.picsToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -823,17 +894,16 @@
             this.focusToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuAlt1,
             this.mnuAlt2,
-            this.mnuAlt3,
-            this.mnuPicsFillPath});
+            this.mnuAlt3});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
             this.focusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.focusToolStripMenuItem.Text = "Pics";
+            this.focusToolStripMenuItem.Text = "Focus";
             // 
             // mnuAlt1
             // 
             this.mnuAlt1.Name = "mnuAlt1";
             this.mnuAlt1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.mnuAlt1.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt1.Size = new System.Drawing.Size(168, 22);
             this.mnuAlt1.Text = "Focus pics";
             this.mnuAlt1.Click += new System.EventHandler(this.mnuAlt1_Click);
             // 
@@ -841,7 +911,7 @@
             // 
             this.mnuAlt2.Name = "mnuAlt2";
             this.mnuAlt2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.mnuAlt2.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt2.Size = new System.Drawing.Size(168, 22);
             this.mnuAlt2.Text = "Focus text";
             this.mnuAlt2.Click += new System.EventHandler(this.mnuAlt2_Click);
             // 
@@ -849,9 +919,34 @@
             // 
             this.mnuAlt3.Name = "mnuAlt3";
             this.mnuAlt3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.mnuAlt3.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt3.Size = new System.Drawing.Size(168, 22);
             this.mnuAlt3.Text = "Focus links";
             this.mnuAlt3.Click += new System.EventHandler(this.mnuAlt3_Click);
+            // 
+            // picsToolStripMenuItem
+            // 
+            this.picsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fillPathToolStripMenuItem,
+            this.reloadToolStripMenuItem});
+            this.picsToolStripMenuItem.Name = "picsToolStripMenuItem";
+            this.picsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.picsToolStripMenuItem.Text = "Pics";
+            // 
+            // fillPathToolStripMenuItem
+            // 
+            this.fillPathToolStripMenuItem.Name = "fillPathToolStripMenuItem";
+            this.fillPathToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
+            this.fillPathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fillPathToolStripMenuItem.Text = "Fill path";
+            this.fillPathToolStripMenuItem.Click += new System.EventHandler(this.mnuPicsFillPath_Click);
+            // 
+            // reloadToolStripMenuItem
+            // 
+            this.reloadToolStripMenuItem.Name = "reloadToolStripMenuItem";
+            this.reloadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.reloadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reloadToolStripMenuItem.Text = "Reload";
+            this.reloadToolStripMenuItem.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
             // 
             // panel2
             // 
@@ -879,13 +974,15 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // mnuPicsFillPath
+            // lPicCnt
             // 
-            this.mnuPicsFillPath.Name = "mnuPicsFillPath";
-            this.mnuPicsFillPath.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
-            this.mnuPicsFillPath.Size = new System.Drawing.Size(180, 22);
-            this.mnuPicsFillPath.Text = "Fill path";
-            this.mnuPicsFillPath.Click += new System.EventHandler(this.mnuPicsFillPath_Click);
+            this.lPicCnt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lPicCnt.Location = new System.Drawing.Point(728, 4);
+            this.lPicCnt.Name = "lPicCnt";
+            this.lPicCnt.Size = new System.Drawing.Size(50, 13);
+            this.lPicCnt.TabIndex = 13;
+            this.lPicCnt.Text = ".";
+            this.lPicCnt.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // Form1
             // 
@@ -1008,7 +1105,15 @@
         private System.Windows.Forms.ToolStripMenuItem mnuAlt1;
         private System.Windows.Forms.ToolStripMenuItem mnuAlt2;
         private System.Windows.Forms.ToolStripMenuItem mnuAlt3;
-        private System.Windows.Forms.ToolStripMenuItem mnuPicsFillPath;
+        private System.Windows.Forms.Button bDown10;
+        private System.Windows.Forms.Button bUp;
+        private System.Windows.Forms.Button bUp10;
+        private System.Windows.Forms.Button bHere;
+        private System.Windows.Forms.Button bDown;
+        private System.Windows.Forms.ToolStripMenuItem picsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fillPathToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
+        private System.Windows.Forms.Label lPicCnt;
     }
 }
 

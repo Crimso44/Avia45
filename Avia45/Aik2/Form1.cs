@@ -47,7 +47,7 @@ namespace Aik2
             _ctx = new AiKEntities();
             LoadArts();
             LoadCrafts();
-            LoadPics(false);
+            LoadPics(true);
 
             tabControl1.SelectedIndex = 1;
         }
@@ -154,6 +154,18 @@ namespace Aik2
         {
             _searchMode = false;
             lInfo.Text = "";
+            foreach (var editor in _editorsArt)
+            {
+                if (editor != null) editor.EnableEdit = !_searchMode;
+            }
+            foreach (var editor in _editorsCraft)
+            {
+                if (editor != null) editor.EnableEdit = !_searchMode;
+            }
+            foreach (var editor in _editorsPic)
+            {
+                if (editor != null) editor.EnableEdit = !_searchMode;
+            }
         }
 
         private void calcWordsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -161,7 +173,7 @@ namespace Aik2
             _ctx.Database.ExecuteSqlCommand("Truncate Table dbo.WordLinks");
             _ctx.Database.ExecuteSqlCommand("Delete From dbo.Words");
 
-            foreach(var craft in _ctx.vwCrafts
+            foreach(var craft in _ctx.vwCrafts.AsNoTracking()
                 .OrderBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name).ThenBy(x => x.Source)
                 .ToList())
             {
@@ -176,7 +188,7 @@ namespace Aik2
                     _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, CraftId) Values ({word.Id}, {craft.CraftId})");
                 }
 
-                var pics = _ctx.vwPics.Where(x => x.CraftId == crft.CraftId).ToList();
+                var pics = _ctx.vwPics.AsNoTracking().Where(x => x.CraftId == crft.CraftId).ToList();
                 var cnt = 0;
                 foreach (var pic in pics)
                 {
@@ -360,20 +372,15 @@ namespace Aik2
             switch (tab.SelectedIndex)
             {
                 case 0:
-                    SelectArt(_selectedPicArtId);
+                    if (_needLoadArt) SelectArt(_selectedPic?.ArtId);
                     break;
                 case 1:
-                    SelectCraft(_selectedPicCraftId);
+                    if (_needLoadCraft) SelectCraft(_selectedPic?.CraftId);
                     break;
                 case 2:
                     LoadPics(true);
                     break;
             }
-        }
-
-        private void chPicSelArt_Click(object sender, EventArgs e)
-        {
-            LoadPics(false);
         }
 
         private void edPicText_DoubleClick(object sender, EventArgs e)
@@ -409,12 +416,12 @@ namespace Aik2
                             {
                                 if (link.PicId.HasValue)
                                 {
-                                    var pic = _ctx.vwPics.Single(x => x.PicId == link.PicId);
-                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == pic.CraftId));
+                                    var pic = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == link.PicId);
+                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == pic.CraftId));
                                     captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName} {pic.Path}" });
                                 } else
                                 {
-                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == link.CraftId));
+                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == link.CraftId));
                                     captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName}" });
                                 }
                             }
@@ -447,13 +454,11 @@ namespace Aik2
             var link = (WordLinks)mnuItem.Tag;
             if (link.CraftId.HasValue)
             {
-                _selectedPicCraftId = link.CraftId;
+                _selectedCraft = null;
+                SelectCraft(link.CraftId);
                 if (tabControl1.SelectedIndex != 1)
                 {
                     tabControl1.SelectedIndex = 1;
-                } else
-                {
-                    SelectCraft(_selectedPicCraftId);
                 }
             }
             else //if (link.PicId.HasValue)
@@ -461,13 +466,13 @@ namespace Aik2
                 int row;
                 if (chPicSelCraft.Checked)
                 {
-                    var craftId = _ctx.vwPics.Single(x => x.PicId == link.PicId.Value).CraftId;
+                    var craftId = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == link.PicId.Value).CraftId;
                     if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
                     {
                         var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
                         if (craftDto == null)
                         {
-                            craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.Single(x => x.CraftId == craftId));
+                            craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == craftId));
                             _craftDtos.Add(craftDto);
                             gridCraft.RowsCount++;
                             row = gridCraft.RowsCount - 1;
@@ -482,10 +487,9 @@ namespace Aik2
                         _craftPosition = focusPosn;
                         _selectedCraft = craftDto;
                     }
-                    _selectedPicCraftId = craftId;
                 } else
                 {
-                    var artId = _ctx.vwPics.Single(x => x.PicId == link.PicId.Value).ArtId;
+                    var artId = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == link.PicId.Value).ArtId;
                     if (_selectedArt == null || _selectedArt.ArtId != artId)
                     {
                         var artDto = _artDtos.FirstOrDefault(x => x.ArtId == artId);
@@ -498,15 +502,11 @@ namespace Aik2
                             _selectedArt = artDto;
                         }
                     }
-                    _selectedPicArtId = artId;
                 }
+                LoadPics(true);
                 if (tabControl1.SelectedIndex != 2)
                 {
                     tabControl1.SelectedIndex = 2;
-                }
-                else
-                {
-                    LoadPics(false);
                 }
                 var pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
                 if (pic != null)
@@ -517,6 +517,12 @@ namespace Aik2
                     _picPosition = focusPic;
                 }
             }
+        }
+
+        private string GetInnerestException(Exception e)
+        {
+            while (e.InnerException != null) e = e.InnerException;
+            return e.Message;
         }
 
     }

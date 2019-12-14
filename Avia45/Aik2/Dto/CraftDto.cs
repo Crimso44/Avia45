@@ -35,5 +35,12 @@ namespace Aik2.Dto
             }
         }
 
+        public string Sort
+        {
+            get
+            {
+                return $"{Construct?.Trim()} - {IYear} - {Name?.Trim()} ({Source}) - {Country?.Trim()}";
+            }
+        }
     }
 }
