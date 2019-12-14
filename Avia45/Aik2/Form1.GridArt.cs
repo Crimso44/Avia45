@@ -306,6 +306,7 @@ namespace Aik2
                 var newPos = new Position(ind + 1, pos == Position.Empty ? 1 : pos.Column);
                 gridArt.Selection.Focus(newPos, true);
             }
+            _needLoadArt = false;
         }
 
         private void ArtCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)

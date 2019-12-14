@@ -556,6 +556,7 @@ namespace Aik2
                 var newPos = new Position(ind + 1, pos == Position.Empty ? 1 : pos.Column);
                 gridCraft.Selection.Focus(newPos, true);
             }
+            _needLoadCraft = false;
         }
 
         private void CraftCellGotFocus(SelectionBase sender, ChangeActivePositionEventArgs e)

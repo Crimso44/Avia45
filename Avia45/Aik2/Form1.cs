@@ -454,12 +454,12 @@ namespace Aik2
             var link = (WordLinks)mnuItem.Tag;
             if (link.CraftId.HasValue)
             {
-                _selectedCraft = null;
-                SelectCraft(link.CraftId);
                 if (tabControl1.SelectedIndex != 1)
                 {
                     tabControl1.SelectedIndex = 1;
                 }
+                _selectedCraft = null;
+                SelectCraft(link.CraftId);
             }
             else //if (link.PicId.HasValue)
             {
@@ -484,6 +484,7 @@ namespace Aik2
                         }
                         var focusPosn = new Position(row, _craftPosition.Column);
                         gridCraft.Selection.Focus(focusPosn, true);
+                        DoCraftCellGotFocus(focusPosn);
                         _craftPosition = focusPosn;
                         _selectedCraft = craftDto;
                     }
@@ -503,12 +504,20 @@ namespace Aik2
                         }
                     }
                 }
-                LoadPics(true);
-                if (tabControl1.SelectedIndex != 2)
+                PicDto pic = null;
+                if (tabControl1.SelectedIndex == 2)
+                {
+                    pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
+                } else
                 {
                     tabControl1.SelectedIndex = 2;
+                    pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
                 }
-                var pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
+                if (pic == null)
+                {
+                    LoadPics(true);
+                    pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
+                }
                 if (pic != null)
                 {
                     row = _pics.IndexOf(pic) + 1;

@@ -115,13 +115,13 @@ namespace Aik2
             var flt = false;
             if (chPicSelArt.Checked && (_selectedPic != null || _selectedArt != null))
             {
-                var artId = isFromOtherTabs ? _selectedArt.ArtId : _selectedPic?.ArtId ?? _selectedArt.ArtId;
+                var artId = isFromOtherTabs ? _selectedArt?.ArtId ?? _selectedPic.ArtId : _selectedPic?.ArtId ?? _selectedArt.ArtId;
                 PicsQry = PicsQry.Where(x => x.ArtId == artId);
                 flt = true;
             }
             if (chPicSelCraft.Checked && (_selectedPic != null || _selectedCraft != null))
             {
-                var craftId = isFromOtherTabs ? _selectedCraft.CraftId : _selectedPic?.CraftId ?? _selectedCraft.CraftId;
+                var craftId = isFromOtherTabs ? _selectedCraft?.CraftId ?? _selectedPic.CraftId : _selectedPic?.CraftId ?? _selectedCraft.CraftId;
                 PicsQry = PicsQry.Where(x => x.CraftId == craftId);
                 flt = true;
             }
