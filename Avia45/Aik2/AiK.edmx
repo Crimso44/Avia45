@@ -84,6 +84,21 @@
           <Property Name="Text" Type="text" />
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AiK.dbo.Report' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="ReportId" />
+          </Key>
+          <Property Name="ReportId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Mag" Type="nvarchar" MaxLength="5" />
+          <Property Name="IYear" Type="int" />
+          <Property Name="IMonth" Type="nvarchar" MaxLength="5" />
+          <Property Name="Source" Type="nchar" MaxLength="1" />
+          <Property Name="pics" Type="int" />
+          <Property Name="crafts" Type="int" />
+          <Property Name="uniq" Type="int" />
+        </EntityType>
         <EntityType Name="WordLinks">
           <Key>
             <PropertyRef Name="WordLinkId" />
@@ -133,8 +148,8 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
         <EntityType Name="vwPics">
           <Key>
             <PropertyRef Name="PicId" />
-            <PropertyRef Name="ArtId" />
-            <PropertyRef Name="CraftId" />
+            
+            
           </Key>
           <Property Name="PicId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="ArtId" Type="int" Nullable="false" />
@@ -149,6 +164,25 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <Property Name="SText" Type="varchar" MaxLength="253" />
           <Property Name="XType" Type="nvarchar" MaxLength="20" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AiK.dbo.vwReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwReport">
+          <Key>
+            <PropertyRef Name="Mag" />
+            <PropertyRef Name="IYear" />
+            <PropertyRef Name="IMonth" />
+            <PropertyRef Name="Source" />
+          </Key>
+          <Property Name="Mag" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="IYear" Type="int" Nullable="false" />
+          <Property Name="IMonth" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="Source" Type="nchar" MaxLength="1" Nullable="false" />
+          <Property Name="pics" Type="int" />
+          <Property Name="crafts" Type="int" />
+          <Property Name="uniq" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <Association Name="FK_Crafts_Crafts">
           <End Role="Crafts" Type="Self.Crafts" Multiplicity="0..1" />
           <End Role="Crafts1" Type="Self.Crafts" Multiplicity="*" />
@@ -278,6 +312,18 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <EntitySet Name="Pics" EntityType="Self.Pics" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WordLinks" EntityType="Self.WordLinks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Words" EntityType="Self.Words" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Report" EntityType="Self.Report" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Report].[ReportId] AS [ReportId], 
+    [Report].[Mag] AS [Mag], 
+    [Report].[IYear] AS [IYear], 
+    [Report].[IMonth] AS [IMonth], 
+    [Report].[Source] AS [Source], 
+    [Report].[pics] AS [pics], 
+    [Report].[crafts] AS [crafts], 
+    [Report].[uniq] AS [uniq]
+    FROM [dbo].[Report] AS [Report]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="vwCrafts" EntityType="Self.vwCrafts" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwCrafts].[CraftId] AS [CraftId], 
@@ -317,6 +363,17 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
     [vwPics].[SText] AS [SText], 
     [vwPics].[XType] AS [XType]
     FROM [dbo].[vwPics] AS [vwPics]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vwReport" EntityType="Self.vwReport" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwReport].[Mag] AS [Mag], 
+    [vwReport].[IYear] AS [IYear], 
+    [vwReport].[IMonth] AS [IMonth], 
+    [vwReport].[Source] AS [Source], 
+    [vwReport].[pics] AS [pics], 
+    [vwReport].[crafts] AS [crafts], 
+    [vwReport].[uniq] AS [uniq]
+    FROM [dbo].[vwReport] AS [vwReport]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_Crafts_Crafts" Association="Self.FK_Crafts_Crafts">
             <End Role="Crafts" EntitySet="Crafts" />
@@ -556,6 +613,8 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           </AssociationSet>
           <EntitySet Name="vwCrafts" EntityType="AiKModel.vwCrafts" />
           <EntitySet Name="vwPics" EntityType="AiKModel.vwPics" />
+          <EntitySet Name="Report" EntityType="AiKModel.Report" />
+          <EntitySet Name="vwReport" EntityType="AiKModel.vwReport" />
         </EntityContainer>
         <EntityType Name="Crafts">
           <Key>
@@ -679,8 +738,6 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
         <EntityType Name="vwPics">
           <Key>
             <PropertyRef Name="PicId" />
-            <PropertyRef Name="ArtId" />
-            <PropertyRef Name="CraftId" />
           </Key>
           <Property Name="PicId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ArtId" Type="Int32" Nullable="false" />
@@ -694,6 +751,34 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <Property Name="Grp" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="SText" Type="String" MaxLength="253" FixedLength="false" Unicode="false" />
           <Property Name="XType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="ReportId" />
+          </Key>
+          <Property Name="ReportId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Mag" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="IYear" Type="Int32" />
+          <Property Name="IMonth" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="pics" Type="Int32" />
+          <Property Name="crafts" Type="Int32" />
+          <Property Name="uniq" Type="Int32" />
+        </EntityType>
+        <EntityType Name="vwReport">
+          <Key>
+            <PropertyRef Name="Mag" />
+            <PropertyRef Name="IYear" />
+            <PropertyRef Name="IMonth" />
+            <PropertyRef Name="Source" />
+          </Key>
+          <Property Name="Mag" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="IYear" Type="Int32" Nullable="false" />
+          <Property Name="IMonth" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" Nullable="false" />
+          <Property Name="pics" Type="Int32" />
+          <Property Name="crafts" Type="Int32" />
+          <Property Name="uniq" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -846,6 +931,33 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
                 <ScalarProperty Name="CraftId" ColumnName="CraftId" />
                 <ScalarProperty Name="ArtId" ColumnName="ArtId" />
                 <ScalarProperty Name="PicId" ColumnName="PicId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Report">
+            <EntityTypeMapping TypeName="AiKModel.Report">
+              <MappingFragment StoreEntitySet="Report">
+                <ScalarProperty Name="uniq" ColumnName="uniq" />
+                <ScalarProperty Name="crafts" ColumnName="crafts" />
+                <ScalarProperty Name="pics" ColumnName="pics" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="IMonth" ColumnName="IMonth" />
+                <ScalarProperty Name="IYear" ColumnName="IYear" />
+                <ScalarProperty Name="Mag" ColumnName="Mag" />
+                <ScalarProperty Name="ReportId" ColumnName="ReportId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwReport">
+            <EntityTypeMapping TypeName="AiKModel.vwReport">
+              <MappingFragment StoreEntitySet="vwReport">
+                <ScalarProperty Name="uniq" ColumnName="uniq" />
+                <ScalarProperty Name="crafts" ColumnName="crafts" />
+                <ScalarProperty Name="pics" ColumnName="pics" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="IMonth" ColumnName="IMonth" />
+                <ScalarProperty Name="IYear" ColumnName="IYear" />
+                <ScalarProperty Name="Mag" ColumnName="Mag" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

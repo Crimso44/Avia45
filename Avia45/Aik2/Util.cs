@@ -28,7 +28,7 @@ namespace Aik2
 
         public static string PadLeft(string s, char c, int n)
         {
-            var res = s;
+            var res = string.IsNullOrEmpty(s) ? "" : s;
             while (res.Length < n) res = c + res;
             return res;
         }

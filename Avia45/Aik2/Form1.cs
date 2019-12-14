@@ -170,47 +170,50 @@ namespace Aik2
 
         private void calcWordsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _ctx.Database.ExecuteSqlCommand("Truncate Table dbo.WordLinks");
-            _ctx.Database.ExecuteSqlCommand("Delete From dbo.Words");
-
-            foreach(var craft in _ctx.vwCrafts.AsNoTracking()
-                .OrderBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name).ThenBy(x => x.Source)
-                .ToList())
+            if (MessageBox.Show("Reload all words?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                var crft = Mapper.Map<CraftDto>(craft);
-                lInfo.Text = crft.FullName;
-                Application.DoEvents();
+                _ctx.Database.ExecuteSqlCommand("Truncate Table dbo.WordLinks");
+                _ctx.Database.ExecuteSqlCommand("Delete From dbo.Words");
 
-                var text = _ctx.Crafts.Single(x => x.CraftId == craft.CraftId).CText;
-                var wordsList = GetWords(text, true);
-                foreach(var word in wordsList)
+                foreach (var craft in _ctx.vwCrafts.AsNoTracking()
+                    .OrderBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name).ThenBy(x => x.Source)
+                    .ToList())
                 {
-                    _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, CraftId) Values ({word.Id}, {craft.CraftId})");
-                }
-
-                var pics = _ctx.vwPics.AsNoTracking().Where(x => x.CraftId == crft.CraftId).ToList();
-                var cnt = 0;
-                foreach (var pic in pics)
-                {
-                    cnt++;
-                    lInfo.Text = $"{crft.FullName} {cnt}/{pics.Count}";
+                    var crft = Mapper.Map<CraftDto>(craft);
+                    lInfo.Text = crft.FullName;
                     Application.DoEvents();
 
-                    var ptext = _ctx.Pics.Single(x => x.PicId == pic.PicId).Text;
-                    wordsList = GetWords(ptext, true);
+                    var text = _ctx.Crafts.Single(x => x.CraftId == craft.CraftId).CText;
+                    var wordsList = GetWords(text, true);
                     foreach (var word in wordsList)
                     {
-                        _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, PicId) Values ({word.Id}, {pic.PicId})");
+                        _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, CraftId) Values ({word.Id}, {craft.CraftId})");
                     }
+
+                    var pics = _ctx.vwPics.AsNoTracking().Where(x => x.CraftId == crft.CraftId).ToList();
+                    var cnt = 0;
+                    foreach (var pic in pics)
+                    {
+                        cnt++;
+                        lInfo.Text = $"{crft.FullName} {cnt}/{pics.Count}";
+                        Application.DoEvents();
+
+                        var ptext = _ctx.Pics.Single(x => x.PicId == pic.PicId).Text;
+                        wordsList = GetWords(ptext, true);
+                        foreach (var word in wordsList)
+                        {
+                            _ctx.Database.ExecuteSqlCommand($"insert into WordLinks (WordId, PicId) Values ({word.Id}, {pic.PicId})");
+                        }
+                    }
+
                 }
+                lInfo.Text = "";
 
+                _ctx.Database.Connection.Close();
+                _ctx.Database.Connection.Open();
+
+                MessageBox.Show("OK");
             }
-            lInfo.Text = "";
-
-            _ctx.Database.Connection.Close();
-            _ctx.Database.Connection.Open();
-
-            MessageBox.Show("OK");
         }
 
         private List<Pair<int>> GetWords(string text, bool isAppend)
@@ -534,5 +537,65 @@ namespace Aik2
             return e.Message;
         }
 
+        private bool CompareReport(ReportDto o, ReportDto n)
+        {
+            if (o == null || n == null) return true;
+            return o.pics != n.pics || o.crafts != n.crafts || o.uniq != n.uniq;
+        }
+
+        private void reportNewPicsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var all = (
+                    from r in _ctx.Report
+                    select new { r.Mag, IYear = r.IYear ?? -1, r.IMonth, r.Source }
+                ).Concat(
+                    from v in _ctx.vwReport
+                    select new { v.Mag, v.IYear, v.IMonth, v.Source }
+                ).Distinct();
+            var rep = (
+                from m in all
+                from n in _ctx.vwReport.Where(n =>
+                    m.Mag == n.Mag && m.IYear == n.IYear && m.IMonth == n.IMonth && m.Source == n.Source).DefaultIfEmpty()
+                from o in _ctx.Report.Where(o =>
+                    m.Mag == o.Mag && m.IYear == o.IYear && m.IMonth == o.IMonth && m.Source == o.Source).DefaultIfEmpty()
+                orderby m.Mag, m.IYear, m.IMonth, m.Source
+                select new { m, o, n }).ToList();
+
+            var frep = new fReport();
+            var wasDivider = true;
+            for(var i = 0; i < rep.Count; i++)
+            {
+                var r = rep[i];
+                var diff = CompareReport(Mapper.Map<ReportDto>(r.o), Mapper.Map<ReportDto>(r.n));
+                var diffPrev = i > 0 && CompareReport(Mapper.Map<ReportDto>(rep[i - 1].o), Mapper.Map<ReportDto>(rep[i - 1].n));
+                var diffNext = i < rep.Count - 1 && CompareReport(Mapper.Map<ReportDto>(rep[i + 1].o), Mapper.Map<ReportDto>(rep[i + 1].n));
+
+                if (diff || diffPrev || diffNext)
+                {
+                    var s =
+                        $"{PadLeft(r.m.Mag.Trim(), ' ', 5)} {PadLeft(r.m.IYear.ToString(), ' ', 5)} {PadLeft(r.m.IMonth.Trim(), ' ', 5)} {r.o?.Source ?? r.n?.Source}: " +
+                        $"{PadLeft(r.o?.pics.ToString(), ' ', 6)} {PadLeft(r.o?.crafts.ToString(), ' ', 6)} {PadLeft(r.o?.uniq.ToString(), ' ', 6)}   ";
+                    if (diff)
+                    {
+                        s += $"{PadLeft(r.n?.pics.ToString(), ' ', 6)} {PadLeft(r.n?.crafts.ToString(), ' ', 6)} {PadLeft(r.n?.uniq.ToString(), ' ', 6)}  =>  ";
+                        var dpics = (r.n?.pics ?? 0) - (r.o?.pics ?? 0);
+                        var dcrafts = (r.n?.crafts ?? 0) - (r.o?.crafts ?? 0);
+                        var duniq = (r.n?.uniq ?? 0) - (r.o?.uniq ?? 0);
+                        s += $"{(dpics > 0 ? "+" : "")}{dpics} {(dcrafts > 0 ? "+" : "")}{dcrafts} {(duniq > 0 ? "+" : "")}{duniq}";
+                    }
+                    frep.ReportList.Items.Add(s);
+                    wasDivider = false;
+                }
+                else
+                {
+                    if (!wasDivider)
+                    {
+                        frep.ReportList.Items.Add("...");
+                        wasDivider = true;
+                    }
+                }
+            }
+            frep.ShowDialog(this);
+        }
     }
 }

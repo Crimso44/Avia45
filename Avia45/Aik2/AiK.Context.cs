@@ -35,5 +35,7 @@ namespace Aik2
         public virtual DbSet<Crafts> Crafts { get; set; }
         public virtual DbSet<vwCrafts> vwCrafts { get; set; }
         public virtual DbSet<vwPics> vwPics { get; set; }
+        public virtual DbSet<Report> Report { get; set; }
+        public virtual DbSet<vwReport> vwReport { get; set; }
     }
 }

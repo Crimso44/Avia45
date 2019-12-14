@@ -25,6 +25,8 @@
         <AssociationConnector Association="AiKModel.FK_WordLinks_Crafts" />
         <EntityTypeShape EntityType="AiKModel.vwCrafts" Width="1.5" PointX="0.625" PointY="7.375" />
         <EntityTypeShape EntityType="AiKModel.vwPics" Width="1.5" PointX="3" PointY="8" />
+        <EntityTypeShape EntityType="AiKModel.Report" Width="1.5" PointX="5.25" PointY="6.25" />
+        <EntityTypeShape EntityType="AiKModel.vwReport" Width="1.5" PointX="7" PointY="6.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

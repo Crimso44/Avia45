@@ -129,7 +129,7 @@ namespace Aik2
             {
                 PicsQry = PicsQry.Where(x => false);
             }
-            PicsQry = PicsQry.OrderBy(x => x.NType).ThenBy(x => x.NNN);
+            PicsQry = PicsQry.OrderBy(x => x.CraftId).ThenBy(x => x.NType).ThenBy(x => x.NNN);
 
             var Pics = PicsQry.ToList();
             _pics = Mapper.Map<List<PicDto>>(Pics);
@@ -174,6 +174,12 @@ namespace Aik2
             }
 
             gridPic.Refresh();
+
+            bUp.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
+            bUp10.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
+            bDown.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
+            bDown10.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
+            bHere.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
         }
 
         public void InitLinkGrid()

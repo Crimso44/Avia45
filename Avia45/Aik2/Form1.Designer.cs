@@ -80,6 +80,7 @@
             this.pLinkTable = new System.Windows.Forms.Panel();
             this.gridLink = new SourceGrid.Grid();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.lPicCnt = new System.Windows.Forms.Label();
             this.lblWingsEngs = new System.Windows.Forms.Label();
             this.lblP = new System.Windows.Forms.Label();
             this.lbl1 = new System.Windows.Forms.Label();
@@ -106,7 +107,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.lPicCnt = new System.Windows.Forms.Label();
+            this.reportNewPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -723,6 +724,16 @@
             this.panel5.Size = new System.Drawing.Size(786, 54);
             this.panel5.TabIndex = 0;
             // 
+            // lPicCnt
+            // 
+            this.lPicCnt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lPicCnt.Location = new System.Drawing.Point(728, 4);
+            this.lPicCnt.Name = "lPicCnt";
+            this.lPicCnt.Size = new System.Drawing.Size(50, 13);
+            this.lPicCnt.TabIndex = 13;
+            this.lPicCnt.Text = ".";
+            this.lPicCnt.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // lblWingsEngs
             // 
             this.lblWingsEngs.AutoSize = true;
@@ -875,9 +886,10 @@
             // miscToolStripMenuItem
             // 
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.calcWordsToolStripMenuItem,
             this.focusToolStripMenuItem,
-            this.picsToolStripMenuItem});
+            this.picsToolStripMenuItem,
+            this.calcWordsToolStripMenuItem,
+            this.reportNewPicsToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -885,7 +897,7 @@
             // calcWordsToolStripMenuItem
             // 
             this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
-            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.calcWordsToolStripMenuItem.Text = "Calc words";
             this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
             // 
@@ -896,7 +908,7 @@
             this.mnuAlt2,
             this.mnuAlt3});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
-            this.focusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.focusToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.focusToolStripMenuItem.Text = "Focus";
             // 
             // mnuAlt1
@@ -929,7 +941,7 @@
             this.fillPathToolStripMenuItem,
             this.reloadToolStripMenuItem});
             this.picsToolStripMenuItem.Name = "picsToolStripMenuItem";
-            this.picsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.picsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.picsToolStripMenuItem.Text = "Pics";
             // 
             // fillPathToolStripMenuItem
@@ -974,15 +986,13 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // lPicCnt
+            // reportNewPicsToolStripMenuItem
             // 
-            this.lPicCnt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lPicCnt.Location = new System.Drawing.Point(728, 4);
-            this.lPicCnt.Name = "lPicCnt";
-            this.lPicCnt.Size = new System.Drawing.Size(50, 13);
-            this.lPicCnt.TabIndex = 13;
-            this.lPicCnt.Text = ".";
-            this.lPicCnt.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.reportNewPicsToolStripMenuItem.Name = "reportNewPicsToolStripMenuItem";
+            this.reportNewPicsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.reportNewPicsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.reportNewPicsToolStripMenuItem.Text = "Report new pics";
+            this.reportNewPicsToolStripMenuItem.Click += new System.EventHandler(this.reportNewPicsToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1114,6 +1124,7 @@
         private System.Windows.Forms.ToolStripMenuItem fillPathToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem;
         private System.Windows.Forms.Label lPicCnt;
+        private System.Windows.Forms.ToolStripMenuItem reportNewPicsToolStripMenuItem;
     }
 }
 
