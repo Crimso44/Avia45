@@ -561,7 +561,7 @@ namespace Aik2
                 orderby m.Mag, m.IYear, m.IMonth, m.Source
                 select new { m, o, n }).ToList();
 
-            var frep = new fReport();
+            var frep = new fReport(_ctx, _imagesPath);
             var wasDivider = true;
             for(var i = 0; i < rep.Count; i++)
             {
@@ -623,5 +623,9 @@ namespace Aik2
             }
         }
 
+        private void make6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

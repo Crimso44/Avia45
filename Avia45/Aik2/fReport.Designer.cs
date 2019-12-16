@@ -30,14 +30,17 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.lbReport = new System.Windows.Forms.ListBox();
+            this.bSaveReport = new System.Windows.Forms.Button();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.bSaveReport);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 406);
+            this.panel1.Location = new System.Drawing.Point(0, 412);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(800, 44);
+            this.panel1.Size = new System.Drawing.Size(800, 38);
             this.panel1.TabIndex = 0;
             // 
             // lbReport
@@ -48,8 +51,19 @@
             this.lbReport.ItemHeight = 14;
             this.lbReport.Location = new System.Drawing.Point(0, 0);
             this.lbReport.Name = "lbReport";
-            this.lbReport.Size = new System.Drawing.Size(800, 406);
+            this.lbReport.Size = new System.Drawing.Size(800, 412);
             this.lbReport.TabIndex = 1;
+            this.lbReport.DoubleClick += new System.EventHandler(this.lbReport_DoubleClick);
+            // 
+            // bSaveReport
+            // 
+            this.bSaveReport.Location = new System.Drawing.Point(713, 9);
+            this.bSaveReport.Name = "bSaveReport";
+            this.bSaveReport.Size = new System.Drawing.Size(75, 23);
+            this.bSaveReport.TabIndex = 0;
+            this.bSaveReport.Text = "Сохранить";
+            this.bSaveReport.UseVisualStyleBackColor = true;
+            this.bSaveReport.Click += new System.EventHandler(this.bSaveReport_Click);
             // 
             // fReport
             // 
@@ -60,6 +74,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "fReport";
             this.Text = "fReport";
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -68,5 +83,6 @@
 
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListBox lbReport;
+        private System.Windows.Forms.Button bSaveReport;
     }
 }

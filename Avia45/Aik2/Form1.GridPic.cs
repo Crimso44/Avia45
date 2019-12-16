@@ -1209,5 +1209,69 @@ namespace Aik2
             LoadPics(false);
         }
 
+        private void unusedPicsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var existImg = new List<string>();
+            var srcs = new string[] { "2", "6", "7" };
+            foreach(var src in srcs)
+            {
+                LoadDirectories(_imagesPath + $"Images{src}\\", $"Images{src}\\", existImg);
+            }
+            var baseImg = (
+                from c in _ctx.vwCrafts
+                join p in _ctx.vwPics on c.CraftId equals p.CraftId
+                where srcs.Contains(c.Source)
+                select ("Images" + c.Source + "\\" + p.Path)/*.ToLower()*/)
+                .Distinct().ToList();
+            baseImg.Sort();
+
+            var unusedImg = new List<string>();
+            foreach (var img in existImg)
+            {
+                var i = baseImg.BinaryIndexOf(img);
+                if (i < 0)
+                {
+                    unusedImg.Add(img);
+                }
+            }
+
+            foreach (var img in baseImg)
+            {
+                var i = existImg.BinaryIndexOf(img);
+                if (i < 0)
+                {
+                    unusedImg.Add("-" + img);
+                }
+            }
+
+            var frep = new fReport(_ctx, _imagesPath);
+            frep.SaveButton.Text = "Удалить";
+            frep.Mode = 1;
+            foreach(var unused in unusedImg)
+            {
+                frep.ReportList.Items.Add(unused);
+            }
+            frep.Show(this);
+        }
+
+        private void LoadDirectories(string path, string shortPath, List<string> imgs)
+        {
+            var files = Directory.GetFiles(path, "*.jpg");
+            foreach(var file in files)
+            {
+                imgs.InsertStringSorted((shortPath + Path.GetFileName(file))/*.ToLower()*/);
+            }
+            files = Directory.GetFiles(path, "*.gif");
+            foreach (var file in files)
+            {
+                imgs.InsertStringSorted((shortPath + Path.GetFileName(file))/*.ToLower()*/);
+            }
+            var dirs = Directory.GetDirectories(path);
+            foreach(var dir in dirs)
+            {
+                var shPath = shortPath + Path.GetFileName(dir) + "\\";
+                LoadDirectories(dir, shPath, imgs);
+            }
+        }
     }
 }

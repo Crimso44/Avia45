@@ -59,12 +59,46 @@ namespace Aik2
             source.Insert(index + 1, element);
         }
 
+        public static void InsertStringSorted(this List<string> source,
+                string element)
+        {
+            int index = source.FindLastIndex(e => string.Compare(e, element) < 0);
+            if (index == 0 || index == -1)
+            {
+                source.Insert(0, element);
+                return;
+            }
+            source.Insert(index + 1, element);
+        }
+
         public static void Move<T>(this List<T> source, int oldIndex, int newIndex) 
         {
             T item = source[oldIndex];
             source.RemoveAt(oldIndex);
             source.Insert(newIndex, item);
         }
+
+        public static int BinaryIndexOf(this List<string> source, string element)
+        {
+            var ind = (source.Count + 1) / 2;
+            var step = ind;
+            if (ind >= source.Count) return -1;
+            while (true) {
+                if (source[ind] == element) return ind;
+                if (step == 1) return -1;
+                step = (step + 1) / 2;
+                if (string.Compare(source[ind], element) < 0)
+                {
+                    ind += step;
+                    if (ind >= source.Count) ind = source.Count - 1;
+                } else
+                {
+                    ind -= step;
+                    if (ind < 0) ind = 0;
+                };
+            };
+        }
+
     }
 
 }

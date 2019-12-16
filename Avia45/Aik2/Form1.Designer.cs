@@ -54,6 +54,7 @@
             this.pCraftSeeAlso = new System.Windows.Forms.Panel();
             this.lstCraftSeeAlso = new System.Windows.Forms.ListBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.lCraftPicNum = new System.Windows.Forms.Label();
             this.bCraftFlyingLink = new System.Windows.Forms.Button();
             this.bCraftWikiLink = new System.Windows.Forms.Button();
             this.bCraftAirwarLink = new System.Windows.Forms.Button();
@@ -109,10 +110,12 @@
             this.picsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.fillPathToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.reportNewPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unusedPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.lCraftPicNum = new System.Windows.Forms.Label();
+            this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -422,6 +425,16 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(200, 29);
             this.panel3.TabIndex = 0;
+            // 
+            // lCraftPicNum
+            // 
+            this.lCraftPicNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lCraftPicNum.Location = new System.Drawing.Point(105, 7);
+            this.lCraftPicNum.Name = "lCraftPicNum";
+            this.lCraftPicNum.Size = new System.Drawing.Size(90, 19);
+            this.lCraftPicNum.TabIndex = 3;
+            this.lCraftPicNum.Text = ".";
+            this.lCraftPicNum.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // bCraftFlyingLink
             // 
@@ -893,7 +906,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miscToolStripMenuItem,
             this.craftsToolStripMenuItem,
-            this.picsToolStripMenuItem1});
+            this.picsToolStripMenuItem1,
+            this.webToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -991,7 +1005,8 @@
             // 
             this.picsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fillPathToolStripMenuItem1,
-            this.reportNewPicsToolStripMenuItem});
+            this.reportNewPicsToolStripMenuItem,
+            this.unusedPicsToolStripMenuItem});
             this.picsToolStripMenuItem1.Name = "picsToolStripMenuItem1";
             this.picsToolStripMenuItem1.Size = new System.Drawing.Size(40, 20);
             this.picsToolStripMenuItem1.Text = "Pics";
@@ -1011,6 +1026,13 @@
             this.reportNewPicsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
             this.reportNewPicsToolStripMenuItem.Text = "Report new pics";
             this.reportNewPicsToolStripMenuItem.Click += new System.EventHandler(this.reportNewPicsToolStripMenuItem_Click);
+            // 
+            // unusedPicsToolStripMenuItem
+            // 
+            this.unusedPicsToolStripMenuItem.Name = "unusedPicsToolStripMenuItem";
+            this.unusedPicsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.unusedPicsToolStripMenuItem.Text = "Unused pics";
+            this.unusedPicsToolStripMenuItem.Click += new System.EventHandler(this.unusedPicsToolStripMenuItem_Click);
             // 
             // panel2
             // 
@@ -1038,15 +1060,20 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // lCraftPicNum
+            // webToolStripMenuItem
             // 
-            this.lCraftPicNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lCraftPicNum.Location = new System.Drawing.Point(105, 7);
-            this.lCraftPicNum.Name = "lCraftPicNum";
-            this.lCraftPicNum.Size = new System.Drawing.Size(90, 19);
-            this.lCraftPicNum.TabIndex = 3;
-            this.lCraftPicNum.Text = ".";
-            this.lCraftPicNum.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.webToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.make6ToolStripMenuItem});
+            this.webToolStripMenuItem.Name = "webToolStripMenuItem";
+            this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.webToolStripMenuItem.Text = "Web";
+            // 
+            // make6ToolStripMenuItem
+            // 
+            this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
+            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.make6ToolStripMenuItem.Text = "Make 6";
+            this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1184,6 +1211,9 @@
         private System.Windows.Forms.ToolStripMenuItem reportNewPicsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem priorCraftInMagToolStripMenuItem;
         private System.Windows.Forms.Label lCraftPicNum;
+        private System.Windows.Forms.ToolStripMenuItem unusedPicsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem webToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem make6ToolStripMenuItem;
     }
 }
 
