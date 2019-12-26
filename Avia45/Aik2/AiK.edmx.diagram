@@ -27,6 +27,7 @@
         <EntityTypeShape EntityType="AiKModel.vwPics" Width="1.5" PointX="3" PointY="8" />
         <EntityTypeShape EntityType="AiKModel.Report" Width="1.5" PointX="5.25" PointY="6.25" />
         <EntityTypeShape EntityType="AiKModel.vwReport" Width="1.5" PointX="7" PointY="6.25" />
+        <EntityTypeShape EntityType="AiKModel.vwArts" Width="1.5" PointX="9.75" PointY="0.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

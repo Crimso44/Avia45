@@ -16,6 +16,8 @@ namespace Aik2.Dto
         public string Name { get; set; }
         public int? NN { get; set; }
         public string Serie { get; set; }
+        public string Source { get; set; }
+        public int? cnt { get; set; }
 
         public string FullName { get
             {

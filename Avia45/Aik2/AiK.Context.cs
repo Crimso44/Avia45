@@ -37,5 +37,6 @@ namespace Aik2
         public virtual DbSet<vwPics> vwPics { get; set; }
         public virtual DbSet<Report> Report { get; set; }
         public virtual DbSet<vwReport> vwReport { get; set; }
+        public virtual DbSet<vwArts> vwArts { get; set; }
     }
 }

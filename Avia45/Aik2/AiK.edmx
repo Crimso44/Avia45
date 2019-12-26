@@ -39,7 +39,7 @@
           <Property Name="Glider" Type="bit" />
           <Property Name="Source" Type="nchar" MaxLength="1" />
           <Property Name="Type" Type="nvarchar" MaxLength="255" />
-          <Property Name="CText" Type="text" />
+          <Property Name="CText" Type="nvarchar(max)" />
           <Property Name="SeeAlso" Type="int" />
           <Property Name="Wiki" Type="nvarchar" MaxLength="255" />
           <Property Name="Airwar" Type="nvarchar" MaxLength="255" />
@@ -81,7 +81,7 @@
           <Property Name="Type" Type="nchar" MaxLength="10" />
           <Property Name="NType" Type="int" />
           <Property Name="Path" Type="nvarchar" MaxLength="50" />
-          <Property Name="Text" Type="text" />
+          <Property Name="Text" Type="nvarchar(max)" />
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -115,6 +115,23 @@ warning 6002: The table/view 'AiK.dbo.Report' does not have a primary key define
           <Property Name="WordId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Word" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Cnt" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AiK.dbo.vwArts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwArts">
+          <Key>
+            <PropertyRef Name="ArtId" />
+          </Key>
+          <Property Name="ArtId" Type="int" Nullable="false" />
+          <Property Name="Mag" Type="nchar" MaxLength="5" />
+          <Property Name="IYear" Type="int" />
+          <Property Name="IMonth" Type="nchar" MaxLength="5" />
+          <Property Name="Author" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="NN" Type="int" />
+          <Property Name="Serie" Type="nvarchar" MaxLength="50" />
+          <Property Name="Source" Type="nchar" MaxLength="1" />
+          <Property Name="cnt" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AiK.dbo.vwCrafts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -161,7 +178,7 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <Property Name="NType" Type="int" />
           <Property Name="Path" Type="nvarchar" MaxLength="50" />
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
-          <Property Name="SText" Type="varchar" MaxLength="253" />
+          <Property Name="SText" Type="nvarchar(max)" />
           <Property Name="XType" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -324,6 +341,20 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
     [Report].[uniq] AS [uniq]
     FROM [dbo].[Report] AS [Report]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vwArts" EntityType="Self.vwArts" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwArts].[ArtId] AS [ArtId], 
+    [vwArts].[Mag] AS [Mag], 
+    [vwArts].[IYear] AS [IYear], 
+    [vwArts].[IMonth] AS [IMonth], 
+    [vwArts].[Author] AS [Author], 
+    [vwArts].[Name] AS [Name], 
+    [vwArts].[NN] AS [NN], 
+    [vwArts].[Serie] AS [Serie], 
+    [vwArts].[Source] AS [Source], 
+    [vwArts].[cnt] AS [cnt]
+    FROM [dbo].[vwArts] AS [vwArts]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="vwCrafts" EntityType="Self.vwCrafts" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwCrafts].[CraftId] AS [CraftId], 
@@ -473,7 +504,7 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
           <Property Name="Type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="NType" Type="Int32" />
           <Property Name="Path" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Grp" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Arts" Relationship="Self.FK_Pics_Arts" FromRole="Pics" ToRole="Arts" />
           <NavigationProperty Name="Links" Relationship="Self.FK_Links_Pics" FromRole="Pics" ToRole="Links" />
@@ -615,6 +646,7 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
           <EntitySet Name="vwPics" EntityType="AiKModel.vwPics" />
           <EntitySet Name="Report" EntityType="AiKModel.Report" />
           <EntitySet Name="vwReport" EntityType="AiKModel.vwReport" />
+          <EntitySet Name="vwArts" EntityType="AiKModel.vwArts" />
         </EntityContainer>
         <EntityType Name="Crafts">
           <Key>
@@ -630,7 +662,7 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
           <Property Name="Glider" Type="Boolean" />
           <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CText" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SeeAlso" Type="Int32" />
           <Property Name="Wiki" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Airwar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -749,7 +781,7 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
           <Property Name="NType" Type="Int32" />
           <Property Name="Path" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Grp" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="SText" Type="String" MaxLength="253" FixedLength="false" Unicode="false" />
+          <Property Name="SText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="XType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Report">
@@ -779,6 +811,21 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
           <Property Name="pics" Type="Int32" />
           <Property Name="crafts" Type="Int32" />
           <Property Name="uniq" Type="Int32" />
+        </EntityType>
+        <EntityType Name="vwArts">
+          <Key>
+            <PropertyRef Name="ArtId" />
+          </Key>
+          <Property Name="ArtId" Type="Int32" Nullable="false" />
+          <Property Name="Mag" Type="String" MaxLength="5" FixedLength="true" Unicode="true" />
+          <Property Name="IYear" Type="Int32" />
+          <Property Name="IMonth" Type="String" MaxLength="5" FixedLength="true" Unicode="true" />
+          <Property Name="Author" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NN" Type="Int32" />
+          <Property Name="Serie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="cnt" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -958,6 +1005,22 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
                 <ScalarProperty Name="IMonth" ColumnName="IMonth" />
                 <ScalarProperty Name="IYear" ColumnName="IYear" />
                 <ScalarProperty Name="Mag" ColumnName="Mag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwArts">
+            <EntityTypeMapping TypeName="AiKModel.vwArts">
+              <MappingFragment StoreEntitySet="vwArts">
+                <ScalarProperty Name="cnt" ColumnName="cnt" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Serie" ColumnName="Serie" />
+                <ScalarProperty Name="NN" ColumnName="NN" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="IMonth" ColumnName="IMonth" />
+                <ScalarProperty Name="IYear" ColumnName="IYear" />
+                <ScalarProperty Name="Mag" ColumnName="Mag" />
+                <ScalarProperty Name="ArtId" ColumnName="ArtId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -28,6 +28,7 @@ namespace Aik2
             Mapper.Initialize(cfg => {
                 cfg.CreateMap<Arts, ArtDto>();
                 cfg.CreateMap<ArtDto, Arts>();
+                cfg.CreateMap<vwArts, ArtDto>();
                 cfg.CreateMap<Crafts, CraftDto>();
                 cfg.CreateMap<CraftDto, Crafts>();
                 cfg.CreateMap<vwCrafts, CraftDto>();
@@ -42,6 +43,8 @@ namespace Aik2
                 cfg.CreateMap<ReportDto, Report>();
                 cfg.CreateMap<vwReport, ReportDto>();
                 cfg.CreateMap<ReportDto, vwReport>();
+                cfg.CreateMap<Countries, CountryDto>();
+                cfg.CreateMap<Mags, MagDto>();
             });
 #pragma warning restore CS0618 // Type or member is obsolete
         }

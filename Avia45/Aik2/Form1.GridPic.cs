@@ -558,7 +558,7 @@ namespace Aik2
                 {
                     _selectedPic = pic;
                     _picTextChanging = true;
-                    edPicText.Text = picText.Text;
+                    edPicText.Text = picText.Text ?? "";
                     _oldPicText = edPicText.Text;
                     ColorizeText(edPicText, false);
                     _picTextChanging = false;

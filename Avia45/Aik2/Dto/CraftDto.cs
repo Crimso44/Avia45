@@ -28,6 +28,7 @@ namespace Aik2.Dto
         public string Wings { get; set; }
         public string Engines { get; set; }
         public int? Same { get; set; }
+        public string CText { get; set; }
 
         public string FullName { get
             {

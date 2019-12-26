@@ -90,8 +90,10 @@
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
     <Compile Include="Dto\ArtDto.cs" />
+    <Compile Include="Dto\CountryDto.cs" />
     <Compile Include="Dto\CraftDto.cs" />
     <Compile Include="Dto\LinkDto.cs" />
+    <Compile Include="Dto\MagDto.cs" />
     <Compile Include="Dto\PicDto.cs" />
     <Compile Include="Dto\ReportDto.cs" />
     <Compile Include="Form1.cs">
@@ -130,6 +132,9 @@
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
     <Compile Include="Util.cs" />
+    <Compile Include="vwArts.cs">
+      <DependentUpon>AiK.tt</DependentUpon>
+    </Compile>
     <Compile Include="vwCrafts.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
@@ -139,6 +144,7 @@
     <Compile Include="vwReport.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
+    <Compile Include="WebMaker.cs" />
     <Compile Include="WordLinks.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>

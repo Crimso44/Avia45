@@ -198,7 +198,7 @@ namespace Aik2
                         lInfo.Text = $"{crft.FullName} {cnt}/{pics.Count}";
                         Application.DoEvents();
 
-                        var ptext = _ctx.Pics.Single(x => x.PicId == pic.PicId).Text;
+                        var ptext = _ctx.Pics.Single(x => x.PicId == pic.PicId).Text ?? "";
                         wordsList = GetWords(ptext, true);
                         foreach (var word in wordsList)
                         {
@@ -625,7 +625,8 @@ namespace Aik2
 
         private void make6ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var wm = new WebMaker();
+            wm.PrepareWeb6(_ctx, _imagesPath, lInfo);
         }
     }
 }

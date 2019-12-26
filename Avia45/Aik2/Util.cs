@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Aik2
 {
@@ -32,6 +33,20 @@ namespace Aik2
             while (res.Length < n) res = c + res;
             return res;
         }
+
+        public static string GetPropValue(object src, string propName)
+        {
+            var o = src.GetType().GetProperty(propName).GetValue(src, null);
+            if (o is null) return "";
+            if (o is string) return ((string)o).Trim();
+            else if (o is int) return ((int)o).ToString();
+            else if (o is int?) return ((int?)o).ToString();
+            else
+            {
+                MessageBox.Show($"Unknown type {propName}: {o}");
+                return "";
+            }
+        }
     }
 
     public static class Extensions
@@ -39,7 +54,7 @@ namespace Aik2
         public static void InsertCraftSorted(this List<CraftDto> source, CraftDto element)
         {
             int index = source.FindLastIndex(e => string.Compare(e.Sort, element.Sort) < 0);
-            if (index == 0 || index == -1)
+            if (index == -1)
             {
                 source.Insert(0, element);
                 return;
@@ -51,7 +66,7 @@ namespace Aik2
                 Util.Pair<int> element)
         {
             int index = source.FindLastIndex(e => string.Compare(e.Name, element.Name) < 0);
-            if (index == 0 || index == -1)
+            if (index == -1)
             {
                 source.Insert(0, element);
                 return;
@@ -59,16 +74,17 @@ namespace Aik2
             source.Insert(index + 1, element);
         }
 
-        public static void InsertStringSorted(this List<string> source,
+        public static int InsertStringSorted(this List<string> source,
                 string element)
         {
             int index = source.FindLastIndex(e => string.Compare(e, element) < 0);
-            if (index == 0 || index == -1)
+            if (index == -1)
             {
                 source.Insert(0, element);
-                return;
+                return 0;
             }
             source.Insert(index + 1, element);
+            return index + 1;
         }
 
         public static void Move<T>(this List<T> source, int oldIndex, int newIndex) 
@@ -98,6 +114,7 @@ namespace Aik2
                 };
             };
         }
+
 
     }
 
