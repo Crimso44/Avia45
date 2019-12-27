@@ -776,10 +776,10 @@ namespace Aik2
                                 sx += GetSpanRuEn(ss, sw);
                                 break;
                         }
+                        sx += $" ({cnts[i]})";
+                        if (i != iType) sx += "</a>";
+                        sx += "</div>\n";
                     }
-                    sx += $" ({cnts[i]})";
-                    if (i != iType) sx += "</a>";
-                    sx += "</div>\n";
                 }
                 sx += "</div>\n";
             }
@@ -880,7 +880,7 @@ namespace Aik2
         private void CreatePage(List<CraftList> crafts, string sTempl, string sPage, bool is_craft, int nn, int xx, string indField, int xtype) {
             // xtype: 0 - 10 стандартных страниц; 1 - по названию; 2 - 3 первые буквы
 
-            _lInfo.Text = $"{(is_craft ? "Crafts" : "Arts")} ... {indField}";
+            _lInfo.Text = $"{(is_craft ? "Crafts" : "Arts")} ... {indField} {nn}";
             Application.DoEvents();
             if (is_stop) { return; };
 
