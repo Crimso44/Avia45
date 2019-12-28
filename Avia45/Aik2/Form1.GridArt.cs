@@ -63,8 +63,9 @@ namespace Aik2
             _editorsArt.Add(editIntNull);
             _editorsArt.Add(editStr50);
             _editorsArt.Add(null);
+            _editorsArt.Add(null);
 
-            gridArt.ColumnsCount = 9;
+            gridArt.ColumnsCount = 10;
             gridArt.RowsCount = 1;
             gridArt.FixedRows = 1;
 
@@ -77,7 +78,8 @@ namespace Aik2
             gridArt[0, 5] = new SourceGrid.Cells.ColumnHeader("Name");
             gridArt[0, 6] = new SourceGrid.Cells.ColumnHeader("NN");
             gridArt[0, 7] = new SourceGrid.Cells.ColumnHeader("Serie");
-            gridArt[0, 8] = new SourceGrid.Cells.ColumnHeader("Art");
+            gridArt[0, 8] = new SourceGrid.Cells.ColumnHeader("Pics");
+            gridArt[0, 9] = new SourceGrid.Cells.ColumnHeader("Art");
 
             for (var i = 1; i < gridArt.ColumnsCount; i++)
             {
@@ -97,7 +99,7 @@ namespace Aik2
 
         public void LoadArts()
         {
-            var artsQry = _ctx.Arts.AsQueryable();
+            var artsQry = _ctx.vwArts.AsNoTracking().AsQueryable();
             if (chArtSortAuthor.Checked)
                 artsQry = artsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag);
             else if (chArtSortSerie.Checked)
@@ -161,7 +163,8 @@ namespace Aik2
             gridArt[r, 6].AddController(_gridArtController);
             gridArt[r, 7] = new SourceGrid.Cells.Cell(art.Serie, _editorsArt[7]);
             gridArt[r, 7].AddController(_gridArtController);
-            gridArt[r, 8] = new SourceGrid.Cells.Cell(art.FullName, _editorsArt[8]);
+            gridArt[r, 8] = new SourceGrid.Cells.Cell(art.cnt, _editorsArt[8]);
+            gridArt[r, 9] = new SourceGrid.Cells.Cell(art.FullName, _editorsArt[9]);
         }
 
         public ArtDto GetArtFromTable(int row)
@@ -295,6 +298,9 @@ namespace Aik2
             if (pArt != null) _arts.Remove(pArt);
             _arts.InsertPairSorted(new Pair<int>() { Id = art.ArtId, Name = art.FullName });
 
+            _editArt.Control.Items.Clear();
+            _editArt.Control.Items.AddRange(_arts.Select(x => x.Name).ToArray());
+
             return isAdded;
         }
 
@@ -418,10 +424,14 @@ namespace Aik2
                                     _ctx.Arts.Remove(entity);
                                     _ctx.SaveChanges();
                                 }
+
                                 gridArt.Rows.Remove(pos.Row);
                                 _artDtos.RemoveAt(pos.Row - 1);
                                 var pArt = _arts.FirstOrDefault(x => x.Id == art.ArtId);
                                 if (pArt != null) _arts.Remove(pArt);
+
+                                _editArt.Control.Items.Clear();
+                                _editArt.Control.Items.AddRange(_arts.Select(x => x.Name).ToArray());
                             }
                             catch (Exception ex)
                             {

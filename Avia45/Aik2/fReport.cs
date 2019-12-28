@@ -52,14 +52,20 @@ namespace Aik2
                     using(var zip = ZipFile.Open(zipPath, ZipArchiveMode.Create)) {
                         foreach(string item in lbReport.Items)
                         {
-                            var path = _imagesPath + item;
-                            zip.CreateEntryFromFile(path, item);
+                            if (item[0] != '-')
+                            {
+                                var path = _imagesPath + item;
+                                zip.CreateEntryFromFile(path, item);
+                            }
                         }
                     }
                     foreach (string item in lbReport.Items)
                     {
-                        var path = _imagesPath + item;
-                        File.Delete(path);
+                        if (item[0] != '-')
+                        {
+                            var path = _imagesPath + item;
+                            File.Delete(path);
+                        }
                     }
                     MessageBox.Show("Ok");
                     break;

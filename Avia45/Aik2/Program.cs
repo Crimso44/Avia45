@@ -30,11 +30,13 @@ namespace Aik2
                 cfg.CreateMap<ArtDto, Arts>();
                 cfg.CreateMap<vwArts, ArtDto>();
                 cfg.CreateMap<Crafts, CraftDto>();
-                cfg.CreateMap<CraftDto, Crafts>();
+                cfg.CreateMap<CraftDto, Crafts>()
+                    .ForMember(d => d.CText, o => o.Ignore());
                 cfg.CreateMap<vwCrafts, CraftDto>();
                 cfg.CreateMap<CraftDto, vwCrafts>();
                 cfg.CreateMap<Pics, PicDto>();
-                cfg.CreateMap<PicDto, Pics>();
+                cfg.CreateMap<PicDto, Pics>()
+                    .ForMember(d => d.Text, o => o.Ignore());
                 cfg.CreateMap<vwPics, PicDto>();
                 cfg.CreateMap<PicDto, vwPics>();
                 cfg.CreateMap<Links, LinkDto>();
