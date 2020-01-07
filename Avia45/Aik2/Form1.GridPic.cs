@@ -638,7 +638,11 @@ namespace Aik2
                 try
                 {
                     var picPath = $"{_imagesPath}Images{craft.Source}\\{(string)gridPic[_picPosition.Row, Const.Columns.Pic.Path].Value}";
-                    picPicImage.Load(picPath);
+                    using (var bmpTemp = new Bitmap(picPath))
+                    {
+                        picPicImage.Image = new Bitmap(bmpTemp);
+                    }
+                    //picPicImage.Load(picPath);
                     picPicImage.Visible = true;
                 }
                 catch
@@ -668,7 +672,11 @@ namespace Aik2
                 if (craft != null)
                 {
                     var picPath = $"{_imagesPath}Images{craft.Source}\\{pic2.Path}";
-                    picLinkImage.Load(picPath);
+                    using (var bmpTemp = new Bitmap(picPath))
+                    {
+                        picLinkImage.Image = new Bitmap(bmpTemp);
+                    }
+                    //picLinkImage.Load(picPath);
                     picLinkImage.Visible = true;
                     lCraft2.Text = craft.FullName;
                 }
@@ -1093,7 +1101,7 @@ namespace Aik2
                     {
                         int.TryParse(art.IMonth.Trim(), out int artMonth);
                         var year = art.IYear == 0 ? "" : (art.IYear % 100).ToString();
-                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{year}-{artMonth}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
+                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{PadLeft(year.ToString(), '0', 2)}-{artMonth}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
                     }
                     _selectedPic.Path = path;
                     gridPic[pos.Row, Const.Columns.Pic.Path].Value = path;

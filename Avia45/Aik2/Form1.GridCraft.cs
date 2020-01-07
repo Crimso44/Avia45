@@ -475,6 +475,13 @@ namespace Aik2
                         list.InsertCraftSorted(newCraft);
                         isRefresh = true;
                     }
+                    if ((new string[] { "6", "7", "8" }).Contains(source))
+                    {
+                        craft = _form._crafts678.FirstOrDefault(x => x.CraftId == newCraft.CraftId);
+                        if (craft != null) _form._crafts678.Remove(craft);
+                        _form._crafts678.InsertCraftSorted(newCraft);
+                        isRefresh = true; 
+                    }
                     if (isRefresh)
                     {
                         _form._editCraft6.Control.Items.Clear();
@@ -700,26 +707,37 @@ namespace Aik2
                     }
 
                     lstCraftSeeAlso.Items.Clear();
-                    if (_selectedCraft.SeeAlso.HasValue)
+                    var crft = _selectedCraft;
+                    var crafts = new List<CraftDto>();
+                    if (crft.SeeAlso.HasValue)
                     {
-                        var crft = _selectedCraft;
-                        var crafts = new List<CraftDto>() { craft };
+                        crafts.Add(crft);
                         while (crft.SeeAlso.HasValue && !crafts.Any(x => x.CraftId == crft.SeeAlso))
                         {
                             crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == crft.SeeAlso));
                             crafts.Add(crft);
                         }
-                        var isOk = crafts.First().CraftId == crafts.Last().SeeAlso;
-                        crafts.Sort((f1, f2) =>
-                        {
-                            return (f1.IYear ?? 0).CompareTo(f2.IYear ?? 0);
-                        });
-                        foreach (var c in crafts)
-                        {
-                            lstCraftSeeAlso.Items.Add(new Pair<int>() { Id = c.CraftId, Name = c.FullName });
-                        }
-                        lstCraftSeeAlso.ForeColor = isOk ? Color.Black : Color.Red;
                     }
+                    var isOk = !crafts.Any() || crafts.First().CraftId == crafts.Last().SeeAlso;
+
+                    var sameCrafts = _ctx.vwCrafts.AsNoTracking().Where(x => x.Same == _selectedCraft.CraftId).Select(Mapper.Map<CraftDto>).ToList();
+                    crafts.AddRange(sameCrafts);
+
+                    if (_selectedCraft.Same.HasValue)
+                    {
+                        crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == _selectedCraft.Same));
+                        crafts.Add(crft);
+                    }
+
+                    crafts.Sort((f1, f2) =>
+                    {
+                        return (f1.IYear ?? 0).CompareTo(f2.IYear ?? 0);
+                    });
+                    foreach (var c in crafts)
+                    {
+                        lstCraftSeeAlso.Items.Add(new Pair<int>() { Id = c.CraftId, Name = (c.Same.HasValue ? "- " : "") + c.FullName });
+                    }
+                    lstCraftSeeAlso.ForeColor = isOk ? Color.Black : Color.Red;
                 }
             }
             if (_searchMode && !_searchChanging)
@@ -846,11 +864,12 @@ namespace Aik2
                                 {
                                     _crafts678.Remove(craft);
                                     _editCraft678.Control.Items.Clear();
-                                    _editCraft678.Control.Items.AddRange(_crafts7.Select(x => x.FullName).ToArray());
+                                    _editCraft678.Control.Items.AddRange(_crafts678.Select(x => x.FullName).ToArray());
                                 }
 
                                 gridCraft.Rows.Remove(pos.Row);
                                 _craftDtos.RemoveAt(pos.Row - 1);
+                                if (pos.Row >= gridCraft.RowsCount) pos = new Position(pos.Row - 1, pos.Column);
                                 DoCraftCellGotFocus(pos);
                             }
                             catch (Exception ex)
@@ -1016,7 +1035,11 @@ namespace Aik2
             try
             {
                 var picPath = $"{_imagesPath}Images{_selectedCraft.Source}\\{_craftPicDtos[_craftPicDtoIndex].Path}";
-                imgCraftPic.Load(picPath);
+                using (var bmpTemp = new Bitmap(picPath))
+                {
+                    imgCraftPic.Image = new Bitmap(bmpTemp);
+                }
+                //imgCraftPic.Load(picPath);
             } catch
             {
 
