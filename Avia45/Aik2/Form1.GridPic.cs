@@ -910,7 +910,7 @@ namespace Aik2
                     {
                         if (MessageBox.Show("Delete link?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            var link = _links[pos.Row - 1];
+                            var link = _links[pos.Row];
                             if (link.LinkId > 0)
                             {
                                 var entity = _ctx.Links.Single(x => x.LinkId == link.LinkId);
@@ -1209,6 +1209,7 @@ namespace Aik2
                     MovePicUp(newPos);
                     r--;
                 }
+                _ctx.SaveChanges();
             }
         }
 

@@ -181,13 +181,12 @@ namespace Aik2
                 CraftsQry = CraftsQry.Where(x => _filteredMagCrafts.Contains(x.CraftId));
             }
 
-            CraftsQry = CraftsQry.OrderBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name);
-            /*if (chCraftSortAuthor.Checked)
-                CraftsQry = CraftsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth);
-            else if (chCraftSortSerie.Checked)
-                CraftsQry = CraftsQry.OrderBy(x => x.Serie).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth);
+            if (chCraftSortConstruct.Checked)
+                CraftsQry = CraftsQry.OrderBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name);
+            else if (chCraftSortCountry.Checked)
+                CraftsQry = CraftsQry.OrderBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name);
             else if (chCraftSortYear.Checked)
-                CraftsQry = CraftsQry.OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Author).ThenBy(x => x.Name);*/
+                CraftsQry = CraftsQry.OrderBy(x => x.IYear).ThenBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.Name);
             var Crafts = CraftsQry.ToList();
             _craftDtos = Mapper.Map<List<CraftDto>>(Crafts);
 
@@ -504,13 +503,12 @@ namespace Aik2
         private void CheckCraftSort(Position pos, bool isForce)
         {
             int[] sortIndexes;
-            sortIndexes = new int[] { Const.Columns.Craft.Construct, Const.Columns.Craft.IYear, Const.Columns.Craft.Name };
-            /*if (_form.chCraftSortAuthor.Checked)
-                sortIndexes = Const.Columns.Craft.SortAuthor;
-            else if (_form.chCraftSortSerie.Checked)
-                sortIndexes = Const.Columns.Craft.SortSerie;
+            if (chCraftSortConstruct.Checked)
+                sortIndexes = Const.Columns.Craft.SortConstruct;
+            else if (chCraftSortCountry.Checked)
+                sortIndexes = Const.Columns.Craft.SortCountry;
             else //if (_form.chCraftSortYear.Checked)
-                sortIndexes = Const.Columns.Craft.SortYear;*/
+                sortIndexes = Const.Columns.Craft.SortYear;
 
             if (isForce || sortIndexes.Contains(pos.Column))
             {
@@ -635,9 +633,9 @@ namespace Aik2
                     _craftTextChanged = false;
                 }
 
-                if (craft.CraftId > 0)
+                if (craft.CraftId > 0 || craft.Same.HasValue)
                 {
-                    var picQry = _ctx.vwPics.AsNoTracking().Where(x => x.CraftId == craft.CraftId);
+                    var picQry = _ctx.vwPics.AsNoTracking().Where(x => x.CraftId == craft.CraftId || x.CraftId == craft.Same);
                     if (chFilterCraftsByMag.Checked && _filteredMags != null)
                     {
                         picQry = picQry.Where(x => _filteredMags.Contains(x.ArtId));
@@ -1125,5 +1123,9 @@ namespace Aik2
             _filteredArtId = _selectedArt.ArtId;
         }
 
+        private void chCraftSortConstruct_Click(object sender, EventArgs e)
+        {
+            LoadCrafts();
+        }
     }
 }

@@ -59,6 +59,10 @@ namespace Aik2
                 public const int SeeAlsoId = 21;
                 public const int FlyingMId = 22;
                 public const int SameId = 23;
+
+                public static int[] SortConstruct = { Craft.Construct, Craft.IYear, Craft.Name };
+                public static int[] SortCountry = { Craft.Country, Craft.Construct, Craft.IYear, Craft.Name };
+                public static int[] SortYear = { Craft.IYear, Craft.Country, Craft.Construct, Craft.Name };
             }
 
             public static class Pic

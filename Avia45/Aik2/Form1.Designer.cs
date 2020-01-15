@@ -59,6 +59,10 @@
             this.bCraftWikiLink = new System.Windows.Forms.Button();
             this.bCraftAirwarLink = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.chCraftSortYear = new System.Windows.Forms.RadioButton();
+            this.chCraftSortCountry = new System.Windows.Forms.RadioButton();
+            this.chCraftSortConstruct = new System.Windows.Forms.RadioButton();
             this.tabPagePics = new System.Windows.Forms.TabPage();
             this.pPicTable = new System.Windows.Forms.Panel();
             this.gridPic = new SourceGrid.Grid();
@@ -111,11 +115,11 @@
             this.fillPathToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.reportNewPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unusedPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -128,6 +132,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgCraftPic)).BeginInit();
             this.pCraftSeeAlso.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.tabPagePics.SuspendLayout();
             this.pPicTable.SuspendLayout();
             this.panel10.SuspendLayout();
@@ -480,11 +485,62 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.label2);
+            this.panel4.Controls.Add(this.chCraftSortYear);
+            this.panel4.Controls.Add(this.chCraftSortCountry);
+            this.panel4.Controls.Add(this.chCraftSortConstruct);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel4.Location = new System.Drawing.Point(3, 3);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(786, 28);
             this.panel4.TabIndex = 0;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(1, 8);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(29, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Sort:";
+            // 
+            // chCraftSortYear
+            // 
+            this.chCraftSortYear.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chCraftSortYear.AutoSize = true;
+            this.chCraftSortYear.Location = new System.Drawing.Point(163, 3);
+            this.chCraftSortYear.Name = "chCraftSortYear";
+            this.chCraftSortYear.Size = new System.Drawing.Size(39, 23);
+            this.chCraftSortYear.TabIndex = 6;
+            this.chCraftSortYear.Text = "Year";
+            this.chCraftSortYear.UseVisualStyleBackColor = true;
+            this.chCraftSortYear.Click += new System.EventHandler(this.chCraftSortConstruct_Click);
+            // 
+            // chCraftSortCountry
+            // 
+            this.chCraftSortCountry.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chCraftSortCountry.AutoSize = true;
+            this.chCraftSortCountry.Location = new System.Drawing.Point(104, 3);
+            this.chCraftSortCountry.Name = "chCraftSortCountry";
+            this.chCraftSortCountry.Size = new System.Drawing.Size(53, 23);
+            this.chCraftSortCountry.TabIndex = 5;
+            this.chCraftSortCountry.Text = "Country";
+            this.chCraftSortCountry.UseVisualStyleBackColor = true;
+            this.chCraftSortCountry.Click += new System.EventHandler(this.chCraftSortConstruct_Click);
+            // 
+            // chCraftSortConstruct
+            // 
+            this.chCraftSortConstruct.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chCraftSortConstruct.AutoSize = true;
+            this.chCraftSortConstruct.Checked = true;
+            this.chCraftSortConstruct.Location = new System.Drawing.Point(36, 3);
+            this.chCraftSortConstruct.Name = "chCraftSortConstruct";
+            this.chCraftSortConstruct.Size = new System.Drawing.Size(62, 23);
+            this.chCraftSortConstruct.TabIndex = 4;
+            this.chCraftSortConstruct.TabStop = true;
+            this.chCraftSortConstruct.Text = "Construct";
+            this.chCraftSortConstruct.UseVisualStyleBackColor = true;
+            this.chCraftSortConstruct.Click += new System.EventHandler(this.chCraftSortConstruct_Click);
             // 
             // tabPagePics
             // 
@@ -1034,6 +1090,21 @@
             this.unusedPicsToolStripMenuItem.Text = "Unused pics";
             this.unusedPicsToolStripMenuItem.Click += new System.EventHandler(this.unusedPicsToolStripMenuItem_Click);
             // 
+            // webToolStripMenuItem
+            // 
+            this.webToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.make6ToolStripMenuItem});
+            this.webToolStripMenuItem.Name = "webToolStripMenuItem";
+            this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.webToolStripMenuItem.Text = "Web";
+            // 
+            // make6ToolStripMenuItem
+            // 
+            this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
+            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.make6ToolStripMenuItem.Text = "Make 6";
+            this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.lInfo);
@@ -1059,21 +1130,6 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
-            // 
-            // webToolStripMenuItem
-            // 
-            this.webToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.make6ToolStripMenuItem});
-            this.webToolStripMenuItem.Name = "webToolStripMenuItem";
-            this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
-            this.webToolStripMenuItem.Text = "Web";
-            // 
-            // make6ToolStripMenuItem
-            // 
-            this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
-            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.make6ToolStripMenuItem.Text = "Make 6";
-            this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1104,6 +1160,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgCraftPic)).EndInit();
             this.pCraftSeeAlso.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.tabPagePics.ResumeLayout(false);
             this.pPicTable.ResumeLayout(false);
             this.panel10.ResumeLayout(false);
@@ -1214,6 +1272,10 @@
         private System.Windows.Forms.ToolStripMenuItem unusedPicsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem webToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem make6ToolStripMenuItem;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.RadioButton chCraftSortYear;
+        private System.Windows.Forms.RadioButton chCraftSortCountry;
+        private System.Windows.Forms.RadioButton chCraftSortConstruct;
     }
 }
 
