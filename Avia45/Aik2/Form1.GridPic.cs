@@ -27,6 +27,7 @@ namespace Aik2
         private PicDto _selectedPic = null;
         private LinkDto _selectedLink = null;
         private string _oldPicText;
+        private bool _picChanging = false;
         private bool _picTextChanging;
         private bool _picTextChanged;
         private bool _needLoadArt = false;
@@ -125,6 +126,41 @@ namespace Aik2
                 PicsQry = PicsQry.Where(x => x.CraftId == craftId);
                 flt = true;
             }
+
+            if (_filterOn && (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2)) && _filter.InText)
+            {
+                var lTxt = ExtractFilters(_filter.Text);
+                var lTxt2 = ExtractFilters(_filter.Text2);
+                if (lTxt.Any() || lTxt2.Any())
+                {
+                    var xPicsQry = _ctx.Pics.AsNoTracking().AsQueryable();
+                    var xPicsQry2 = _ctx.Pics.AsNoTracking().AsQueryable();
+                    if (lTxt.Any())
+                    {
+                        foreach (var t in lTxt)
+                        {
+                            xPicsQry = xPicsQry.Where(x => (x.Text).Contains(t));
+                        }
+                    }
+                    if (lTxt2.Any())
+                    {
+                        foreach (var t in lTxt)
+                        {
+                            xPicsQry2 = xPicsQry2.Where(x => (x.Text).Contains(t));
+                        }
+                    }
+                    if (lTxt.Any() && lTxt2.Any())
+                        PicsQry = PicsQry
+                            .Where(x => xPicsQry.Select(y => y.PicId).Contains(x.PicId) ||
+                                        xPicsQry2.Select(y => y.PicId).Contains(x.PicId));
+                    else if (lTxt.Any())
+                        PicsQry = PicsQry.Where(x => xPicsQry.Select(y => y.PicId).Contains(x.PicId));
+                    else //if (lTxt2.Any())
+                        PicsQry = PicsQry.Where(x => xPicsQry2.Select(y => y.PicId).Contains(x.PicId));
+                }
+            }
+
+
             if (!flt)
             {
                 PicsQry = PicsQry.Where(x => false);
@@ -383,6 +419,8 @@ namespace Aik2
             public override void OnValueChanged(SourceGrid.CellContext sender, EventArgs e)
             {
                 base.OnValueChanged(sender, e);
+
+                if (_form._picChanging) return;
 
                 var row = sender.Position.Row;
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
@@ -713,6 +751,9 @@ namespace Aik2
 
         private void DoPicSearch(Keys c, bool isText)
         {
+            var oldSearch = _searchString;
+            var isDef = false;
+
             switch (c)
             {
                 case Keys.Escape:
@@ -725,7 +766,6 @@ namespace Aik2
                     if (isText) _searchString += (char)c;
                     break;
             }
-            lInfo.Text = $"Поиск: {_searchString}";
 
             var pos = gridPic.Selection.ActivePosition;
             if (pos != Position.Empty)
@@ -758,7 +798,9 @@ namespace Aik2
                         }
                     }
                 }
+                if (!found && isDef) _searchString = oldSearch;
             }
+            lInfo.Text = $"Поиск: {_searchString}";
         }
 
         private void gridPic_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -1113,8 +1155,8 @@ namespace Aik2
 
         private void MovePicUp(Position pos)
         {
-            var nnn = (int)gridPic[pos.Row, Const.Columns.Pic.NType].Value;
-            if (pos.Row > 1 && nnn == (int)gridPic[pos.Row - 1, Const.Columns.Pic.NType].Value)
+            var nType = (int)gridPic[pos.Row, Const.Columns.Pic.NType].Value;
+            if (pos.Row > 1 && nType == (int)gridPic[pos.Row - 1, Const.Columns.Pic.NType].Value)
             {
                 var picFrom = _pics[pos.Row - 1];
                 var nnnFrom = picFrom.NNN;
@@ -1125,12 +1167,16 @@ namespace Aik2
 
                 var entFrom = _ctx.Pics.FirstOrDefault(x => x.PicId == picFrom.PicId);
                 var entTo = _ctx.Pics.FirstOrDefault(x => x.PicId == picTo.PicId);
-                if (entFrom != null) Mapper.Map(picFrom, entFrom);
-                if (entTo != null) Mapper.Map(picTo, entTo);
+                if (entFrom != null) entFrom.NNN = nnnTo;
+                if (entTo != null) entTo.NNN = nnnFrom;
                 _ctx.SaveChanges();
 
                 _pics.Move(pos.Row - 1, pos.Row - 2);
+                _picChanging = true;
+                gridPic[pos.Row, Const.Columns.Pic.NNN].Value = nnnTo;
+                gridPic[pos.Row - 1, Const.Columns.Pic.NNN].Value = nnnFrom;
                 gridPic.Rows.Move(pos.Row, pos.Row - 1);
+                _picChanging = false;
                 var newPos = new Position(pos.Row - 1, pos.Column);
                 gridPic.Selection.Focus(newPos, true);
 
@@ -1172,12 +1218,16 @@ namespace Aik2
 
                     var entFrom = _ctx.Pics.FirstOrDefault(x => x.PicId == picFrom.PicId);
                     var entTo = _ctx.Pics.FirstOrDefault(x => x.PicId == picTo.PicId);
-                    if (entFrom != null) Mapper.Map(picFrom, entFrom);
-                    if (entTo != null) Mapper.Map(picTo, entTo);
+                    if (entFrom != null) entFrom.NNN = nnnTo;
+                    if (entTo != null) entTo.NNN = nnnFrom;
                     _ctx.SaveChanges();
 
                     _pics.Move(pos.Row - 1, pos.Row);
+                    _picChanging = true;
+                    gridPic[pos.Row, Const.Columns.Pic.NNN].Value = nnnTo;
+                    gridPic[pos.Row + 1, Const.Columns.Pic.NNN].Value = nnnFrom;
                     gridPic.Rows.Move(pos.Row, pos.Row + 1);
+                    _picChanging = false;
                     var newPos = new Position(pos.Row + 1, pos.Column);
                     gridPic.Selection.Focus(newPos, true);
 

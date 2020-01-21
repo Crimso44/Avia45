@@ -118,40 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="bDown10.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="bCountriesSelect.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAAGVJREFUOE9j
-        GNngABRTDEYNQgUVQNwPYcIBNoNAagogTOyggZGR8T+QRjYM3aB+qJoGCBc36EYzDNkgmCHdEC5hADOs
-        HYhhBrWTaggMwAz7AcLkGgIDYMMoNQQGQAZQbMiQBQwMAG/5JUPhQzBPAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAALFJREFUOE/t
+        0LEKgWEUxvGzWFBMkhgNbkAGSi7GFVgtFqP7sRgsMnw3YFHKYFOUjf85r1Myna9k4alf33fe4em8r/zz
+        8ZQxQ8GmlCka6TcWLdnihq4ekAXuGNsUyGvJUA+Il0xsCuT7JT2sULFJpIY1OihhidAmfVyRQTeoY4cT
+        2vCErqNluv4GXrbHES3MEX6TEbysiCa07IxcD6vRsgsGNqWyA3KVeKrPr+d9/q2IPABYMyrgzNX5PgAA
+        AABJRU5ErkJggg==
 </value>
   </data>
-  <data name="bUp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="bCountriesUnselect.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAAC1JREFUOE9j
-        GAXDFCQA8XwIk3wAMuQ/FJNtGLIhZBuGzRAYptibo2AUYAcMDACDCg/xbV6HpQAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAAG9JREFUOE9j
+        GFnAFUrjA45QGidwA+L/QNwO5mEHIDmQGicwDw/oB2JchsEMAakhCmAzjGRDYABmWD0QN0DZJBsCA9OA
+        GGQARYaAAMxVFBkEMwTkLbK9BjOEosDGZggMEG0YVRMkMVmEGDXDAzAwAAC/HydXCLxv5QAAAABJRU5E
+        rkJggg==
 </value>
   </data>
-  <data name="bUp10.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAAF5JREFUOE9j
-        GNmgHoopAiVA/B+KQWyyAMyQH1BMlmEwQ9qB+AAUg9gkGYZsCAjADAKBfiAmyjCYISANMIBsEAgQZVgF
-        ECMbAgLoBoHANCAGqSUJYDOILDBq0DAFDAwABAEkRD6KrSkAAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="bHere.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAAFJJREFUOE/t
-        jLEKACAIBf3o9tr76FKqJZ5W5BJ0cOjyjj6x32sKG9p7h4SOYmNguRVDQ+QyhkaaZgwNNBOrggbIzJqg
-        0ewyYuESEVwigkvkSYgq3JNHubEWoh0AAAAASUVORK5CYII=
-</value>
-  </data>
-  <data name="bDown.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAABGdBTUEAALGPC/xhBQAAAC9JREFUOE9j
-        GAWjgIYgAYj/48ALgJgkgM0wkg2BAWTDyDYEBkCGUWzIKBh8gIEBACNDD/Wpbph+AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
 </root>

@@ -272,17 +272,37 @@ namespace Aik2
             textBox.SelectionColor = Color.Black;
             textBox.SelectionBackColor = Color.White;
 
-            var sql = isCraft ?
-                $"select distinct w.* from Words w join WordLinks wl on w.WordId = wl.WordId where w.cnt < 16 and wl.CraftId = {_selectedCraft.CraftId}" :
-                $"select distinct w.* from Words w join WordLinks wl on w.WordId = wl.WordId where w.cnt < 16 and wl.PicId = {_selectedPic.PicId}";
-
-
-            var words = _ctx.Database.SqlQuery<Words>(sql).ToList();
-
-            var uText = textBox.Text.ToUpper();
-            foreach (var word in words)
+            if (_filterOn && _filter.InText && (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2)))
             {
-                SetWordColor(textBox, word, uText);
+                var lTxt = ExtractFilters(_filter.Text.ToLower());
+                lTxt.AddRange(ExtractFilters(_filter.Text2.ToLower()));
+                var txtlw = textBox.Text.ToLower();
+                foreach (var t in lTxt)
+                {
+                    var i = txtlw.IndexOf(t);
+                    while (i >= 0)
+                    {
+                        textBox.Select(i, t.Length);
+                        textBox.SelectionColor = Color.Red;
+
+                        i = txtlw.IndexOf(t, i + 1);
+                    }
+                }
+            }
+            else
+            {
+                var sql = isCraft ?
+                    $"select distinct w.* from Words w join WordLinks wl on w.WordId = wl.WordId where w.cnt < 16 and wl.CraftId = {_selectedCraft.CraftId}" :
+                    $"select distinct w.* from Words w join WordLinks wl on w.WordId = wl.WordId where w.cnt < 16 and wl.PicId = {_selectedPic.PicId}";
+
+
+                var words = _ctx.Database.SqlQuery<Words>(sql).ToList();
+
+                var uText = textBox.Text.ToUpper();
+                foreach (var word in words)
+                {
+                    SetWordColor(textBox, word, uText);
+                }
             }
 
             textBox.Select(0, 0);
@@ -466,68 +486,75 @@ namespace Aik2
             }
             else //if (link.PicId.HasValue)
             {
-                int row;
-                if (chPicSelCraft.Checked)
+                ShowPictureById(link.PicId.Value);
+            }
+        }
+
+        private void ShowPictureById(int picId)
+        {
+            int row;
+            if (chPicSelCraft.Checked)
+            {
+                var craftId = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == picId).CraftId;
+                if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
                 {
-                    var craftId = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == link.PicId.Value).CraftId;
-                    if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
+                    var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
+                    if (craftDto == null)
                     {
-                        var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
-                        if (craftDto == null)
-                        {
-                            craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == craftId));
-                            _craftDtos.Add(craftDto);
-                            gridCraft.RowsCount++;
-                            row = gridCraft.RowsCount - 1;
-                            UpdateCraftRow(craftDto, row);
-                        }
-                        else
-                        {
-                            row = _craftDtos.IndexOf(craftDto) + 1;
-                        }
-                        var focusPosn = new Position(row, _craftPosition.Column);
-                        gridCraft.Selection.Focus(focusPosn, true);
-                        DoCraftCellGotFocus(focusPosn);
-                        _craftPosition = focusPosn;
-                        _selectedCraft = craftDto;
+                        craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == craftId));
+                        _craftDtos.Add(craftDto);
+                        gridCraft.RowsCount++;
+                        row = gridCraft.RowsCount - 1;
+                        UpdateCraftRow(craftDto, row);
                     }
-                } else
-                {
-                    var artId = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == link.PicId.Value).ArtId;
-                    if (_selectedArt == null || _selectedArt.ArtId != artId)
+                    else
                     {
-                        var artDto = _artDtos.FirstOrDefault(x => x.ArtId == artId);
-                        if (artDto != null)
-                        {
-                            row = _artDtos.IndexOf(artDto) + 1;
-                            var focusPosn = new Position(row, _artPosition.Column);
-                            gridArt.Selection.Focus(focusPosn, true);
-                            _artPosition = focusPosn;
-                            _selectedArt = artDto;
-                        }
+                        row = _craftDtos.IndexOf(craftDto) + 1;
+                    }
+                    var focusPosn = new Position(row, _craftPosition.Column);
+                    gridCraft.Selection.Focus(focusPosn, true);
+                    DoCraftCellGotFocus(focusPosn);
+                    _craftPosition = focusPosn;
+                    _selectedCraft = craftDto;
+                }
+            }
+            else
+            {
+                var artId = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == picId).ArtId;
+                if (_selectedArt == null || _selectedArt.ArtId != artId)
+                {
+                    var artDto = _artDtos.FirstOrDefault(x => x.ArtId == artId);
+                    if (artDto != null)
+                    {
+                        row = _artDtos.IndexOf(artDto) + 1;
+                        var focusPosn = new Position(row, _artPosition.Column);
+                        gridArt.Selection.Focus(focusPosn, true);
+                        _artPosition = focusPosn;
+                        _selectedArt = artDto;
                     }
                 }
-                PicDto pic = null;
-                if (tabControl1.SelectedIndex == 2)
-                {
-                    pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
-                } else
-                {
-                    tabControl1.SelectedIndex = 2;
-                    pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
-                }
-                if (pic == null)
-                {
-                    LoadPics(true);
-                    pic = _pics.SingleOrDefault(x => x.PicId == link.PicId.Value);
-                }
-                if (pic != null)
-                {
-                    row = _pics.IndexOf(pic) + 1;
-                    var focusPic = new Position(row, _craftPosition.Column);
-                    gridPic.Selection.Focus(focusPic, true);
-                    _picPosition = focusPic;
-                }
+            }
+            PicDto pic = null;
+            if (tabControl1.SelectedIndex == 2)
+            {
+                pic = _pics.SingleOrDefault(x => x.PicId == picId);
+            }
+            else
+            {
+                tabControl1.SelectedIndex = 2;
+                pic = _pics.SingleOrDefault(x => x.PicId == picId);
+            }
+            if (pic == null)
+            {
+                LoadPics(true);
+                pic = _pics.SingleOrDefault(x => x.PicId == picId);
+            }
+            if (pic != null)
+            {
+                row = _pics.IndexOf(pic) + 1;
+                var focusPic = new Position(row, _craftPosition.Column);
+                gridPic.Selection.Focus(focusPic, true);
+                _picPosition = focusPic;
             }
         }
 
@@ -627,6 +654,14 @@ namespace Aik2
         {
             var wm = new WebMaker();
             wm.PrepareWeb6(_ctx, _imagesPath, lInfo);
+        }
+
+        private void showBookmarkedPicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_lockedPicId.HasValue)
+            {
+                ShowPictureById(_lockedPicId.Value);
+            }
         }
 
     }

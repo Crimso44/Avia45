@@ -72,7 +72,6 @@
             this.bUp10 = new System.Windows.Forms.Button();
             this.bHere = new System.Windows.Forms.Button();
             this.bDown = new System.Windows.Forms.Button();
-            this.bLockPic = new System.Windows.Forms.Button();
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.pPicImg = new System.Windows.Forms.Panel();
             this.splitter5 = new System.Windows.Forms.Splitter();
@@ -111,8 +110,12 @@
             this.craftsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nextCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.priorCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.filterOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.picsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.fillPathToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.bookmarkPicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showBookmarkedPicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportNewPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unusedPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -589,7 +592,6 @@
             this.panel10.Controls.Add(this.bUp10);
             this.panel10.Controls.Add(this.bHere);
             this.panel10.Controls.Add(this.bDown);
-            this.panel10.Controls.Add(this.bLockPic);
             this.panel10.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel10.Location = new System.Drawing.Point(755, 0);
             this.panel10.Name = "panel10";
@@ -650,17 +652,6 @@
             this.bDown.TabIndex = 1;
             this.bDown.UseVisualStyleBackColor = true;
             this.bDown.Click += new System.EventHandler(this.bDown_Click);
-            // 
-            // bLockPic
-            // 
-            this.bLockPic.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bLockPic.Image = ((System.Drawing.Image)(resources.GetObject("bLockPic.Image")));
-            this.bLockPic.Location = new System.Drawing.Point(4, 164);
-            this.bLockPic.Name = "bLockPic";
-            this.bLockPic.Size = new System.Drawing.Size(24, 23);
-            this.bLockPic.TabIndex = 0;
-            this.bLockPic.UseVisualStyleBackColor = true;
-            this.bLockPic.Click += new System.EventHandler(this.bLockPic_Click);
             // 
             // splitter3
             // 
@@ -1035,7 +1026,9 @@
             // 
             this.craftsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.nextCraftInMagToolStripMenuItem,
-            this.priorCraftInMagToolStripMenuItem});
+            this.priorCraftInMagToolStripMenuItem,
+            this.filterToolStripMenuItem,
+            this.filterOffToolStripMenuItem});
             this.craftsToolStripMenuItem.Name = "craftsToolStripMenuItem";
             this.craftsToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.craftsToolStripMenuItem.Text = "Crafts";
@@ -1057,10 +1050,28 @@
             this.priorCraftInMagToolStripMenuItem.Text = "Prior craft in Mag";
             this.priorCraftInMagToolStripMenuItem.Click += new System.EventHandler(this.priorCraftInMagToolStripMenuItem_Click);
             // 
+            // filterToolStripMenuItem
+            // 
+            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
+            this.filterToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
+            this.filterToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.filterToolStripMenuItem.Text = "Filter";
+            this.filterToolStripMenuItem.Click += new System.EventHandler(this.filterToolStripMenuItem_Click);
+            // 
+            // filterOffToolStripMenuItem
+            // 
+            this.filterOffToolStripMenuItem.Name = "filterOffToolStripMenuItem";
+            this.filterOffToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F12)));
+            this.filterOffToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.filterOffToolStripMenuItem.Text = "Filter off";
+            this.filterOffToolStripMenuItem.Click += new System.EventHandler(this.filterOffToolStripMenuItem_Click);
+            // 
             // picsToolStripMenuItem1
             // 
             this.picsToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fillPathToolStripMenuItem1,
+            this.bookmarkPicToolStripMenuItem,
+            this.showBookmarkedPicToolStripMenuItem,
             this.reportNewPicsToolStripMenuItem,
             this.unusedPicsToolStripMenuItem});
             this.picsToolStripMenuItem1.Name = "picsToolStripMenuItem1";
@@ -1071,22 +1082,38 @@
             // 
             this.fillPathToolStripMenuItem1.Name = "fillPathToolStripMenuItem1";
             this.fillPathToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
-            this.fillPathToolStripMenuItem1.Size = new System.Drawing.Size(199, 22);
+            this.fillPathToolStripMenuItem1.Size = new System.Drawing.Size(211, 22);
             this.fillPathToolStripMenuItem1.Text = "Fill path";
             this.fillPathToolStripMenuItem1.Click += new System.EventHandler(this.mnuPicsFillPath_Click);
+            // 
+            // bookmarkPicToolStripMenuItem
+            // 
+            this.bookmarkPicToolStripMenuItem.Name = "bookmarkPicToolStripMenuItem";
+            this.bookmarkPicToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F5)));
+            this.bookmarkPicToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.bookmarkPicToolStripMenuItem.Text = "Bookmark pic";
+            this.bookmarkPicToolStripMenuItem.Click += new System.EventHandler(this.bLockPic_Click);
+            // 
+            // showBookmarkedPicToolStripMenuItem
+            // 
+            this.showBookmarkedPicToolStripMenuItem.Name = "showBookmarkedPicToolStripMenuItem";
+            this.showBookmarkedPicToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.showBookmarkedPicToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.showBookmarkedPicToolStripMenuItem.Text = "Show bookmarked pic";
+            this.showBookmarkedPicToolStripMenuItem.Click += new System.EventHandler(this.showBookmarkedPicToolStripMenuItem_Click);
             // 
             // reportNewPicsToolStripMenuItem
             // 
             this.reportNewPicsToolStripMenuItem.Name = "reportNewPicsToolStripMenuItem";
             this.reportNewPicsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.reportNewPicsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.reportNewPicsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.reportNewPicsToolStripMenuItem.Text = "Report new pics";
             this.reportNewPicsToolStripMenuItem.Click += new System.EventHandler(this.reportNewPicsToolStripMenuItem_Click);
             // 
             // unusedPicsToolStripMenuItem
             // 
             this.unusedPicsToolStripMenuItem.Name = "unusedPicsToolStripMenuItem";
-            this.unusedPicsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.unusedPicsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.unusedPicsToolStripMenuItem.Text = "Unused pics";
             this.unusedPicsToolStripMenuItem.Click += new System.EventHandler(this.unusedPicsToolStripMenuItem_Click);
             // 
@@ -1230,7 +1257,6 @@
         private System.Windows.Forms.Panel pLinkTable;
         private SourceGrid.Grid gridLink;
         private System.Windows.Forms.Panel panel10;
-        private System.Windows.Forms.Button bLockPic;
         private System.Windows.Forms.PictureBox picLinkImage;
         private System.Windows.Forms.PictureBox imgCraftPic;
         private System.Windows.Forms.HScrollBar sbCraftPics;
@@ -1276,6 +1302,10 @@
         private System.Windows.Forms.RadioButton chCraftSortYear;
         private System.Windows.Forms.RadioButton chCraftSortCountry;
         private System.Windows.Forms.RadioButton chCraftSortConstruct;
+        private System.Windows.Forms.ToolStripMenuItem filterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem filterOffToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showBookmarkedPicToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bookmarkPicToolStripMenuItem;
     }
 }
 

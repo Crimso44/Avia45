@@ -92,10 +92,17 @@
     <Compile Include="Dto\ArtDto.cs" />
     <Compile Include="Dto\CountryDto.cs" />
     <Compile Include="Dto\CraftDto.cs" />
+    <Compile Include="Dto\FilterDto.cs" />
     <Compile Include="Dto\LinkDto.cs" />
     <Compile Include="Dto\MagDto.cs" />
     <Compile Include="Dto\PicDto.cs" />
     <Compile Include="Dto\ReportDto.cs" />
+    <Compile Include="fFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fFilter.Designer.cs">
+      <DependentUpon>fFilter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,6 +158,9 @@
     <Compile Include="Words.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="fFilter.resx">
+      <DependentUpon>fFilter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -204,6 +214,8 @@
     <Content Include="Images\baseline_arrow_drop_down_black_18dp.png" />
     <Content Include="Images\baseline_arrow_drop_up_black_18dp.png" />
     <Content Include="Images\baseline_arrow_upward_black_18dp.png" />
+    <Content Include="Images\baseline_close_black_18dp.png" />
+    <Content Include="Images\baseline_done_all_black_18dp.png" />
     <Content Include="Images\baseline_forward_black_18dp.png" />
     <Content Include="Images\baseline_lock_black_18dp.png" />
     <Content Include="ToDo.txt" />

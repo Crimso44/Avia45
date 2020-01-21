@@ -43,6 +43,9 @@ namespace Aik2
         private bool _craftTextChanging;
         private bool _craftTextChanged;
 
+        private FilterDto _filter = null;
+        private bool _filterOn = false;
+
         public void InitCraftGrid()
         {
             _editorsCraft = new List<SourceGrid.Cells.Editors.EditorBase>();
@@ -181,6 +184,148 @@ namespace Aik2
                 CraftsQry = CraftsQry.Where(x => _filteredMagCrafts.Contains(x.CraftId));
             }
 
+            if (_filterOn)
+            {
+                if (_filter.CountriesNo.Count > 0 && _filter.CountriesYes.Count > 0)
+                {
+                    if (_filter.CountriesNo.Count > _filter.CountriesYes.Count)
+                    {
+                        CraftsQry = CraftsQry.Where(x => _filter.CountriesYes.Contains(x.Country));
+                    }else
+                    {
+                        CraftsQry = CraftsQry.Where(x => !_filter.CountriesNo.Contains(x.Country));
+                    }
+                }
+                if (_filter.SourcesNo.Any())
+                {
+                    CraftsQry = CraftsQry.Where(x => !_filter.SourcesNo.Contains(x.Source));
+                }
+
+                if (_filter.VertYes != _filter.VertNo)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.Vert ?? false == _filter.VertYes);
+                };
+                if (_filter.UavYes != _filter.UavNo)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.Uav ?? false == _filter.UavYes);
+                };
+                if (_filter.GlidYes != _filter.GlidNo)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.Glider ?? false == _filter.GlidYes);
+                };
+                if (_filter.LlYes != _filter.LlNo)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.LL ?? false == _filter.LlYes);
+                };
+                if (_filter.SinglYes != _filter.SinglNo)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.Single ?? false == _filter.SinglYes);
+                };
+                if (_filter.ProjYes != _filter.ProjNo)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.Proj ?? false == _filter.ProjYes);
+                };
+
+                if (_filter.YearFrom > 0)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.IYear.HasValue && x.IYear >= _filter.YearFrom);
+                }
+                if (_filter.YearTo > 0)
+                {
+                    CraftsQry = CraftsQry.Where(x => x.IYear.HasValue && x.IYear <= _filter.YearTo);
+                }
+
+                if (!string.IsNullOrEmpty(_filter.Wings))
+                {
+                    var lWings = _filter.Wings.Split(' ');
+                    foreach(var wng in lWings)
+                    {
+                        if (!string.IsNullOrEmpty(wng))
+                        CraftsQry = CraftsQry.Where(x => x.Wings.Contains(wng));
+                    }
+                }
+                if (!string.IsNullOrEmpty(_filter.Engines))
+                {
+                    var lEngs = _filter.Engines.Split(' ');
+                    foreach (var eng in lEngs)
+                    {
+                        if (!string.IsNullOrEmpty(eng))
+                            CraftsQry = CraftsQry.Where(x => x.Engines.Contains(eng));
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2))
+                {
+                    var lTxt = ExtractFilters(_filter.Text);
+                    var lTxt2 = ExtractFilters(_filter.Text2);
+                    if (lTxt.Any() || lTxt2.Any())
+                    {
+                        var xCraftsQry = _ctx.Crafts.AsNoTracking().AsQueryable();
+                        var xCraftsQry2 = _ctx.Crafts.AsNoTracking().AsQueryable();
+                        IQueryable<Pics> xPicsQry = null;
+                        IQueryable<Pics> xPicsQry2 = null;
+                        if (_filter.InText)
+                        {
+                            xPicsQry = _ctx.Pics.AsNoTracking().AsQueryable();
+                            xPicsQry2 = _ctx.Pics.AsNoTracking().AsQueryable();
+                        }
+                        if (lTxt.Any())
+                        {
+                            foreach (var t in lTxt)
+                            {
+                                if (_filter.InText)
+                                    xCraftsQry = xCraftsQry.Where(x => (x.Construct + " " + x.Name + " " + x.Type + " " + x.CText).Contains(t));
+                                else
+                                    xCraftsQry = xCraftsQry.Where(x => (x.Construct + " " + x.Name + " " + x.Type).Contains(t));
+                            }
+                            if (_filter.InText)
+                            {
+                                foreach (var t in lTxt)
+                                {
+                                    xPicsQry = xPicsQry.Where(x => (x.Text).Contains(t));
+                                }
+                            }
+                        }
+                        if (lTxt2.Any())
+                        {
+                            foreach (var t in lTxt2)
+                            {
+                                if (_filter.InText)
+                                    xCraftsQry2 = xCraftsQry2.Where(x => (x.Construct + " " + x.Name + " " + x.Type + " " + x.CText).Contains(t));
+                                else
+                                    xCraftsQry2 = xCraftsQry2.Where(x => (x.Construct + " " + x.Name + " " + x.Type).Contains(t));
+                            }
+                            if (_filter.InText)
+                            {
+                                foreach (var t in lTxt)
+                                {
+                                    xPicsQry2 = xPicsQry2.Where(x => (x.Text).Contains(t));
+                                }
+                            }
+                        }
+                        if (lTxt.Any() && lTxt2.Any())
+                            if (_filter.InText)
+                                CraftsQry = CraftsQry
+                                    .Where(x => xCraftsQry.Select(y => y.CraftId).Contains(x.CraftId) || xPicsQry.Select(y => y.CraftId).Contains(x.CraftId) ||
+                                                xCraftsQry2.Select(y => y.CraftId).Contains(x.CraftId) || xPicsQry2.Select(y => y.CraftId).Contains(x.CraftId));
+                            else
+                                CraftsQry = CraftsQry
+                                    .Where(x => xCraftsQry.Select(y => y.CraftId).Contains(x.CraftId) ||
+                                                xCraftsQry2.Select(y => y.CraftId).Contains(x.CraftId));
+                        else if (lTxt.Any())
+                            if (_filter.InText)
+                                CraftsQry = CraftsQry.Where(x => xCraftsQry.Select(y => y.CraftId).Contains(x.CraftId) || xPicsQry.Select(y => y.CraftId).Contains(x.CraftId));
+                            else
+                                CraftsQry = CraftsQry.Where(x => xCraftsQry.Select(y => y.CraftId).Contains(x.CraftId));
+                        else //if (lTxt2.Any())
+                            if (_filter.InText)
+                                CraftsQry = CraftsQry.Where(x => xCraftsQry2.Select(y => y.CraftId).Contains(x.CraftId) || xPicsQry2.Select(y => y.CraftId).Contains(x.CraftId));
+                            else
+                                CraftsQry = CraftsQry.Where(x => xCraftsQry2.Select(y => y.CraftId).Contains(x.CraftId));
+                    }
+                }
+            }
+
             if (chCraftSortConstruct.Checked)
                 CraftsQry = CraftsQry.OrderBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name);
             else if (chCraftSortCountry.Checked)
@@ -235,6 +380,38 @@ namespace Aik2
 
             gridCraft.Refresh();
 
+        }
+
+        private List<string> ExtractFilters(string txt)
+        {
+            var res = new List<string>();
+            var i = txt.IndexOf('\'');
+            while (i >= 0)
+            {
+                var j = txt.IndexOf('\'', i + 1);
+                if (j < 0) j = txt.Length;
+                var s = txt.Substring(i + 1, j - i - 1);
+                res.Add(s);
+                txt = txt.Substring(0, i - 1) + " " + txt.Substring(j + 1);
+                i = txt.IndexOf('\'');
+            }
+            i = txt.IndexOf('"');
+            while (i >= 0)
+            {
+                var j = txt.IndexOf('"', i + 1);
+                if (j < 0) j = txt.Length;
+                var s = txt.Substring(i + 1, j - i - 1);
+                res.Add(s);
+                txt = txt.Substring(0, i - 1) + " " + txt.Substring(j + 1);
+                i = txt.IndexOf('"');
+            }
+            var lTxt = txt.Split(' ');
+            foreach(var t in lTxt)
+            {
+                if (!string.IsNullOrEmpty(t.Trim()))
+                    res.Add(t.Trim());
+            }
+            return res;
         }
 
         public void UpdateCraftRow(CraftDto Craft, int r)
@@ -669,25 +846,21 @@ namespace Aik2
 
                     if (string.IsNullOrEmpty(_selectedCraft.Airwar))
                     {
-                        bCraftAirwarLink.Enabled = false;
                         bCraftAirwarLink.ForeColor = Color.Gray;
                         bCraftAirwarLink.BackColor = Color.White;
                     }
                     else
                     {
-                        bCraftAirwarLink.Enabled = true;
                         bCraftAirwarLink.ForeColor = Color.Black;
                         bCraftAirwarLink.BackColor = Color.LightGray;
                     }
                     if (string.IsNullOrEmpty(_selectedCraft.Wiki))
                     {
-                        bCraftWikiLink.Enabled = false;
                         bCraftWikiLink.ForeColor = Color.Gray;
                         bCraftWikiLink.BackColor = Color.White;
                     }
                     else
                     {
-                        bCraftWikiLink.Enabled = true;
                         bCraftWikiLink.ForeColor = Color.Black;
                         bCraftWikiLink.BackColor = Color.LightGray;
                     }
@@ -756,6 +929,8 @@ namespace Aik2
 
         private void DoCraftSearch(Keys c, bool isText)
         {
+            var oldSearch = _searchString;
+            var isDef = false;
             switch (c)
             {
                 case Keys.Escape:
@@ -766,9 +941,9 @@ namespace Aik2
                     break;
                 default:
                     if (isText) _searchString += (char)c;
+                    isDef = true;
                     break;
             }
-            lInfo.Text = $"Поиск: {_searchString}";
 
             var pos = gridCraft.Selection.ActivePosition;
             if (pos != Position.Empty)
@@ -801,7 +976,9 @@ namespace Aik2
                         }
                     }
                 }
+                if (!found && isDef) _searchString = oldSearch;
             }
+            lInfo.Text = $"Поиск: {_searchString}";
         }
 
         private void gridCraft_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -1046,12 +1223,34 @@ namespace Aik2
 
         private void bCraftAirwarLink_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(_selectedCraft.Airwar);
+            if (string.IsNullOrEmpty(_selectedCraft.Airwar))
+            {
+                var url =
+                    "http://www.google.ru/search?q=" +
+                    $"{_selectedCraft.Construct} {_selectedCraft.Name} site%3Aairwar.ru"
+                      .Replace(" ", "+").Replace("/", "+").Replace("&", "+");
+                System.Diagnostics.Process.Start(url);
+            }
+            else
+            {
+                System.Diagnostics.Process.Start(_selectedCraft.Airwar);
+            }
         }
 
         private void bCraftWikiLink_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(_selectedCraft.Wiki);
+            if (string.IsNullOrEmpty(_selectedCraft.Wiki))
+            {
+                var url =
+                  "http://www.google.ru/search?q=" + 
+                  $"{_selectedCraft.Construct} {_selectedCraft.Name} site%3Awikipedia.org"
+                    .Replace(" ", "+").Replace("/", "+").Replace("&", "+");
+                System.Diagnostics.Process.Start(url);
+            }
+            else
+            {
+                System.Diagnostics.Process.Start(_selectedCraft.Wiki);
+            }
         }
 
         private void bCraftFlyingLink_Click(object sender, EventArgs e)
@@ -1125,6 +1324,121 @@ namespace Aik2
 
         private void chCraftSortConstruct_Click(object sender, EventArgs e)
         {
+            LoadCrafts();
+        }
+
+        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var fltDlg = new fFilter();
+            var countries = _ctx.Crafts.Select(x => x.Country).Distinct().OrderBy(x => x).ToArray();
+            fltDlg.ClCountries.Items.AddRange(countries);
+            for (int i = 0; i < fltDlg.ClCountries.Items.Count; i++) 
+            {
+                fltDlg.ClCountries.SetItemChecked(i, true);
+            }
+            for (int i = 0; i < fltDlg.ClSources.Items.Count; i++)
+            {
+                fltDlg.ClSources.SetItemChecked(i, true);
+            }
+
+            if (_filter != null)
+            {
+                for (int i = 0; i < fltDlg.ClCountries.Items.Count; i++) 
+                {
+                    if (_filter.CountriesNo.Contains(fltDlg.ClCountries.Items[i]))
+                    {
+                        fltDlg.ClCountries.SetItemChecked(i, false);
+                    }
+                }
+                for (int i = 0; i < fltDlg.ClSources.Items.Count; i++)
+                {
+                    if (_filter.SourcesNo.Contains(fltDlg.ClSources.Items[i].ToString().Substring(0, 1)))
+                    {
+                        fltDlg.ClSources.SetItemChecked(i, false);
+                    }
+                }
+                fltDlg.CVertYes.Checked = _filter.VertYes;
+                fltDlg.CUavYes.Checked = _filter.UavYes;
+                fltDlg.CGlidYes.Checked = _filter.GlidYes;
+                fltDlg.CLlYes.Checked = _filter.LlYes;
+                fltDlg.CSinglYes.Checked = _filter.SinglYes;
+                fltDlg.CProjYes.Checked = _filter.ProjYes;
+                fltDlg.CVertNo.Checked = _filter.VertNo;
+                fltDlg.CUavNo.Checked = _filter.UavNo;
+                fltDlg.CGlidNo.Checked = _filter.GlidNo;
+                fltDlg.CLlNo.Checked = _filter.LlNo;
+                fltDlg.CSinglNo.Checked = _filter.SinglNo;
+                fltDlg.CProjNo.Checked = _filter.ProjNo;
+
+                fltDlg.EWings.Text = _filter.Wings;
+                fltDlg.EEngines.Text = _filter.Engines;
+                fltDlg.EText.Text = _filter.Text;
+                fltDlg.EText2.Text = _filter.Text2;
+
+                fltDlg.CWholeWords.Checked = _filter.WholeWords;
+                fltDlg.CInText.Checked = _filter.InText;
+
+                fltDlg.NYearFrom.Value = _filter.YearFrom;
+                fltDlg.NYearTo.Value = _filter.YearTo;
+            }
+
+            if (fltDlg.ShowDialog() == DialogResult.OK)
+            {
+                if (_filter == null) _filter = new FilterDto();
+                _filter.CountriesYes = new List<string>();
+                _filter.CountriesNo = new List<string>();
+                _filter.SourcesNo = new List<string>();
+                for (int i = 0; i < fltDlg.ClCountries.Items.Count; i++) 
+                {
+                    if (fltDlg.ClCountries.GetItemChecked(i))
+                    {
+                        _filter.CountriesYes.Add(fltDlg.ClCountries.Items[i].ToString());
+                    }
+                    else
+                    {
+                        _filter.CountriesNo.Add(fltDlg.ClCountries.Items[i].ToString());
+                    }
+                }
+                for (int i = 0; i < fltDlg.ClSources.Items.Count; i++)
+                {
+                    if (!fltDlg.ClSources.GetItemChecked(i))
+                    {
+                        _filter.SourcesNo.Add(fltDlg.ClSources.Items[i].ToString().Substring(0, 1));
+                    }
+                }
+
+                _filter.VertYes = fltDlg.CVertYes.Checked;
+                _filter.UavYes = fltDlg.CUavYes.Checked;
+                _filter.GlidYes = fltDlg.CGlidYes.Checked;
+                _filter.LlYes = fltDlg.CLlYes.Checked;
+                _filter.SinglYes = fltDlg.CSinglYes.Checked;
+                _filter.ProjYes = fltDlg.CProjYes.Checked;
+                _filter.VertNo = fltDlg.CVertNo.Checked;
+                _filter.UavNo = fltDlg.CUavNo.Checked;
+                _filter.GlidNo = fltDlg.CGlidNo.Checked;
+                _filter.LlNo = fltDlg.CLlNo.Checked;
+                _filter.SinglNo = fltDlg.CSinglNo.Checked;
+                _filter.ProjNo = fltDlg.CProjNo.Checked;
+
+                _filter.Wings = fltDlg.EWings.Text;
+                _filter.Engines = fltDlg.EEngines.Text;
+                _filter.Text = fltDlg.EText.Text;
+                _filter.Text2 = fltDlg.EText2.Text;
+
+                _filter.WholeWords = fltDlg.CWholeWords.Checked;
+                _filter.InText = fltDlg.CInText.Checked;
+
+                _filter.YearFrom = (int)fltDlg.NYearFrom.Value;
+                _filter.YearTo = (int)fltDlg.NYearTo.Value;
+
+                _filterOn = true;
+                LoadCrafts();
+            }
+        }
+
+        private void filterOffToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _filterOn = false;
             LoadCrafts();
         }
     }
