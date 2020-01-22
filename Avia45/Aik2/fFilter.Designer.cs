@@ -69,6 +69,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.clSources = new System.Windows.Forms.CheckedListBox();
             this.cInText = new System.Windows.Forms.CheckBox();
+            this.cCaseSensitive = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nYearFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nYearTo)).BeginInit();
@@ -394,7 +395,7 @@
             // cWholeWords
             // 
             this.cWholeWords.AutoSize = true;
-            this.cWholeWords.Location = new System.Drawing.Point(194, 226);
+            this.cWholeWords.Location = new System.Drawing.Point(382, 162);
             this.cWholeWords.Name = "cWholeWords";
             this.cWholeWords.Size = new System.Drawing.Size(85, 17);
             this.cWholeWords.TabIndex = 33;
@@ -460,12 +461,22 @@
             // cInText
             // 
             this.cInText.AutoSize = true;
-            this.cInText.Location = new System.Drawing.Point(305, 226);
+            this.cInText.Location = new System.Drawing.Point(382, 201);
             this.cInText.Name = "cInText";
             this.cInText.Size = new System.Drawing.Size(54, 17);
             this.cInText.TabIndex = 34;
             this.cInText.Text = "in text";
             this.cInText.UseVisualStyleBackColor = true;
+            // 
+            // cCaseSensitive
+            // 
+            this.cCaseSensitive.AutoSize = true;
+            this.cCaseSensitive.Location = new System.Drawing.Point(382, 182);
+            this.cCaseSensitive.Name = "cCaseSensitive";
+            this.cCaseSensitive.Size = new System.Drawing.Size(93, 17);
+            this.cCaseSensitive.TabIndex = 34;
+            this.cCaseSensitive.Text = "case sensitive";
+            this.cCaseSensitive.UseVisualStyleBackColor = true;
             // 
             // fFilter
             // 
@@ -473,6 +484,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(521, 376);
+            this.Controls.Add(this.cCaseSensitive);
             this.Controls.Add(this.cInText);
             this.Controls.Add(this.clSources);
             this.Controls.Add(this.label14);
@@ -563,5 +575,6 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckedListBox clSources;
         private System.Windows.Forms.CheckBox cInText;
+        private System.Windows.Forms.CheckBox cCaseSensitive;
     }
 }

@@ -34,5 +34,6 @@ namespace Aik2
         public Nullable<bool> Proj { get; set; }
         public Nullable<int> Same { get; set; }
         public Nullable<bool> Single { get; set; }
+        public Nullable<int> PicCnt { get; set; }
     }
 }

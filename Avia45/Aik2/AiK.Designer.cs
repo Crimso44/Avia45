@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'D:\Repos\Avia45\Avia45\Aik2\AiK.edmx'. 
+﻿// T4 code generation is enabled for model 'E:\Repos\Avia45\Avia45\Aik2\AiK.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

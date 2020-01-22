@@ -38,6 +38,7 @@ namespace Aik2
         public TextBox EText2 { get { return eText2; } }
 
         public CheckBox CWholeWords { get { return cWholeWords; } }
+        public CheckBox CCaseSensitive { get { return cCaseSensitive; } }
         public CheckBox CInText { get { return cInText; } }
 
         public NumericUpDown NYearFrom { get { return nYearFrom; } }

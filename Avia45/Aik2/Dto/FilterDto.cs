@@ -30,6 +30,7 @@ namespace Aik2.Dto
         public string Text2;
 
         public bool WholeWords;
+        public bool CaseSensitive;
         public bool InText;
 
         public int YearFrom;

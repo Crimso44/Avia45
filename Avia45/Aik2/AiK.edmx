@@ -85,7 +85,7 @@
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK.dbo.Report' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Report">
           <Key>
             <PropertyRef Name="ReportId" />
@@ -117,7 +117,7 @@ warning 6002: The table/view 'AiK.dbo.Report' does not have a primary key define
           <Property Name="Cnt" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK.dbo.vwArts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'AiK2.dbo.vwArts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwArts">
           <Key>
             <PropertyRef Name="ArtId" />
@@ -134,12 +134,12 @@ warning 6002: The table/view 'AiK.dbo.vwArts' does not have a primary key define
           <Property Name="cnt" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK.dbo.vwCrafts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'AiK2.dbo.vwCrafts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwCrafts">
           <Key>
             <PropertyRef Name="CraftId" />
           </Key>
-          <Property Name="CraftId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CraftId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Construct" Type="nvarchar" MaxLength="50" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
           <Property Name="Country" Type="nvarchar" MaxLength="20" />
@@ -159,9 +159,10 @@ warning 6002: The table/view 'AiK.dbo.vwCrafts' does not have a primary key defi
           <Property Name="Proj" Type="bit" />
           <Property Name="Same" Type="int" />
           <Property Name="Single" Type="bit" />
+          <Property Name="PicCnt" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwPics">
           <Key>
             <PropertyRef Name="PicId" />
@@ -182,7 +183,7 @@ warning 6002: The table/view 'AiK.dbo.vwPics' does not have a primary key define
           <Property Name="XType" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK.dbo.vwReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwReport">
           <Key>
             <PropertyRef Name="Mag" />
@@ -198,8 +199,6 @@ warning 6002: The table/view 'AiK.dbo.vwReport' does not have a primary key defi
           <Property Name="crafts" Type="int" />
           <Property Name="uniq" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <Association Name="FK_Crafts_Crafts">
           <End Role="Crafts" Type="Self.Crafts" Multiplicity="0..1" />
           <End Role="Crafts1" Type="Self.Crafts" Multiplicity="*" />
@@ -376,7 +375,8 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
     [vwCrafts].[LL] AS [LL], 
     [vwCrafts].[Proj] AS [Proj], 
     [vwCrafts].[Same] AS [Same], 
-    [vwCrafts].[Single] AS [Single]
+    [vwCrafts].[Single] AS [Single], 
+    [vwCrafts].[PicCnt] AS [PicCnt]
     FROM [dbo].[vwCrafts] AS [vwCrafts]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwPics" EntityType="Self.vwPics" store:Type="Views" store:Schema="dbo">
@@ -766,6 +766,7 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
           <Property Name="Proj" Type="Boolean" />
           <Property Name="Same" Type="Int32" />
           <Property Name="Single" Type="Boolean" />
+          <Property Name="PicCnt" Type="Int32" />
         </EntityType>
         <EntityType Name="vwPics">
           <Key>
@@ -940,6 +941,7 @@ warning 6002: The table/view 'AiK.dbo.vwReportMags' does not have a primary key 
           <EntitySetMapping Name="vwCrafts">
             <EntityTypeMapping TypeName="AiKModel.vwCrafts">
               <MappingFragment StoreEntitySet="vwCrafts">
+                <ScalarProperty Name="PicCnt" ColumnName="PicCnt" />
                 <ScalarProperty Name="Single" ColumnName="Single" />
                 <ScalarProperty Name="Same" ColumnName="Same" />
                 <ScalarProperty Name="Proj" ColumnName="Proj" />

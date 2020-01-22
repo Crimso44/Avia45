@@ -20,6 +20,7 @@ namespace Aik2.Dto
         public bool? Single { get; set; }
         public bool? Proj { get; set; }
         public string Source { get; set; }
+        public int? PicCnt { get; set; }
         public string Type { get; set; }
         public int? SeeAlso { get; set; }
         public string Wiki { get; set; }

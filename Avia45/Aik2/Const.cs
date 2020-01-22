@@ -49,16 +49,17 @@ namespace Aik2
                 public const int Wings = 11;
                 public const int Engines = 12;
                 public const int Source = 13;
-                public const int Type = 14;
-                public const int SeeAlso = 15;
-                public const int FullName = 16;
-                public const int Wiki = 17;
-                public const int Airwar = 18;
-                public const int FlyingM = 19;
-                public const int Same = 20;
-                public const int SeeAlsoId = 21;
-                public const int FlyingMId = 22;
-                public const int SameId = 23;
+                public const int PicCnt = 14;
+                public const int Type = 15;
+                public const int SeeAlso = 16;
+                public const int FullName = 17;
+                public const int Wiki = 18;
+                public const int Airwar = 19;
+                public const int FlyingM = 20;
+                public const int Same = 21;
+                public const int SeeAlsoId = 22;
+                public const int FlyingMId = 23;
+                public const int SameId = 24;
 
                 public static int[] SortConstruct = { Craft.Construct, Craft.IYear, Craft.Name };
                 public static int[] SortCountry = { Craft.Country, Craft.Construct, Craft.IYear, Craft.Name };

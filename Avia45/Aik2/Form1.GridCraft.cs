@@ -91,7 +91,7 @@ namespace Aik2
                 if (!string.IsNullOrEmpty(text) && _crafts678.All(x => x.FullName != text)) cancelEvent.Cancel = true;
             };
 
-            gridCraft.ColumnsCount = 24;
+            gridCraft.ColumnsCount = 25;
 
             gridCraft.RowsCount = 1;
             gridCraft.FixedRows = 1;
@@ -125,26 +125,28 @@ namespace Aik2
             _editorsCraft.Add(editStr20);
             gridCraft[0, 13] = new SourceGrid.Cells.ColumnHeader("Source");
             _editorsCraft.Add(editStr1);
-            gridCraft[0, 14] = new SourceGrid.Cells.ColumnHeader("Type");
-            _editorsCraft.Add(editStr255);
-            gridCraft[0, 15] = new SourceGrid.Cells.ColumnHeader("SeeAlso");
-            _editorsCraft.Add(_editCraft6);
-            gridCraft[0, 16] = new SourceGrid.Cells.ColumnHeader("FullName");
+            gridCraft[0, 14] = new SourceGrid.Cells.ColumnHeader("PicCnt");
             _editorsCraft.Add(null);
-            gridCraft[0, 17] = new SourceGrid.Cells.ColumnHeader("Wiki");
+            gridCraft[0, 15] = new SourceGrid.Cells.ColumnHeader("Type");
             _editorsCraft.Add(editStr255);
-            gridCraft[0, 18] = new SourceGrid.Cells.ColumnHeader("Airwar");
-            _editorsCraft.Add(editStr255);
-            gridCraft[0, 19] = new SourceGrid.Cells.ColumnHeader("FlyingM");
-            _editorsCraft.Add(_editCraft7);
-            gridCraft[0, 20] = new SourceGrid.Cells.ColumnHeader("Same");
+            gridCraft[0, 16] = new SourceGrid.Cells.ColumnHeader("SeeAlso");
             _editorsCraft.Add(_editCraft6);
-            gridCraft[0, 21] = new SourceGrid.Cells.ColumnHeader("SeeAlsoId");
-            gridCraft.Columns[21].Visible = false;
-            gridCraft[0, 22] = new SourceGrid.Cells.ColumnHeader("FlyingMId");
+            gridCraft[0, 17] = new SourceGrid.Cells.ColumnHeader("FullName");
+            _editorsCraft.Add(null);
+            gridCraft[0, 18] = new SourceGrid.Cells.ColumnHeader("Wiki");
+            _editorsCraft.Add(editStr255);
+            gridCraft[0, 19] = new SourceGrid.Cells.ColumnHeader("Airwar");
+            _editorsCraft.Add(editStr255);
+            gridCraft[0, 20] = new SourceGrid.Cells.ColumnHeader("FlyingM");
+            _editorsCraft.Add(_editCraft7);
+            gridCraft[0, 21] = new SourceGrid.Cells.ColumnHeader("Same");
+            _editorsCraft.Add(_editCraft6);
+            gridCraft[0, 22] = new SourceGrid.Cells.ColumnHeader("SeeAlsoId");
             gridCraft.Columns[22].Visible = false;
-            gridCraft[0, 23] = new SourceGrid.Cells.ColumnHeader("SameId");
+            gridCraft[0, 23] = new SourceGrid.Cells.ColumnHeader("FlyingMId");
             gridCraft.Columns[23].Visible = false;
+            gridCraft[0, 24] = new SourceGrid.Cells.ColumnHeader("SameId");
+            gridCraft.Columns[24].Visible = false;
 
             for (var i = 1; i < gridCraft.ColumnsCount; i++)
             {
@@ -183,6 +185,12 @@ namespace Aik2
                 if (_filteredArtId != _selectedArt.ArtId) LoadFilteredMags();
                 CraftsQry = CraftsQry.Where(x => _filteredMagCrafts.Contains(x.CraftId));
             }
+
+            var filterText = false;
+            List<string> lTxt = null;
+            List<string> lTxt2 = null;
+            IQueryable<Pics> xPicsQry = null;
+            IQueryable<Pics> xPicsQry2 = null;
 
             if (_filterOn)
             {
@@ -256,14 +264,14 @@ namespace Aik2
 
                 if (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2))
                 {
-                    var lTxt = ExtractFilters(_filter.Text);
-                    var lTxt2 = ExtractFilters(_filter.Text2);
+                    lTxt = ExtractFilters(_filter.Text);
+                    lTxt2 = ExtractFilters(_filter.Text2);
                     if (lTxt.Any() || lTxt2.Any())
                     {
+                        filterText = true;
+
                         var xCraftsQry = _ctx.Crafts.AsNoTracking().AsQueryable();
                         var xCraftsQry2 = _ctx.Crafts.AsNoTracking().AsQueryable();
-                        IQueryable<Pics> xPicsQry = null;
-                        IQueryable<Pics> xPicsQry2 = null;
                         if (_filter.InText)
                         {
                             xPicsQry = _ctx.Pics.AsNoTracking().AsQueryable();
@@ -333,6 +341,86 @@ namespace Aik2
             else if (chCraftSortYear.Checked)
                 CraftsQry = CraftsQry.OrderBy(x => x.IYear).ThenBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.Name);
             var Crafts = CraftsQry.ToList();
+
+            if (filterText && _filter.WholeWords)
+            {
+                Crafts = Crafts.Where(x => {
+                    var s = $" {x.Construct} {x.Name} {x.Type} ".ToLower();
+                    if (_filter.InText)
+                    {
+                        var crf = _ctx.Crafts.AsNoTracking().Single(y => y.CraftId == x.CraftId);
+                        s += $" {crf.CText} ".ToLower();
+                    }
+                    var isOk = false;
+                    foreach(var t in lTxt)
+                    {
+                        var found = false;
+                        var i = s.IndexOf(t.ToLower());
+                        while (i >= 0)
+                        {
+                            if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
+                            i = s.IndexOf(t.ToLower(), i + 1);
+                        }
+                        if (found) isOk = true;
+                        else break;
+                    }
+                    if (isOk) return true;
+
+                    isOk = false;
+                    foreach (var t in lTxt2)
+                    {
+                        var found = false;
+                        var i = s.IndexOf(t.ToLower());
+                        while (i >= 0)
+                        {
+                            if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
+                            i = s.IndexOf(t.ToLower(), i + 1);
+                        }
+                        if (found) isOk = true;
+                        else break;
+                    }
+                    if (isOk) return true;
+                    if (!_filter.InText) return false;
+
+                    var pics = xPicsQry.Where(y => y.CraftId == x.CraftId).ToList();
+                    s = " ";
+                    foreach (var p in pics) s += p.Text + " ";
+
+                    isOk = false;
+                    foreach (var t in lTxt)
+                    {
+                        var found = false;
+                        var i = s.IndexOf(t.ToLower());
+                        while (i >= 0)
+                        {
+                            if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
+                            i = s.IndexOf(t.ToLower(), i + 1);
+                        }
+                        if (found) isOk = true;
+                        else break;
+                    }
+                    if (isOk) return true;
+
+                    pics = xPicsQry2.Where(y => y.CraftId == x.CraftId).ToList();
+                    s = " ";
+                    foreach (var p in pics) s += p.Text + " ";
+                    isOk = false;
+                    foreach (var t in lTxt2)
+                    {
+                        var found = false;
+                        var i = s.IndexOf(t.ToLower());
+                        while (i >= 0)
+                        {
+                            if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
+                            i = s.IndexOf(t.ToLower(), i + 1);
+                        }
+                        if (found) isOk = true;
+                        else break;
+                    }
+                    return isOk;
+                }).ToList();
+            }
+
             _craftDtos = Mapper.Map<List<CraftDto>>(Crafts);
 
             var saved = -1;
@@ -444,40 +532,41 @@ namespace Aik2
             gridCraft[r, 12].AddController(_gridCraftController);
             gridCraft[r, 13] = new SourceGrid.Cells.Cell(Craft.Source, _editorsCraft[13]);
             gridCraft[r, 13].AddController(_gridCraftController);
-            gridCraft[r, 14] = new SourceGrid.Cells.Cell(Craft.Type, _editorsCraft[14]);
-            gridCraft[r, 14].AddController(_gridCraftController);
+            gridCraft[r, 14] = new SourceGrid.Cells.Cell(Craft.PicCnt, _editorsCraft[14]);
+            gridCraft[r, 15] = new SourceGrid.Cells.Cell(Craft.Type, _editorsCraft[15]);
+            gridCraft[r, 15].AddController(_gridCraftController);
             var craftName = "";
             if (Craft.SeeAlso.HasValue)
             {
                 var craft = _crafts.FirstOrDefault(x => x.CraftId == Craft.SeeAlso);
                 if (craft != null) craftName = craft.FullName;
             }
-            gridCraft[r, 15] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[15] : null);
-            gridCraft[r, 15].AddController(_gridCraftController);
-            gridCraft[r, 16] = new SourceGrid.Cells.Cell(Craft.FullName, _editorsCraft[16]);
-            gridCraft[r, 17] = new SourceGrid.Cells.Cell(Craft.Wiki, _editorsCraft[17]);
-            gridCraft[r, 17].AddController(_gridCraftController);
-            gridCraft[r, 18] = new SourceGrid.Cells.Cell(Craft.Airwar, _editorsCraft[18]);
+            gridCraft[r, 16] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[16] : null);
+            gridCraft[r, 16].AddController(_gridCraftController);
+            gridCraft[r, 17] = new SourceGrid.Cells.Cell(Craft.FullName, _editorsCraft[17]);
+            gridCraft[r, 18] = new SourceGrid.Cells.Cell(Craft.Wiki, _editorsCraft[18]);
             gridCraft[r, 18].AddController(_gridCraftController);
+            gridCraft[r, 19] = new SourceGrid.Cells.Cell(Craft.Airwar, _editorsCraft[18]);
+            gridCraft[r, 19].AddController(_gridCraftController);
             craftName = "";
             if (Craft.FlyingM.HasValue)
             {
                 var craft = _crafts.FirstOrDefault(x => x.CraftId == Craft.FlyingM);
                 if (craft != null) craftName = craft.FullName;
             }
-            gridCraft[r, 19] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[19] : null);
-            gridCraft[r, 19].AddController(_gridCraftController);
+            gridCraft[r, 20] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[20] : null);
+            gridCraft[r, 20].AddController(_gridCraftController);
             craftName = "";
             if (Craft.Same.HasValue)
             {
                 var craft = _crafts.FirstOrDefault(x => x.CraftId == Craft.Same);
                 if (craft != null) craftName = craft.FullName;
             }
-            gridCraft[r, 20] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[20] : null);
-            gridCraft[r, 20].AddController(_gridCraftController);
-            gridCraft[r, 21] = new SourceGrid.Cells.Cell(Craft.SeeAlso);
-            gridCraft[r, 22] = new SourceGrid.Cells.Cell(Craft.FlyingM);
-            gridCraft[r, 23] = new SourceGrid.Cells.Cell(Craft.Same);
+            gridCraft[r, 21] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[21] : null);
+            gridCraft[r, 21].AddController(_gridCraftController);
+            gridCraft[r, 22] = new SourceGrid.Cells.Cell(Craft.SeeAlso);
+            gridCraft[r, 23] = new SourceGrid.Cells.Cell(Craft.FlyingM);
+            gridCraft[r, 24] = new SourceGrid.Cells.Cell(Craft.Same);
 
             SetCraftRowColor(Craft, r);
         }
@@ -516,8 +605,8 @@ namespace Aik2
                 var craft = _crafts.FirstOrDefault(x => x.CraftId == (int)gridCraft[r, Const.Columns.Craft.FlyingMId].Value);
                 if (craft != null)
                 {
-                    gridCraft[r, 19] = new SourceGrid.Cells.Cell(Craft.FlyingM, _editorsCraft[19]);
-                    gridCraft[r, 19].AddController(_gridCraftController);
+                    gridCraft[r, 20] = new SourceGrid.Cells.Cell(Craft.FlyingM, _editorsCraft[20]);
+                    gridCraft[r, 20].AddController(_gridCraftController);
                 }
             }
             if (!string.IsNullOrEmpty(gridCraft[r, Const.Columns.Craft.SameId].DisplayText))
@@ -525,8 +614,8 @@ namespace Aik2
                 var craft = _crafts.FirstOrDefault(x => x.CraftId == (int)gridCraft[r, Const.Columns.Craft.SameId].Value);
                 if (craft != null)
                 {
-                    gridCraft[r, 20] = new SourceGrid.Cells.Cell(Craft.Same, _editorsCraft[20]);
-                    gridCraft[r, 20].AddController(_gridCraftController);
+                    gridCraft[r, 21] = new SourceGrid.Cells.Cell(Craft.Same, _editorsCraft[21]);
+                    gridCraft[r, 21].AddController(_gridCraftController);
                 }
             }
 
@@ -550,12 +639,12 @@ namespace Aik2
                 Wings = (string)gridCraft[r, 11].Value,
                 Engines = (string)gridCraft[r, 12].Value,
                 Source = (string)gridCraft[r, 13].Value,
-                Type = (string)gridCraft[r, 14].Value,
-                Wiki = (string)gridCraft[r, 17].Value,
-                Airwar = (string)gridCraft[r, 18].Value,
-                SeeAlso = (int?)gridCraft[r, 21].Value,
-                FlyingM = (int?)gridCraft[r, 22].Value,
-                Same = (int?)gridCraft[r, 23].Value
+                Type = (string)gridCraft[r, 15].Value,
+                Wiki = (string)gridCraft[r, 18].Value,
+                Airwar = (string)gridCraft[r, 19].Value,
+                SeeAlso = (int?)gridCraft[r, 22].Value,
+                FlyingM = (int?)gridCraft[r, 23].Value,
+                Same = (int?)gridCraft[r, 24].Value
             };
             return craft;
         }
@@ -634,10 +723,10 @@ namespace Aik2
                 _form._craftDtos[row - 1] = craftDto;
                 var newCraft = craftDto;
 
-                if (newCraft.Name != _form._editingCraftFullName)
+                if (newCraft.FullName != _form._editingCraftFullName)
                 {
                     var isRefresh = false;
-                    _form.gridCraft[row, Const.Columns.Craft.FullName].Value = newCraft.Name;
+                    _form.gridCraft[row, Const.Columns.Craft.FullName].Value = newCraft.FullName;
                     var craft = _form._crafts.FirstOrDefault(x => x.CraftId == newCraft.CraftId);
                     if (craft != null) _form._crafts.Remove(craft);
                     craft = _form._crafts6.FirstOrDefault(x => x.CraftId == newCraft.CraftId);
@@ -1376,6 +1465,7 @@ namespace Aik2
                 fltDlg.EText2.Text = _filter.Text2;
 
                 fltDlg.CWholeWords.Checked = _filter.WholeWords;
+                fltDlg.CCaseSensitive.Checked = _filter.CaseSensitive;
                 fltDlg.CInText.Checked = _filter.InText;
 
                 fltDlg.NYearFrom.Value = _filter.YearFrom;
@@ -1426,6 +1516,7 @@ namespace Aik2
                 _filter.Text2 = fltDlg.EText2.Text;
 
                 _filter.WholeWords = fltDlg.CWholeWords.Checked;
+                _filter.CaseSensitive = fltDlg.CCaseSensitive.Checked;
                 _filter.InText = fltDlg.CInText.Checked;
 
                 _filter.YearFrom = (int)fltDlg.NYearFrom.Value;
