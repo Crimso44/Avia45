@@ -274,9 +274,10 @@ namespace Aik2
 
             if (_filterOn && _filter.InText && (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2)))
             {
-                var lTxt = ExtractFilters(_filter.Text.ToLower());
-                lTxt.AddRange(ExtractFilters(_filter.Text2.ToLower()));
-                var txtlw = textBox.Text.ToLower();
+                var lTxt = ExtractFilters(_filter.Text, _filter.CaseSensitive);
+                lTxt.AddRange(ExtractFilters(_filter.Text2, _filter.CaseSensitive));
+                var txtlw = textBox.Text;
+                if (!_filter.CaseSensitive) txtlw = txtlw.ToLower();
                 foreach (var t in lTxt)
                 {
                     var i = txtlw.IndexOf(t);

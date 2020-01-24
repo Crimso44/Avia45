@@ -176,6 +176,9 @@ namespace Aik2
 
         public void LoadCrafts()
         {
+            lWorking.Visible = true;
+            Application.DoEvents();
+
             var CraftsQry = _ctx.vwCrafts.AsNoTracking().AsQueryable();
 
             _filteredMags = null;
@@ -264,8 +267,8 @@ namespace Aik2
 
                 if (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2))
                 {
-                    lTxt = ExtractFilters(_filter.Text);
-                    lTxt2 = ExtractFilters(_filter.Text2);
+                    lTxt = ExtractFilters(_filter.Text, _filter.CaseSensitive);
+                    lTxt2 = ExtractFilters(_filter.Text2, _filter.CaseSensitive);
                     if (lTxt.Any() || lTxt2.Any())
                     {
                         filterText = true;
@@ -342,24 +345,41 @@ namespace Aik2
                 CraftsQry = CraftsQry.OrderBy(x => x.IYear).ThenBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.Name);
             var Crafts = CraftsQry.ToList();
 
-            if (filterText && _filter.WholeWords)
+            if (filterText && (_filter.WholeWords || _filter.CaseSensitive))
             {
+                lWorkingText.Text = "********************";
+                lWorkingText.Visible = true;
+                Application.DoEvents();
+
+                var cnt = 0;
+                var all = Crafts.Count;
+                var v = 0;
                 Crafts = Crafts.Where(x => {
-                    var s = $" {x.Construct} {x.Name} {x.Type} ".ToLower();
+                    cnt++;
+                    var v0 = 20 * cnt / all;
+                    if (v != v0)
+                    {
+                        v = v0;
+                        lWorkingText.Text = new String('-', v) + (v < 20 ? new String('*', 20 - v) : "");
+                        Application.DoEvents();
+                    }
+
+                    var s = $" {x.Construct} {x.Name} {x.Type} ";
                     if (_filter.InText)
                     {
                         var crf = _ctx.Crafts.AsNoTracking().Single(y => y.CraftId == x.CraftId);
-                        s += $" {crf.CText} ".ToLower();
+                        s += $"{crf.CText} ";
                     }
+                    if (!_filter.CaseSensitive) s = s.ToLower();
                     var isOk = false;
                     foreach(var t in lTxt)
                     {
                         var found = false;
-                        var i = s.IndexOf(t.ToLower());
+                        var i = s.IndexOf(t);
                         while (i >= 0)
                         {
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
-                            i = s.IndexOf(t.ToLower(), i + 1);
+                            i = s.IndexOf(t, i + 1);
                         }
                         if (found) isOk = true;
                         else break;
@@ -370,11 +390,11 @@ namespace Aik2
                     foreach (var t in lTxt2)
                     {
                         var found = false;
-                        var i = s.IndexOf(t.ToLower());
+                        var i = s.IndexOf(t);
                         while (i >= 0)
                         {
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
-                            i = s.IndexOf(t.ToLower(), i + 1);
+                            i = s.IndexOf(t, i + 1);
                         }
                         if (found) isOk = true;
                         else break;
@@ -385,16 +405,16 @@ namespace Aik2
                     var pics = xPicsQry.Where(y => y.CraftId == x.CraftId).ToList();
                     s = " ";
                     foreach (var p in pics) s += p.Text + " ";
-
+                    if (!_filter.CaseSensitive) s = s.ToLower();
                     isOk = false;
                     foreach (var t in lTxt)
                     {
                         var found = false;
-                        var i = s.IndexOf(t.ToLower());
+                        var i = s.IndexOf(t);
                         while (i >= 0)
                         {
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
-                            i = s.IndexOf(t.ToLower(), i + 1);
+                            i = s.IndexOf(t, i + 1);
                         }
                         if (found) isOk = true;
                         else break;
@@ -404,21 +424,25 @@ namespace Aik2
                     pics = xPicsQry2.Where(y => y.CraftId == x.CraftId).ToList();
                     s = " ";
                     foreach (var p in pics) s += p.Text + " ";
+                    if (!_filter.CaseSensitive) s = s.ToLower();
                     isOk = false;
                     foreach (var t in lTxt2)
                     {
                         var found = false;
-                        var i = s.IndexOf(t.ToLower());
+                        var i = s.IndexOf(t);
                         while (i >= 0)
                         {
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
-                            i = s.IndexOf(t.ToLower(), i + 1);
+                            i = s.IndexOf(t, i + 1);
                         }
                         if (found) isOk = true;
                         else break;
                     }
                     return isOk;
                 }).ToList();
+
+                lWorkingText.Visible = false;
+                Application.DoEvents();
             }
 
             _craftDtos = Mapper.Map<List<CraftDto>>(Crafts);
@@ -468,9 +492,11 @@ namespace Aik2
 
             gridCraft.Refresh();
 
+            lWorking.Visible = false;
+            Application.DoEvents();
         }
 
-        private List<string> ExtractFilters(string txt)
+        private List<string> ExtractFilters(string txt, bool caseSensitive)
         {
             var res = new List<string>();
             var i = txt.IndexOf('\'');
@@ -479,6 +505,7 @@ namespace Aik2
                 var j = txt.IndexOf('\'', i + 1);
                 if (j < 0) j = txt.Length;
                 var s = txt.Substring(i + 1, j - i - 1);
+                if (!caseSensitive) s = s.ToLower();
                 res.Add(s);
                 txt = txt.Substring(0, i - 1) + " " + txt.Substring(j + 1);
                 i = txt.IndexOf('\'');
@@ -489,6 +516,7 @@ namespace Aik2
                 var j = txt.IndexOf('"', i + 1);
                 if (j < 0) j = txt.Length;
                 var s = txt.Substring(i + 1, j - i - 1);
+                if (!caseSensitive) s = s.ToLower();
                 res.Add(s);
                 txt = txt.Substring(0, i - 1) + " " + txt.Substring(j + 1);
                 i = txt.IndexOf('"');
@@ -497,7 +525,11 @@ namespace Aik2
             foreach(var t in lTxt)
             {
                 if (!string.IsNullOrEmpty(t.Trim()))
-                    res.Add(t.Trim());
+                {
+                    var s = t.Trim();
+                    if (!caseSensitive) s = s.ToLower();
+                    res.Add(s);
+                }
             }
             return res;
         }

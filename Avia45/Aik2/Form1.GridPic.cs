@@ -127,14 +127,19 @@ namespace Aik2
                 flt = true;
             }
 
+            List<string> lTxt = null;
+            List<string> lTxt2 = null;
+            IQueryable<Pics> xPicsQry = null;
+            IQueryable<Pics> xPicsQry2 = null;
+
             if (_filterOn && (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2)) && _filter.InText)
             {
-                var lTxt = ExtractFilters(_filter.Text);
-                var lTxt2 = ExtractFilters(_filter.Text2);
+                lTxt = ExtractFilters(_filter.Text, _filter.CaseSensitive);
+                lTxt2 = ExtractFilters(_filter.Text2, _filter.CaseSensitive);
                 if (lTxt.Any() || lTxt2.Any())
                 {
-                    var xPicsQry = _ctx.Pics.AsNoTracking().AsQueryable();
-                    var xPicsQry2 = _ctx.Pics.AsNoTracking().AsQueryable();
+                    xPicsQry = _ctx.Pics.AsNoTracking().AsQueryable();
+                    xPicsQry2 = _ctx.Pics.AsNoTracking().AsQueryable();
                     if (lTxt.Any())
                     {
                         foreach (var t in lTxt)
@@ -160,7 +165,6 @@ namespace Aik2
                 }
             }
 
-
             if (!flt)
             {
                 PicsQry = PicsQry.Where(x => false);
@@ -168,6 +172,48 @@ namespace Aik2
             PicsQry = PicsQry.OrderBy(x => x.CraftId).ThenBy(x => x.NType).ThenBy(x => x.NNN);
 
             var Pics = PicsQry.ToList();
+
+            if (_filterOn && (!string.IsNullOrEmpty(_filter.Text) || !string.IsNullOrEmpty(_filter.Text2)) && _filter.InText && _filter.CaseSensitive)
+            {
+                Pics = Pics.Where(x =>
+                {
+                    var pic = xPicsQry.First(y => y.PicId == x.PicId);
+                    var s = $" {pic.Text} ";
+                    if (!_filter.CaseSensitive) s = s.ToLower();
+                    var isOk = false;
+                    foreach (var t in lTxt)
+                    {
+                        var found = false;
+                        var i = s.IndexOf(t);
+                        while (i >= 0)
+                        {
+                            if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
+                            i = s.IndexOf(t, i + 1);
+                        }
+                        if (found) isOk = true;
+                        else break;
+                    }
+                    if (isOk) return true;
+
+                    pic = xPicsQry2.First(y => y.PicId == x.PicId);
+                    s = $" {pic.Text} ";
+                    isOk = false;
+                    foreach (var t in lTxt2)
+                    {
+                        var found = false;
+                        var i = s.IndexOf(t);
+                        while (i >= 0)
+                        {
+                            if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
+                            i = s.IndexOf(t, i + 1);
+                        }
+                        if (found) isOk = true;
+                        else break;
+                    }
+                    return isOk;
+                }).ToList();
+            }
+
             _pics = Mapper.Map<List<PicDto>>(Pics);
             lPicCnt.Text = _pics.Count.ToString();
 

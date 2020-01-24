@@ -123,6 +123,8 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.lWorking = new System.Windows.Forms.Label();
+            this.lWorkingText = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -1134,6 +1136,8 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.lWorkingText);
+            this.panel2.Controls.Add(this.lWorking);
             this.panel2.Controls.Add(this.lInfo);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 424);
@@ -1157,6 +1161,31 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
+            // 
+            // lWorking
+            // 
+            this.lWorking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lWorking.AutoSize = true;
+            this.lWorking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lWorking.ForeColor = System.Drawing.Color.Red;
+            this.lWorking.Location = new System.Drawing.Point(783, 8);
+            this.lWorking.Name = "lWorking";
+            this.lWorking.Size = new System.Drawing.Size(15, 13);
+            this.lWorking.TabIndex = 1;
+            this.lWorking.Text = "X";
+            this.lWorking.Visible = false;
+            // 
+            // lWorkingText
+            // 
+            this.lWorkingText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lWorkingText.AutoSize = true;
+            this.lWorkingText.Location = new System.Drawing.Point(715, 8);
+            this.lWorkingText.Name = "lWorkingText";
+            this.lWorkingText.Size = new System.Drawing.Size(70, 13);
+            this.lWorkingText.TabIndex = 2;
+            this.lWorkingText.Text = "lWorkingText";
+            this.lWorkingText.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lWorkingText.Visible = false;
             // 
             // Form1
             // 
@@ -1306,6 +1335,8 @@
         private System.Windows.Forms.ToolStripMenuItem filterOffToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showBookmarkedPicToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bookmarkPicToolStripMenuItem;
+        private System.Windows.Forms.Label lWorking;
+        private System.Windows.Forms.Label lWorkingText;
     }
 }
 
