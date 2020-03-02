@@ -476,6 +476,9 @@ namespace Aik2
                 _craftPosition = new Position(1, 1);
                 gridCraft.Selection.Focus(_craftPosition, true);
                 CraftCellGotFocus(null, new ChangeActivePositionEventArgs(_craftPosition, _craftPosition));
+            } else
+            {
+                _craftPosition = Position.Empty;
             }
 
             _crafts6 = _craftDtos.Where(x => x.Source == "6").OrderBy(x => x.Sort).ToList();
@@ -681,12 +684,7 @@ namespace Aik2
             return craft;
         }
 
-        private class GridCraftSelection : SourceGrid.Selection.FreeSelection
-        {
-
-        }
-
-        private class GridCraftController : SourceGrid.Cells.Controllers.ControllerBase
+       private class GridCraftController : SourceGrid.Cells.Controllers.ControllerBase
         {
             private readonly Form1 _form;
 
@@ -895,6 +893,7 @@ namespace Aik2
                     _ctx.Database.ExecuteSqlCommand($"delete from Words where Cnt = 0");
                 }
             }
+            _craftTextChanged = false;
         }
 
         private void DoCraftCellGotFocus(Position pos)

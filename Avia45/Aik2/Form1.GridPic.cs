@@ -111,6 +111,9 @@ namespace Aik2
 
         public void LoadPics(bool isFromOtherTabs)
         {
+            lWorking.Visible = true;
+            Application.DoEvents();
+
             var PicsQry = _ctx.vwPics.AsNoTracking().AsQueryable();
 
             var flt = false;
@@ -262,6 +265,9 @@ namespace Aik2
             bDown.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
             bDown10.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
             bHere.Enabled = chPicSelCraft.Checked && !chPicSelArt.Checked;
+
+            lWorking.Visible = false;
+            Application.DoEvents();
         }
 
         public void InitLinkGrid()
@@ -468,6 +474,7 @@ namespace Aik2
 
                 if (_form._picChanging) return;
 
+                _form.StoreEditedPicText();
                 var row = sender.Position.Row;
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
                 var val = (string)cell.DisplayText;
@@ -691,6 +698,7 @@ namespace Aik2
                     _ctx.Database.ExecuteSqlCommand($"delete from Words where Cnt = 0");
                 }
             }
+            _picTextChanged = false;
         }
 
         private void ShowPicImage()
