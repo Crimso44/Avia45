@@ -25,6 +25,8 @@ namespace Aik2
         private SourceGrid.Cells.Editors.ComboBox _editCraft6;
         private SourceGrid.Cells.Editors.ComboBox _editCraft7;
         private SourceGrid.Cells.Editors.ComboBox _editCraft678;
+        private SourceGrid.Cells.Editors.ComboBox _editCraftWings;
+        private SourceGrid.Cells.Editors.ComboBox _editCraftEngs;
         private SourceGrid.Cells.Views.Cell _normCraftCellView;
         private SourceGrid.Cells.Views.CheckBox _normCraftCheckView;
         private SourceGrid.Cells.Views.Cell _redCraftCellView;
@@ -69,7 +71,7 @@ namespace Aik2
 
             _editCraft6 = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
             _editCraft6.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
-            _editCraft6.Control.AutoCompleteMode = AutoCompleteMode.Append;
+            _editCraft6.Control.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             _editCraft6.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
                 var text = ((ComboBox)sender).Text;
                 if (!string.IsNullOrEmpty(text) && _crafts6.All(x => x.FullName != text)) cancelEvent.Cancel = true;
@@ -77,7 +79,7 @@ namespace Aik2
 
             _editCraft7 = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
             _editCraft7.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
-            _editCraft7.Control.AutoCompleteMode = AutoCompleteMode.Append;
+            _editCraft7.Control.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             _editCraft7.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
                 var text = ((ComboBox)sender).Text;
                 if (!string.IsNullOrEmpty(text) && _crafts7.All(x => x.FullName != text)) cancelEvent.Cancel = true;
@@ -85,10 +87,28 @@ namespace Aik2
 
             _editCraft678 = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
             _editCraft678.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
-            _editCraft678.Control.AutoCompleteMode = AutoCompleteMode.Append;
+            _editCraft678.Control.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             _editCraft678.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
                 var text = ((ComboBox)sender).Text;
                 if (!string.IsNullOrEmpty(text) && _crafts678.All(x => x.FullName != text)) cancelEvent.Cancel = true;
+            };
+
+            _editCraftWings = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
+            _editCraftWings.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
+            _editCraftWings.Control.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            _editCraftWings.Control.Items.AddRange(_ctx.Crafts.Select(x => x.Wings).Distinct().OrderBy(x => x).Where(x => !string.IsNullOrEmpty(x)).ToArray());
+            _editCraftWings.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
+                var text = ((ComboBox)sender).Text;
+                if (!string.IsNullOrEmpty(text) && text.Length > 20) cancelEvent.Cancel = true;
+            };
+
+            _editCraftEngs = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
+            _editCraftEngs.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
+            _editCraftEngs.Control.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            _editCraftEngs.Control.Items.AddRange(_ctx.Crafts.Select(x => x.Engines).Distinct().OrderBy(x => x).Where(x => !string.IsNullOrEmpty(x)).ToArray());
+            _editCraftEngs.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
+                var text = ((ComboBox)sender).Text;
+                if (!string.IsNullOrEmpty(text) && text.Length > 20) cancelEvent.Cancel = true;
             };
 
             gridCraft.ColumnsCount = 25;
@@ -120,9 +140,9 @@ namespace Aik2
             gridCraft[0, 10] = new SourceGrid.Cells.ColumnHeader("Proj");
             _editorsCraft.Add(editBool);
             gridCraft[0, 11] = new SourceGrid.Cells.ColumnHeader("Wings");
-            _editorsCraft.Add(editStr20);
+            _editorsCraft.Add(_editCraftWings);
             gridCraft[0, 12] = new SourceGrid.Cells.ColumnHeader("Engines");
-            _editorsCraft.Add(editStr20);
+            _editorsCraft.Add(_editCraftEngs);
             gridCraft[0, 13] = new SourceGrid.Cells.ColumnHeader("Source");
             _editorsCraft.Add(editStr1);
             gridCraft[0, 14] = new SourceGrid.Cells.ColumnHeader("PicCnt");
@@ -698,14 +718,6 @@ namespace Aik2
                 _form._editingCraftFullName = _form.gridCraft[sender.Position.Row, Const.Columns.Craft.FullName].DisplayText;
                 base.OnEditStarted(sender, e);
                 _form.SearchModeOff();
-                if (sender.Position.Column == Const.Columns.Craft.SeeAlso || sender.Position.Column == Const.Columns.Craft.Same)
-                {
-                    _form._editCraft6.Control.DroppedDown = true;
-                }
-                if (sender.Position.Column == Const.Columns.Craft.FlyingM)
-                {
-                    _form._editCraft7.Control.DroppedDown = true;
-                }
             }
 
             public override void OnValueChanged(SourceGrid.CellContext sender, EventArgs e)

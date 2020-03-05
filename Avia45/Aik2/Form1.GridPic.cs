@@ -458,14 +458,6 @@ namespace Aik2
             {
                 base.OnEditStarted(sender, e);
                 _form.SearchModeOff();
-                if (sender.Position.Column == Const.Columns.Pic.Craft)
-                {
-                    _form._editCraft678.Control.DroppedDown = true;
-                }
-                if (sender.Position.Column == Const.Columns.Pic.Art)
-                {
-                    _form._editArt.Control.DroppedDown = true;
-                }
             }
 
             public override void OnValueChanged(SourceGrid.CellContext sender, EventArgs e)
@@ -884,7 +876,10 @@ namespace Aik2
                             Pic.XPage = (string)gridPic[pos.Row, Const.Columns.Pic.XPage].Value;
                             Pic.Type = (string)gridPic[pos.Row, Const.Columns.Pic.Type].Value;
                             Pic.NType = (int?)gridPic[pos.Row, Const.Columns.Pic.NType].Value;
-                            Pic.NN = (int.Parse((string)gridPic[pos.Row, Const.Columns.Pic.NN].Value) + 1).ToString();
+                            if (int.TryParse((string)gridPic[pos.Row, Const.Columns.Pic.NN].Value, out var nn))
+                                Pic.NN = (nn + 1).ToString();
+                            else
+                                Pic.NN = "1";
                             Pic.NNN = _ctx.vwPics.AsNoTracking().OrderByDescending(x => x.NNN).First().NNN + 1;
                             Pic.CraftId = (int)gridPic[pos.Row, Const.Columns.Pic.CraftId].Value;
                             Pic.ArtId = (int)gridPic[pos.Row, Const.Columns.Pic.ArtId].Value;

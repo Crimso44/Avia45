@@ -39,12 +39,13 @@ namespace Aik2
             InitializeComponent();
             SetConfig();
 
+            _ctx = new AiKEntities();
+
             InitArtGrid();
             InitCraftGrid();
             InitPicGrid();
             InitLinkGrid();
 
-            _ctx = new AiKEntities();
             LoadArts();
             LoadCrafts();
             LoadPics(true);

@@ -48,7 +48,7 @@ namespace Aik2
 
             _editArt = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
             _editArt.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
-            _editArt.Control.AutoCompleteMode = AutoCompleteMode.Append;
+            _editArt.Control.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             _editArt.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) {
                 var text = ((ComboBox)sender).Text;
                 if (!string.IsNullOrEmpty(text) && _arts.All(x => x.Name != text)) cancelEvent.Cancel = true;
