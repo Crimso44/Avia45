@@ -234,27 +234,27 @@ namespace Aik2
 
                 if (_filter.VertYes != _filter.VertNo)
                 {
-                    CraftsQry = CraftsQry.Where(x => x.Vert ?? false == _filter.VertYes);
+                    CraftsQry = CraftsQry.Where(x => (x.Vert ?? false) == _filter.VertYes);
                 };
                 if (_filter.UavYes != _filter.UavNo)
                 {
-                    CraftsQry = CraftsQry.Where(x => x.Uav ?? false == _filter.UavYes);
+                    CraftsQry = CraftsQry.Where(x => (x.Uav ?? false) == _filter.UavYes);
                 };
                 if (_filter.GlidYes != _filter.GlidNo)
                 {
-                    CraftsQry = CraftsQry.Where(x => x.Glider ?? false == _filter.GlidYes);
+                    CraftsQry = CraftsQry.Where(x => (x.Glider ?? false) == _filter.GlidYes);
                 };
                 if (_filter.LlYes != _filter.LlNo)
                 {
-                    CraftsQry = CraftsQry.Where(x => x.LL ?? false == _filter.LlYes);
+                    CraftsQry = CraftsQry.Where(x => (x.LL ?? false) == _filter.LlYes);
                 };
                 if (_filter.SinglYes != _filter.SinglNo)
                 {
-                    CraftsQry = CraftsQry.Where(x => x.Single ?? false == _filter.SinglYes);
+                    CraftsQry = CraftsQry.Where(x => (x.Single ?? false) == _filter.SinglYes);
                 };
                 if (_filter.ProjYes != _filter.ProjNo)
                 {
-                    CraftsQry = CraftsQry.Where(x => x.Proj ?? false == _filter.ProjYes);
+                    CraftsQry = CraftsQry.Where(x => (x.Proj ?? false) == _filter.ProjYes);
                 };
 
                 if (_filter.YearFrom > 0)
@@ -530,7 +530,7 @@ namespace Aik2
                 var s = txt.Substring(i + 1, j - i - 1);
                 if (!caseSensitive) s = s.ToLower();
                 res.Add(s);
-                txt = txt.Substring(0, i - 1) + " " + txt.Substring(j + 1);
+                txt = (i > 0 ? txt.Substring(0, i - 1) : "") + " " + (j < txt.Length ? txt.Substring(j + 1) : "");
                 i = txt.IndexOf('\'');
             }
             i = txt.IndexOf('"');
@@ -541,7 +541,7 @@ namespace Aik2
                 var s = txt.Substring(i + 1, j - i - 1);
                 if (!caseSensitive) s = s.ToLower();
                 res.Add(s);
-                txt = txt.Substring(0, i - 1) + " " + txt.Substring(j + 1);
+                txt = (i > 0 ? txt.Substring(0, i - 1) : "") + " " + (j < txt.Length ? txt.Substring(j + 1) : "");
                 i = txt.IndexOf('"');
             }
             var lTxt = txt.Split(' ');
