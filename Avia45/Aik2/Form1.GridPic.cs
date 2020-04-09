@@ -465,13 +465,13 @@ namespace Aik2
                 base.OnValueChanged(sender, e);
 
                 if (_form._picChanging) return;
+                _form._picChanging = true;
 
                 _form.StoreEditedPicText();
                 var row = sender.Position.Row;
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
                 var val = (string)cell.DisplayText;
 
-                _form._picChanging = true;
                 switch (sender.Position.Column)
                 {
                     case Const.Columns.Pic.Craft:
@@ -507,12 +507,13 @@ namespace Aik2
                     Mapper.Map(picDto, entity);
                     _form._ctx.SaveChanges();
                 }
-                _form._picChanging = false;
 
                 _form._selectedPic = picDto;
                 _form._pics[row - 1] = picDto;
 
                 _form.CheckPicSort(sender.Position, isForce);
+
+                _form._picChanging = false;
             }
         }
 
