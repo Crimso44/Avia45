@@ -471,7 +471,7 @@ namespace Aik2
                 SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
                 var val = (string)cell.DisplayText;
 
-
+                _form._picChanging = true;
                 switch (sender.Position.Column)
                 {
                     case Const.Columns.Pic.Craft:
@@ -507,6 +507,8 @@ namespace Aik2
                     Mapper.Map(picDto, entity);
                     _form._ctx.SaveChanges();
                 }
+                _form._picChanging = false;
+
                 _form._selectedPic = picDto;
                 _form._pics[row - 1] = picDto;
 
