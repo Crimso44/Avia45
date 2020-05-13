@@ -70,6 +70,9 @@
             this.clSources = new System.Windows.Forms.CheckedListBox();
             this.cInText = new System.Windows.Forms.CheckBox();
             this.cCaseSensitive = new System.Windows.Forms.CheckBox();
+            this.bSrcR = new System.Windows.Forms.Button();
+            this.bSrcW = new System.Windows.Forms.Button();
+            this.bSrcRW = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nYearFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nYearTo)).BeginInit();
@@ -449,13 +452,14 @@
             this.clSources.CheckOnClick = true;
             this.clSources.FormattingEnabled = true;
             this.clSources.Items.AddRange(new object[] {
+            "1 - Airwar",
             "2 - Russian",
             "6 - AviaDejavu",
             "7 - FlyingMachines",
             "8 - My Travels"});
             this.clSources.Location = new System.Drawing.Point(382, 13);
             this.clSources.Name = "clSources";
-            this.clSources.Size = new System.Drawing.Size(130, 64);
+            this.clSources.Size = new System.Drawing.Size(130, 79);
             this.clSources.TabIndex = 38;
             // 
             // cInText
@@ -478,12 +482,45 @@
             this.cCaseSensitive.Text = "case sensitive";
             this.cCaseSensitive.UseVisualStyleBackColor = true;
             // 
+            // bSrcR
+            // 
+            this.bSrcR.Location = new System.Drawing.Point(382, 92);
+            this.bSrcR.Name = "bSrcR";
+            this.bSrcR.Size = new System.Drawing.Size(23, 23);
+            this.bSrcR.TabIndex = 39;
+            this.bSrcR.Text = "R";
+            this.bSrcR.UseVisualStyleBackColor = true;
+            this.bSrcR.Click += new System.EventHandler(this.bSrcR_Click);
+            // 
+            // bSrcW
+            // 
+            this.bSrcW.Location = new System.Drawing.Point(411, 92);
+            this.bSrcW.Name = "bSrcW";
+            this.bSrcW.Size = new System.Drawing.Size(23, 23);
+            this.bSrcW.TabIndex = 40;
+            this.bSrcW.Text = "W";
+            this.bSrcW.UseVisualStyleBackColor = true;
+            this.bSrcW.Click += new System.EventHandler(this.bSrcW_Click);
+            // 
+            // bSrcRW
+            // 
+            this.bSrcRW.Location = new System.Drawing.Point(465, 92);
+            this.bSrcRW.Name = "bSrcRW";
+            this.bSrcRW.Size = new System.Drawing.Size(47, 23);
+            this.bSrcRW.TabIndex = 41;
+            this.bSrcRW.Text = "RW";
+            this.bSrcRW.UseVisualStyleBackColor = true;
+            this.bSrcRW.Click += new System.EventHandler(this.bSrcRW_Click);
+            // 
             // fFilter
             // 
             this.AcceptButton = this.button1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(521, 376);
+            this.Controls.Add(this.bSrcRW);
+            this.Controls.Add(this.bSrcW);
+            this.Controls.Add(this.bSrcR);
             this.Controls.Add(this.cCaseSensitive);
             this.Controls.Add(this.cInText);
             this.Controls.Add(this.clSources);
@@ -576,5 +613,8 @@
         private System.Windows.Forms.CheckedListBox clSources;
         private System.Windows.Forms.CheckBox cInText;
         private System.Windows.Forms.CheckBox cCaseSensitive;
+        private System.Windows.Forms.Button bSrcR;
+        private System.Windows.Forms.Button bSrcW;
+        private System.Windows.Forms.Button bSrcRW;
     }
 }

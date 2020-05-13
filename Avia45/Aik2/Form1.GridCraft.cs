@@ -33,6 +33,8 @@ namespace Aik2
         private SourceGrid.Cells.Views.CheckBox _redCraftCheckView;
         private SourceGrid.Cells.Views.Cell _grayCraftCellView;
         private SourceGrid.Cells.Views.CheckBox _grayCraftCheckView;
+        private SourceGrid.Cells.Views.Cell _navyCraftCellView;
+        private SourceGrid.Cells.Views.CheckBox _navyCraftCheckView;
         private string _editingCraftFullName;
         private List<CraftDto> _crafts;
         private List<CraftDto> _crafts6;
@@ -187,6 +189,10 @@ namespace Aik2
             _grayCraftCellView.BackColor = Color.FromArgb(0xdd, 0xdd, 0xdd);
             _grayCraftCheckView = new SourceGrid.Cells.Views.CheckBox();
             _grayCraftCheckView.BackColor = Color.FromArgb(0xdd, 0xdd, 0xdd);
+            _navyCraftCellView = new SourceGrid.Cells.Views.Cell();
+            _navyCraftCellView.BackColor = Color.FromArgb(0xdd, 0xdd, 0xff);
+            _navyCraftCheckView = new SourceGrid.Cells.Views.CheckBox();
+            _navyCraftCheckView.BackColor = Color.FromArgb(0xdd, 0xdd, 0xff);
 
             _gridCraftController = new GridCraftController(this);
 
@@ -355,7 +361,11 @@ namespace Aik2
                                 CraftsQry = CraftsQry.Where(x => xCraftsQry2.Select(y => y.CraftId).Contains(x.CraftId));
                     }
                 }
+            } else
+            {
+                CraftsQry = CraftsQry.Where(x => !Const.Sources.ReadOnly.Contains(x.Source));
             }
+
 
             if (chCraftSortConstruct.Checked)
                 CraftsQry = CraftsQry.OrderBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name);
@@ -466,6 +476,7 @@ namespace Aik2
             }
 
             _craftDtos = Mapper.Map<List<CraftDto>>(Crafts);
+            lCraftCnt.Text = _craftDtos.Count.ToString();
 
             var saved = -1;
             if (_craftPosition != Position.Empty)
@@ -559,15 +570,16 @@ namespace Aik2
 
         public void UpdateCraftRow(CraftDto Craft, int r)
         {
-            gridCraft[r, 0] = new SourceGrid.Cells.Cell(Craft.CraftId, _editorsCraft[0]);
+            var isReadOnly = Const.Sources.ReadOnly.Contains(Craft.Source);
+            gridCraft[r, 0] = new SourceGrid.Cells.Cell(Craft.CraftId, isReadOnly ? null : _editorsCraft[0]);
             gridCraft[r, 0].View = _normCraftCellView;
-            gridCraft[r, 1] = new SourceGrid.Cells.Cell(Craft.Construct, _editorsCraft[1]);
+            gridCraft[r, 1] = new SourceGrid.Cells.Cell(Craft.Construct, isReadOnly ? null : _editorsCraft[1]);
             gridCraft[r, 1].AddController(_gridCraftController);
-            gridCraft[r, 2] = new SourceGrid.Cells.Cell(Craft.Name, _editorsCraft[2]);
+            gridCraft[r, 2] = new SourceGrid.Cells.Cell(Craft.Name, isReadOnly ? null : _editorsCraft[2]);
             gridCraft[r, 2].AddController(_gridCraftController);
-            gridCraft[r, 3] = new SourceGrid.Cells.Cell(Craft.Country, _editorsCraft[3]);
+            gridCraft[r, 3] = new SourceGrid.Cells.Cell(Craft.Country, isReadOnly ? null : _editorsCraft[3]);
             gridCraft[r, 3].AddController(_gridCraftController);
-            gridCraft[r, 4] = new SourceGrid.Cells.Cell(Craft.IYear, _editorsCraft[4]);
+            gridCraft[r, 4] = new SourceGrid.Cells.Cell(Craft.IYear, isReadOnly ? null : _editorsCraft[4]);
             gridCraft[r, 4].AddController(_gridCraftController);
             gridCraft[r, 5] = new SourceGrid.Cells.CheckBox("", Craft.Vert ?? false);
             gridCraft[r, 5].AddController(_gridCraftController);
@@ -581,14 +593,14 @@ namespace Aik2
             gridCraft[r, 9].AddController(_gridCraftController);
             gridCraft[r, 10] = new SourceGrid.Cells.CheckBox("", Craft.Proj ?? false);
             gridCraft[r, 10].AddController(_gridCraftController);
-            gridCraft[r, 11] = new SourceGrid.Cells.Cell(Craft.Wings, _editorsCraft[11]);
+            gridCraft[r, 11] = new SourceGrid.Cells.Cell(Craft.Wings, isReadOnly ? null : _editorsCraft[11]);
             gridCraft[r, 11].AddController(_gridCraftController);
-            gridCraft[r, 12] = new SourceGrid.Cells.Cell(Craft.Engines, _editorsCraft[12]);
+            gridCraft[r, 12] = new SourceGrid.Cells.Cell(Craft.Engines, isReadOnly ? null : _editorsCraft[12]);
             gridCraft[r, 12].AddController(_gridCraftController);
-            gridCraft[r, 13] = new SourceGrid.Cells.Cell(Craft.Source, _editorsCraft[13]);
+            gridCraft[r, 13] = new SourceGrid.Cells.Cell(Craft.Source, isReadOnly ? null : _editorsCraft[13]);
             gridCraft[r, 13].AddController(_gridCraftController);
-            gridCraft[r, 14] = new SourceGrid.Cells.Cell(Craft.PicCnt, _editorsCraft[14]);
-            gridCraft[r, 15] = new SourceGrid.Cells.Cell(Craft.Type, _editorsCraft[15]);
+            gridCraft[r, 14] = new SourceGrid.Cells.Cell(Craft.PicCnt, isReadOnly ? null : _editorsCraft[14]);
+            gridCraft[r, 15] = new SourceGrid.Cells.Cell(Craft.Type, isReadOnly ? null : _editorsCraft[15]);
             gridCraft[r, 15].AddController(_gridCraftController);
             var craftName = "";
             if (Craft.SeeAlso.HasValue)
@@ -598,10 +610,10 @@ namespace Aik2
             }
             gridCraft[r, 16] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[16] : null);
             gridCraft[r, 16].AddController(_gridCraftController);
-            gridCraft[r, 17] = new SourceGrid.Cells.Cell(Craft.FullName, _editorsCraft[17]);
-            gridCraft[r, 18] = new SourceGrid.Cells.Cell(Craft.Wiki, _editorsCraft[18]);
+            gridCraft[r, 17] = new SourceGrid.Cells.Cell(Craft.FullName, isReadOnly ? null : _editorsCraft[17]);
+            gridCraft[r, 18] = new SourceGrid.Cells.Cell(Craft.Wiki, isReadOnly ? null : _editorsCraft[18]);
             gridCraft[r, 18].AddController(_gridCraftController);
-            gridCraft[r, 19] = new SourceGrid.Cells.Cell(Craft.Airwar, _editorsCraft[18]);
+            gridCraft[r, 19] = new SourceGrid.Cells.Cell(Craft.Airwar, isReadOnly ? null : _editorsCraft[18]);
             gridCraft[r, 19].AddController(_gridCraftController);
             craftName = "";
             if (Craft.FlyingM.HasValue)
@@ -630,7 +642,12 @@ namespace Aik2
         {
             var view = _normCraftCellView;
             var viewCheck = _normCraftCheckView;
-            if (Craft.Same.HasValue)
+            if (Const.Sources.ReadOnly.Contains(Craft.Source))
+            {
+                view = _navyCraftCellView;
+                viewCheck = _navyCraftCheckView;
+            }
+            else if (Craft.Same.HasValue)
             {
                 view = _grayCraftCellView;
                 viewCheck = _grayCraftCheckView;
@@ -648,7 +665,6 @@ namespace Aik2
                     gridCraft[r, i].View = gridCraft[r, i].View is SourceGrid.Cells.Views.CheckBox ?
                         viewCheck : view;
                 }
-                gridCraft.Refresh();
             }
         }
 
@@ -711,6 +727,17 @@ namespace Aik2
             public GridCraftController(Form1 form)
             {
                 _form = form;
+            }
+
+            public override void OnEditStarting(CellContext sender, System.ComponentModel.CancelEventArgs e)
+            {
+                base.OnEditStarting(sender, e);
+
+                var src = _form.gridCraft[sender.Position.Row, Const.Columns.Craft.Source].DisplayText;
+                if (Const.Sources.ReadOnly.Contains(src))
+                {
+                    e.Cancel = true;
+                }
             }
 
             public override void OnEditStarted(SourceGrid.CellContext sender, EventArgs e)
@@ -927,6 +954,7 @@ namespace Aik2
                 edCraftText.SelectionFont = new Font(edPicText.SelectionFont, FontStyle.Regular);
                 edCraftText.SelectionColor = Color.Black;
                 edCraftText.SelectionBackColor = Color.White;
+                edCraftText.ReadOnly = Const.Sources.ReadOnly.Contains(craft.Source);
                 _craftTextChanging = false;
                 _craftTextChanged = false;
 
@@ -1217,16 +1245,12 @@ namespace Aik2
                     }
                     else if (e.KeyCode == Keys.Home && e.Modifiers == Keys.Control)
                     {
-                        var col = 0;
-                        while (!gridCraft.Columns[col].Visible) col++;
-                        var focusPosn = new Position(1, col);
+                        var focusPosn = new Position(1, pos.Column);
                         gridCraft.Selection.Focus(focusPosn, true);
                     }
                     else if (e.KeyCode == Keys.End && e.Modifiers == Keys.Control)
                     {
-                        var col = gridCraft.Columns.Count - 1;
-                        while (!gridCraft.Columns[col].Visible) col--;
-                        var focusPosn = new Position(gridCraft.RowsCount - 1, col);
+                        var focusPosn = new Position(gridCraft.RowsCount - 1, pos.Column);
                         gridCraft.Selection.Focus(focusPosn, true);
                     }
                     else if (_searchMode)
@@ -1462,7 +1486,7 @@ namespace Aik2
         private void filterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var fltDlg = new fFilter();
-            var countries = _ctx.Crafts.Select(x => x.Country).Distinct().OrderBy(x => x).ToArray();
+            var countries = _ctx.Crafts.Select(x => (x.Country ?? "")).Distinct().OrderBy(x => x).ToArray();
             fltDlg.ClCountries.Items.AddRange(countries);
             for (int i = 0; i < fltDlg.ClCountries.Items.Count; i++) 
             {
@@ -1470,7 +1494,7 @@ namespace Aik2
             }
             for (int i = 0; i < fltDlg.ClSources.Items.Count; i++)
             {
-                fltDlg.ClSources.SetItemChecked(i, true);
+                fltDlg.ClSources.SetItemChecked(i, Const.Sources.Writeable.Contains(fltDlg.ClSources.Items[i].ToString().Substring(0, 1)));
             }
 
             if (_filter != null)
@@ -1484,10 +1508,7 @@ namespace Aik2
                 }
                 for (int i = 0; i < fltDlg.ClSources.Items.Count; i++)
                 {
-                    if (_filter.SourcesNo.Contains(fltDlg.ClSources.Items[i].ToString().Substring(0, 1)))
-                    {
-                        fltDlg.ClSources.SetItemChecked(i, false);
-                    }
+                    fltDlg.ClSources.SetItemChecked(i, !_filter.SourcesNo.Contains(fltDlg.ClSources.Items[i].ToString().Substring(0, 1)));
                 }
                 fltDlg.CVertYes.Checked = _filter.VertYes;
                 fltDlg.CUavYes.Checked = _filter.UavYes;

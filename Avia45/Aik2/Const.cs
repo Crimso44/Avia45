@@ -93,5 +93,16 @@ namespace Aik2
                 public const int Type2 = 4;
             }
         }
+
+        public static class Sources
+        {
+            public static List<string> ReadOnly = new List<string>() { "1" };
+            public static List<string> Writeable = new List<string>() { "2", "6", "7", "8" };
+        }
+
+        public class Arts
+        {
+            public static List<int> Copyrighted = new List<int>() { 8954 };
+        }
     }
 }

@@ -35,6 +35,7 @@ namespace Aik2
         private List<PicDto> _pics;
         private List<LinkDto> _links;
         private int? _lockedPicId = null;
+        private bool _isPicReadonly = false;
 
         public void InitPicGrid()
         {
@@ -454,6 +455,16 @@ namespace Aik2
                 _form = form;
             }
 
+            public override void OnEditStarting(CellContext sender, System.ComponentModel.CancelEventArgs e)
+            {
+                base.OnEditStarting(sender, e);
+
+                if (_form._isPicReadonly)
+                {
+                    e.Cancel = true;
+                }
+            }
+
             public override void OnEditStarted(SourceGrid.CellContext sender, EventArgs e)
             {
                 base.OnEditStarted(sender, e);
@@ -483,7 +494,7 @@ namespace Aik2
                             _form._arts.SingleOrDefault(x => x.Name == val)?.Id;
                         break;
                     case Const.Columns.Pic.Type:
-                        _form.gridPic[row, Const.Columns.Pic.NType].Value = _form.GetNType(val);
+                        _form.gridPic[row, Const.Columns.Pic.NType].Value = Util.GetNType(val);
                         break;
                     case Const.Columns.Pic.Path:
                         _form.ShowPicImage();
@@ -581,6 +592,16 @@ namespace Aik2
                 _form = form;
             }
 
+            public override void OnEditStarting(CellContext sender, System.ComponentModel.CancelEventArgs e)
+            {
+                base.OnEditStarting(sender, e);
+
+                if (_form._isPicReadonly)
+                {
+                    e.Cancel = true;
+                }
+            }
+
             public override void OnValueChanged(SourceGrid.CellContext sender, EventArgs e)
             {
                 base.OnValueChanged(sender, e);
@@ -669,6 +690,9 @@ namespace Aik2
                 var craftId = (int)gridPic[_picPosition.Row, Const.Columns.Pic.CraftId].Value;
                 var craft = Mapper.Map<CraftDto>(_ctx.Crafts.FirstOrDefault(x => x.CraftId == craftId));
                 if (craft != null) lCraft.Text = craft.FullName;
+
+                _isPicReadonly = Const.Sources.ReadOnly.Contains(craft.Source);
+                edPicText.ReadOnly = _isPicReadonly;
 
                 ShowPicImage();
             }
@@ -952,16 +976,12 @@ namespace Aik2
                     }
                     else if (e.KeyCode == Keys.Home && e.Modifiers == Keys.Control)
                     {
-                        var col = 0;
-                        while (!gridPic.Columns[col].Visible) col++;
-                        var focusPosn = new Position(1, col);
+                        var focusPosn = new Position(1, pos.Column);
                         gridPic.Selection.Focus(focusPosn, true);
                     }
                     else if (e.KeyCode == Keys.End && e.Modifiers == Keys.Control)
                     {
-                        var col = gridPic.Columns.Count - 1;
-                        while (!gridPic.Columns[col].Visible) col--;
-                        var focusPosn = new Position(gridPic.RowsCount - 1, col);
+                        var focusPosn = new Position(gridPic.RowsCount - 1, pos.Column);
                         gridPic.Selection.Focus(focusPosn, true);
                     }
                     else if (_searchMode)
@@ -1101,22 +1121,6 @@ namespace Aik2
             _oldPicText = newText;
             _picTextChanging = false;
             _picTextChanged = true;
-        }
-
-        private int GetNType(string type)
-        {
-            if (type == "s") return 10;
-            if (type == "fc") return 20;
-            if (type == "f") return 30;
-            if (type == "c") return 40;
-            if (type == "fd") return 50;
-            if (type == "fr") return 60;
-            if (type == "m") return 70;
-            if (type == "dc") return 80;
-            if (type == "d") return 90;
-            if (type == "k") return 100;
-            if (type == "p") return 110;
-            return 120;
         }
 
         private void bLockPic_Click(object sender, EventArgs e)

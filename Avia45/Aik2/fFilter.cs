@@ -60,5 +60,28 @@ namespace Aik2
             }
         }
 
+        private void bSrcR_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < clSources.Items.Count; i++)
+            {
+                clSources.SetItemChecked(i, Const.Sources.ReadOnly.Contains(clSources.Items[i].ToString().Substring(0, 1)));
+            }
+        }
+
+        private void bSrcW_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < clSources.Items.Count; i++)
+            {
+                clSources.SetItemChecked(i, Const.Sources.Writeable.Contains(clSources.Items[i].ToString().Substring(0, 1)));
+            }
+        }
+
+        private void bSrcRW_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < clSources.Items.Count; i++)
+            {
+                clSources.SetItemChecked(i, true);
+            }
+        }
     }
 }

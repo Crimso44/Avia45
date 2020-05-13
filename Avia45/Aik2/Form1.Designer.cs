@@ -119,12 +119,14 @@
             this.reportNewPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unusedPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.load1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lWorkingText = new System.Windows.Forms.Label();
+            this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.lWorking = new System.Windows.Forms.Label();
-            this.lWorkingText = new System.Windows.Forms.Label();
+            this.lCraftCnt = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -490,6 +492,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.lCraftCnt);
             this.panel4.Controls.Add(this.label2);
             this.panel4.Controls.Add(this.chCraftSortYear);
             this.panel4.Controls.Add(this.chCraftSortCountry);
@@ -1122,10 +1125,18 @@
             // webToolStripMenuItem
             // 
             this.webToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.load1ToolStripMenuItem,
             this.make6ToolStripMenuItem});
             this.webToolStripMenuItem.Name = "webToolStripMenuItem";
             this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.webToolStripMenuItem.Text = "Web";
+            // 
+            // load1ToolStripMenuItem
+            // 
+            this.load1ToolStripMenuItem.Name = "load1ToolStripMenuItem";
+            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.load1ToolStripMenuItem.Text = "Load 1";
+            this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
             // 
             // make6ToolStripMenuItem
             // 
@@ -1145,6 +1156,31 @@
             this.panel2.Size = new System.Drawing.Size(800, 26);
             this.panel2.TabIndex = 3;
             // 
+            // lWorkingText
+            // 
+            this.lWorkingText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lWorkingText.AutoSize = true;
+            this.lWorkingText.Location = new System.Drawing.Point(715, 8);
+            this.lWorkingText.Name = "lWorkingText";
+            this.lWorkingText.Size = new System.Drawing.Size(70, 13);
+            this.lWorkingText.TabIndex = 2;
+            this.lWorkingText.Text = "lWorkingText";
+            this.lWorkingText.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lWorkingText.Visible = false;
+            // 
+            // lWorking
+            // 
+            this.lWorking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lWorking.AutoSize = true;
+            this.lWorking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lWorking.ForeColor = System.Drawing.Color.Red;
+            this.lWorking.Location = new System.Drawing.Point(783, 8);
+            this.lWorking.Name = "lWorking";
+            this.lWorking.Size = new System.Drawing.Size(15, 13);
+            this.lWorking.TabIndex = 1;
+            this.lWorking.Text = "X";
+            this.lWorking.Visible = false;
+            // 
             // lInfo
             // 
             this.lInfo.AutoSize = true;
@@ -1162,30 +1198,15 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // lWorking
+            // lCraftCnt
             // 
-            this.lWorking.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lWorking.AutoSize = true;
-            this.lWorking.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lWorking.ForeColor = System.Drawing.Color.Red;
-            this.lWorking.Location = new System.Drawing.Point(783, 8);
-            this.lWorking.Name = "lWorking";
-            this.lWorking.Size = new System.Drawing.Size(15, 13);
-            this.lWorking.TabIndex = 1;
-            this.lWorking.Text = "X";
-            this.lWorking.Visible = false;
-            // 
-            // lWorkingText
-            // 
-            this.lWorkingText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lWorkingText.AutoSize = true;
-            this.lWorkingText.Location = new System.Drawing.Point(715, 8);
-            this.lWorkingText.Name = "lWorkingText";
-            this.lWorkingText.Size = new System.Drawing.Size(70, 13);
-            this.lWorkingText.TabIndex = 2;
-            this.lWorkingText.Text = "lWorkingText";
-            this.lWorkingText.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.lWorkingText.Visible = false;
+            this.lCraftCnt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lCraftCnt.Location = new System.Drawing.Point(731, 8);
+            this.lCraftCnt.Name = "lCraftCnt";
+            this.lCraftCnt.Size = new System.Drawing.Size(50, 13);
+            this.lCraftCnt.TabIndex = 14;
+            this.lCraftCnt.Text = ".";
+            this.lCraftCnt.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // Form1
             // 
@@ -1337,6 +1358,8 @@
         private System.Windows.Forms.ToolStripMenuItem bookmarkPicToolStripMenuItem;
         private System.Windows.Forms.Label lWorking;
         private System.Windows.Forms.Label lWorkingText;
+        private System.Windows.Forms.ToolStripMenuItem load1ToolStripMenuItem;
+        private System.Windows.Forms.Label lCraftCnt;
     }
 }
 

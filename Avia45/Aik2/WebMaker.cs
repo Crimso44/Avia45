@@ -1400,6 +1400,7 @@ namespace Aik2
             var IBQuery2 = (
                 from p in _ctx.Pics
                 join a in _ctx.Arts on p.ArtId equals a.ArtId
+                where !Const.Arts.Copyrighted.Contains(a.ArtId)
                 orderby p.CraftId, p.NType, p.NNN
                 select new { p, a });
             //'Select a.NN NN, p.*, a.* From Pics p Join Arts a on p.ArtId = a.ArtId Order By' +
@@ -1570,7 +1571,7 @@ namespace Aik2
 
             var craftQry = (
                 from c in _ctx.Crafts
-                from p in _ctx.Pics.Where(p => c.CraftId == p.CraftId).DefaultIfEmpty()
+                from p in _ctx.Pics.Where(p => c.CraftId == p.CraftId && !Const.Arts.Copyrighted.Contains(p.ArtId)).DefaultIfEmpty()
                 group c by c into g
                 select new { c = g.Key, cnt = g.Count() });
 
@@ -1691,6 +1692,7 @@ namespace Aik2
             var ibq2A = (
                 from p in _ctx.Pics
                 join c in _ctx.Crafts on p.CraftId equals c.CraftId
+                where !Const.Arts.Copyrighted.Contains(p.ArtId)
                 orderby p.ArtId, p.CraftId, p.NType, p.NN
                 select new { p, c });
 

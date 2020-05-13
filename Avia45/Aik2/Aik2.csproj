@@ -53,6 +53,7 @@
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -151,6 +152,7 @@
     <Compile Include="vwReport.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
+    <Compile Include="WebLoader.cs" />
     <Compile Include="WebMaker.cs" />
     <Compile Include="WordLinks.cs">
       <DependentUpon>AiK.tt</DependentUpon>

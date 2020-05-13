@@ -207,11 +207,9 @@ namespace Aik2
                         }
                     }
 
+                    Util.DetachAllEntities(_ctx);
                 }
                 lInfo.Text = "";
-
-                _ctx.Database.Connection.Close();
-                _ctx.Database.Connection.Open();
 
                 MessageBox.Show("OK");
             }
@@ -508,6 +506,7 @@ namespace Aik2
                         gridCraft.RowsCount++;
                         row = gridCraft.RowsCount - 1;
                         UpdateCraftRow(craftDto, row);
+                        gridCraft.Refresh();
                     }
                     else
                     {
@@ -666,5 +665,10 @@ namespace Aik2
             }
         }
 
+        private void load1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new WebLoader();
+            wm.Load1(_ctx, _imagesPath, lInfo);
+        }
     }
 }

@@ -112,23 +112,25 @@ namespace SourceGrid.Cells.Controllers
 				if (checkStatus.Checked != null)
 					newVal = !checkStatus.Checked.Value;
 
-				sender.StartEdit();
-				try
+				if (sender.StartEdit())
 				{
-					checkModel.SetCheckedValue(sender, newVal);
-					sender.EndEdit(false);
-					OnCheckedChanged(EventArgs.Empty);
-				}
-				catch(Exception ex)
-				{
-					sender.EndEdit(true);
-					throw new Exception(string.Empty, ex);
-				}
+					try
+					{
+						checkModel.SetCheckedValue(sender, newVal);
+						sender.EndEdit(false);
+						OnCheckedChanged(EventArgs.Empty);
+					}
+					catch (Exception ex)
+					{
+						sender.EndEdit(true);
+						throw new Exception(string.Empty, ex);
+					}
 
-				//change the status of all selected control
-				if (AutoChangeValueOfSelectedCells)
-				{
-					AutoChangeValues(sender, newVal);
+					//change the status of all selected control
+					if (AutoChangeValueOfSelectedCells)
+					{
+						AutoChangeValues(sender, newVal);
+					}
 				}
 			}
 		}
@@ -143,16 +145,18 @@ namespace SourceGrid.Cells.Controllers
 				    (check = (Models.ICheckBox)c.Model.FindModel(typeof(Models.ICheckBox))) != null )
 				{
 					CellContext context = new CellContext(sender.Grid, pos, c);
-					context.StartEdit();
-					try
+					if (context.StartEdit())
 					{
-						check.SetCheckedValue(context, newVal);
-						context.EndEdit(false);
-					}
-					catch(Exception)
-					{
-						context.EndEdit(true);
-						throw;
+						try
+						{
+							check.SetCheckedValue(context, newVal);
+							context.EndEdit(false);
+						}
+						catch (Exception)
+						{
+							context.EndEdit(true);
+							throw;
+						}
 					}
 				}
 			}

@@ -74,7 +74,7 @@ namespace SourceGrid
 		/// <summary>
 		/// Start the edit operation with the current editor specified in the Model property.
 		/// </summary>
-		public void StartEdit()
+		public bool StartEdit()
 		{
 			if (Cell == null)
 				throw new SourceGridException("No cell at position " + Position.ToString());
@@ -83,17 +83,17 @@ namespace SourceGrid
 
 			// if no editor exist, then no editing is possible
 			if (Cell.Editor == null)
-				return;
+				return false;
 			// editing can be disabled explicitly in editor
 			if (Cell.Editor.EnableEdit == false)
-				return;
+				return false;
 			// if cell is already in editing mode, return
 			if (IsEditing() == true)
-				return;
+				return false;
 			// set focus to true on this cell. If it is not possible to set
 			// then edit is not possible as well
 			if (Grid.Selection.Focus(Position, true) == false)
-				return;
+				return false;
 			System.ComponentModel.CancelEventArgs cancelEventArgs = new System.ComponentModel.CancelEventArgs();
 			Grid.Controller.OnEditStarting(this, cancelEventArgs);
 			if (cancelEventArgs.Cancel == false)
@@ -101,6 +101,7 @@ namespace SourceGrid
 				Cell.Editor.InternalStartEdit(this);
 				Grid.Controller.OnEditStarted(this, EventArgs.Empty);
 			}
+			return cancelEventArgs.Cancel == false;
 		}
 
 		/// <summary>

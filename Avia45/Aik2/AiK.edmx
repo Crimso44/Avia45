@@ -80,7 +80,7 @@
           <Property Name="NNN" Type="int" />
           <Property Name="Type" Type="nchar" MaxLength="10" />
           <Property Name="NType" Type="int" />
-          <Property Name="Path" Type="nvarchar" MaxLength="50" />
+          <Property Name="Path" Type="nvarchar" MaxLength="100" />
           <Property Name="Text" Type="nvarchar(max)" />
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
         </EntityType>
@@ -503,7 +503,7 @@ warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key def
           <Property Name="NNN" Type="Int32" />
           <Property Name="Type" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="NType" Type="Int32" />
-          <Property Name="Path" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Grp" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Arts" Relationship="Self.FK_Pics_Arts" FromRole="Pics" ToRole="Arts" />

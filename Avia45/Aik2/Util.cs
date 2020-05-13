@@ -1,6 +1,7 @@
 ﻿using Aik2.Dto;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +47,35 @@ namespace Aik2
                 MessageBox.Show($"Unknown type {propName}: {o}");
                 return "";
             }
+        }
+
+        public static int GetNType(string type)
+        {
+            if (type == "s") return 10;
+            if (type == "fc") return 20;
+            if (type == "f") return 30;
+            if (type == "c") return 40;
+            if (type == "fd") return 50;
+            if (type == "fr") return 60;
+            if (type == "m") return 70;
+            if (type == "dc") return 80;
+            if (type == "d") return 90;
+            if (type == "k") return 100;
+            if (type == "p") return 110;
+            return 120;
+        }
+
+        public static void DetachAllEntities(DbContext ctx)
+        {
+            var changedEntriesCopy = ctx.ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Detached
+                            /*e.State == EntityState.Added ||
+                            e.State == EntityState.Modified ||
+                            e.State == EntityState.Deleted*/)
+                .ToList();
+
+            foreach (var entry in changedEntriesCopy)
+                entry.State = EntityState.Detached;
         }
     }
 
