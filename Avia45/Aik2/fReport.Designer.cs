@@ -29,19 +29,31 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lbReport = new System.Windows.Forms.ListBox();
             this.bSaveReport = new System.Windows.Forms.Button();
+            this.lbReport = new System.Windows.Forms.ListBox();
+            this.bCopyText = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.bCopyText);
             this.panel1.Controls.Add(this.bSaveReport);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 412);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 38);
             this.panel1.TabIndex = 0;
+            // 
+            // bSaveReport
+            // 
+            this.bSaveReport.Location = new System.Drawing.Point(713, 9);
+            this.bSaveReport.Name = "bSaveReport";
+            this.bSaveReport.Size = new System.Drawing.Size(75, 23);
+            this.bSaveReport.TabIndex = 0;
+            this.bSaveReport.Text = "Сохранить";
+            this.bSaveReport.UseVisualStyleBackColor = true;
+            this.bSaveReport.Click += new System.EventHandler(this.bSaveReport_Click);
             // 
             // lbReport
             // 
@@ -55,15 +67,15 @@
             this.lbReport.TabIndex = 1;
             this.lbReport.DoubleClick += new System.EventHandler(this.lbReport_DoubleClick);
             // 
-            // bSaveReport
+            // bCopyText
             // 
-            this.bSaveReport.Location = new System.Drawing.Point(713, 9);
-            this.bSaveReport.Name = "bSaveReport";
-            this.bSaveReport.Size = new System.Drawing.Size(75, 23);
-            this.bSaveReport.TabIndex = 0;
-            this.bSaveReport.Text = "Сохранить";
-            this.bSaveReport.UseVisualStyleBackColor = true;
-            this.bSaveReport.Click += new System.EventHandler(this.bSaveReport_Click);
+            this.bCopyText.Location = new System.Drawing.Point(632, 9);
+            this.bCopyText.Name = "bCopyText";
+            this.bCopyText.Size = new System.Drawing.Size(75, 23);
+            this.bCopyText.TabIndex = 1;
+            this.bCopyText.Text = "Копировать";
+            this.bCopyText.UseVisualStyleBackColor = true;
+            this.bCopyText.Click += new System.EventHandler(this.bCopyText_Click);
             // 
             // fReport
             // 
@@ -84,5 +96,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListBox lbReport;
         private System.Windows.Forms.Button bSaveReport;
+        private System.Windows.Forms.Button bCopyText;
     }
 }

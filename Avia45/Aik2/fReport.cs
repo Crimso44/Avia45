@@ -80,5 +80,16 @@ namespace Aik2
                 System.Diagnostics.Process.Start(path);
             }
         }
+
+        private void bCopyText_Click(object sender, EventArgs e)
+        {
+            var txt = "";
+            for (var i = 0; i < lbReport.Items.Count; i++)
+            {
+                txt += lbReport.Items[i] + "\n";
+            }
+            Clipboard.SetText(txt);
+            MessageBox.Show("Скопировано");
+        }
     }
 }

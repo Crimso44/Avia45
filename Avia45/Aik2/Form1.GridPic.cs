@@ -235,7 +235,7 @@ namespace Aik2
                 for (var r = 1; r <= _pics.Count; r++)
                 {
                     var Pic = _pics[r - 1];
-                    UpdatePicRow(Pic, r);
+                    UpdatePicRow(Pic, r, false);
 
                     if (Pic.PicId == saved && _picPosition != Position.Empty)
                     {
@@ -245,13 +245,14 @@ namespace Aik2
                         focused = true;
                     }
                 }
+                ShowPicImage();
             }
             else
             {
                 gridPic.RowsCount = 2;
                 var Pic = new PicDto() { PicId = -1 };
                 _pics.Add(Pic);
-                UpdatePicRow(Pic, 1);
+                UpdatePicRow(Pic, 1, true);
             }
             if (!focused)
             {
@@ -357,7 +358,7 @@ namespace Aik2
 
 
 
-        public void UpdatePicRow(PicDto Pic, int r)
+        public void UpdatePicRow(PicDto Pic, int r, bool isShowImage)
         {
             gridPic[r, 0] = new SourceGrid.Cells.Cell(Pic.PicId, _editorsPic[0]);
             if (Pic.PicId == -1)
@@ -395,7 +396,10 @@ namespace Aik2
             gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.ArtId);
             gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
-            ShowPicImage();
+            if (isShowImage)
+            {
+                ShowPicImage();
+            }
         }
 
         public void UpdateLinkRow(LinkDto Link, int r)
@@ -918,7 +922,7 @@ namespace Aik2
                             _pics.RemoveAt(1);
                             gridPic.Rows.Remove(1);
                         }
-                        UpdatePicRow(Pic, pos.Row);
+                        UpdatePicRow(Pic, pos.Row, true);
                         DoPicCellGotFocus(pos);
                         CheckPicSort(pos, true);
                     }
@@ -943,7 +947,7 @@ namespace Aik2
                                     gridPic.RowsCount = 2;
                                     var Pic = new PicDto() { PicId = -1 };
                                     _pics.Add(Pic);
-                                    UpdatePicRow(Pic, 1);
+                                    UpdatePicRow(Pic, 1, true);
                                     DoPicCellGotFocus(new Position(1, 0));
                                 }
                                 else
@@ -1327,7 +1331,7 @@ namespace Aik2
         private void unusedPicsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var existImg = new List<string>();
-            var srcs = new string[] { "2", "6", "7" };
+            var srcs = new string[] { "1", "2", "6", "7" };
             foreach(var src in srcs)
             {
                 LoadDirectories(_imagesPath + $"Images{src}\\", $"Images{src}\\", existImg);
