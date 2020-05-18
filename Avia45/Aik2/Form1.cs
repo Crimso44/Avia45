@@ -88,6 +88,10 @@ namespace Aik2
             {
                 pCraftSeeAlso.Height = int.Parse(_config["pCraftSeeAlsoHeight"]);
             }
+            if (_config.ContainsKey("pCraftPicTxt"))
+            {
+                pCraftPicTxt.Height = int.Parse(_config["pCraftPicTxt"]);
+            }
             if (_config.ContainsKey("pPicImgHeight"))
             {
                 pPicImg.Height = int.Parse(_config["pPicImgHeight"]);
@@ -670,5 +674,12 @@ namespace Aik2
             var wm = new WebLoader();
             wm.Load1(_ctx, _imagesPath, lInfo);
         }
+
+        private void load5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new WebLoader();
+            wm.Load5(_ctx, _imagesPath, lInfo);
+        }
+
     }
 }

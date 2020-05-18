@@ -30,8 +30,8 @@
             <PropertyRef Name="CraftId" />
           </Key>
           <Property Name="CraftId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Construct" Type="nvarchar" MaxLength="50" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Construct" Type="nvarchar" MaxLength="100" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
           <Property Name="Country" Type="nvarchar" MaxLength="20" />
           <Property Name="IYear" Type="int" />
           <Property Name="Vert" Type="bit" />
@@ -653,8 +653,8 @@ warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key def
             <PropertyRef Name="CraftId" />
           </Key>
           <Property Name="CraftId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Construct" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Construct" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Country" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="IYear" Type="Int32" />
           <Property Name="Vert" Type="Boolean" />

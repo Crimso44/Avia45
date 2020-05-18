@@ -1331,7 +1331,7 @@ namespace Aik2
         private void unusedPicsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var existImg = new List<string>();
-            var srcs = new string[] { "1", "2", "6", "7" };
+            var srcs = new string[] { "1", "2", "5", "6", "7" };
             foreach(var src in srcs)
             {
                 LoadDirectories(_imagesPath + $"Images{src}\\", $"Images{src}\\", existImg);

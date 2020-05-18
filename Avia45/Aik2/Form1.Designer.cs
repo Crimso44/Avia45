@@ -49,6 +49,9 @@
             this.splitter7 = new System.Windows.Forms.Splitter();
             this.pCraftPic = new System.Windows.Forms.Panel();
             this.imgCraftPic = new System.Windows.Forms.PictureBox();
+            this.splitter8 = new System.Windows.Forms.Splitter();
+            this.pCraftPicTxt = new System.Windows.Forms.Panel();
+            this.tCraftPicTxt = new System.Windows.Forms.TextBox();
             this.sbCraftPics = new System.Windows.Forms.HScrollBar();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.pCraftSeeAlso = new System.Windows.Forms.Panel();
@@ -59,6 +62,7 @@
             this.bCraftWikiLink = new System.Windows.Forms.Button();
             this.bCraftAirwarLink = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lCraftCnt = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.chCraftSortYear = new System.Windows.Forms.RadioButton();
             this.chCraftSortCountry = new System.Windows.Forms.RadioButton();
@@ -120,13 +124,13 @@
             this.unusedPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.load1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.load5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lWorkingText = new System.Windows.Forms.Label();
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.lCraftCnt = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -137,6 +141,7 @@
             this.panel9.SuspendLayout();
             this.pCraftPic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgCraftPic)).BeginInit();
+            this.pCraftPicTxt.SuspendLayout();
             this.pCraftSeeAlso.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -344,6 +349,7 @@
             // 
             // edCraftText
             // 
+            this.edCraftText.BackColor = System.Drawing.Color.White;
             this.edCraftText.Dock = System.Windows.Forms.DockStyle.Fill;
             this.edCraftText.Location = new System.Drawing.Point(0, 0);
             this.edCraftText.Margin = new System.Windows.Forms.Padding(1);
@@ -366,7 +372,8 @@
             // pCraftPic
             // 
             this.pCraftPic.Controls.Add(this.imgCraftPic);
-            this.pCraftPic.Controls.Add(this.sbCraftPics);
+            this.pCraftPic.Controls.Add(this.splitter8);
+            this.pCraftPic.Controls.Add(this.pCraftPicTxt);
             this.pCraftPic.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pCraftPic.Location = new System.Drawing.Point(0, 137);
             this.pCraftPic.Name = "pCraftPic";
@@ -379,19 +386,49 @@
             this.imgCraftPic.Dock = System.Windows.Forms.DockStyle.Fill;
             this.imgCraftPic.Location = new System.Drawing.Point(0, 0);
             this.imgCraftPic.Name = "imgCraftPic";
-            this.imgCraftPic.Size = new System.Drawing.Size(200, 83);
+            this.imgCraftPic.Size = new System.Drawing.Size(200, 47);
             this.imgCraftPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.imgCraftPic.TabIndex = 1;
+            this.imgCraftPic.TabIndex = 6;
             this.imgCraftPic.TabStop = false;
+            // 
+            // splitter8
+            // 
+            this.splitter8.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter8.Location = new System.Drawing.Point(0, 47);
+            this.splitter8.Name = "splitter8";
+            this.splitter8.Size = new System.Drawing.Size(200, 3);
+            this.splitter8.TabIndex = 4;
+            this.splitter8.TabStop = false;
+            // 
+            // pCraftPicTxt
+            // 
+            this.pCraftPicTxt.Controls.Add(this.tCraftPicTxt);
+            this.pCraftPicTxt.Controls.Add(this.sbCraftPics);
+            this.pCraftPicTxt.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pCraftPicTxt.Location = new System.Drawing.Point(0, 50);
+            this.pCraftPicTxt.Name = "pCraftPicTxt";
+            this.pCraftPicTxt.Size = new System.Drawing.Size(200, 50);
+            this.pCraftPicTxt.TabIndex = 5;
+            this.pCraftPicTxt.Resize += new System.EventHandler(this.pCraftPicTxt_Resize);
+            // 
+            // tCraftPicTxt
+            // 
+            this.tCraftPicTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tCraftPicTxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tCraftPicTxt.Location = new System.Drawing.Point(0, 0);
+            this.tCraftPicTxt.Multiline = true;
+            this.tCraftPicTxt.Name = "tCraftPicTxt";
+            this.tCraftPicTxt.Size = new System.Drawing.Size(200, 33);
+            this.tCraftPicTxt.TabIndex = 4;
             // 
             // sbCraftPics
             // 
             this.sbCraftPics.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.sbCraftPics.LargeChange = 1;
-            this.sbCraftPics.Location = new System.Drawing.Point(0, 83);
+            this.sbCraftPics.Location = new System.Drawing.Point(0, 33);
             this.sbCraftPics.Name = "sbCraftPics";
             this.sbCraftPics.Size = new System.Drawing.Size(200, 17);
-            this.sbCraftPics.TabIndex = 2;
+            this.sbCraftPics.TabIndex = 3;
             this.sbCraftPics.ValueChanged += new System.EventHandler(this.sbCraftPics_ValueChanged);
             // 
             // splitter2
@@ -502,6 +539,16 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(786, 28);
             this.panel4.TabIndex = 0;
+            // 
+            // lCraftCnt
+            // 
+            this.lCraftCnt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lCraftCnt.Location = new System.Drawing.Point(731, 8);
+            this.lCraftCnt.Name = "lCraftCnt";
+            this.lCraftCnt.Size = new System.Drawing.Size(50, 13);
+            this.lCraftCnt.TabIndex = 14;
+            this.lCraftCnt.Text = ".";
+            this.lCraftCnt.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label2
             // 
@@ -1126,6 +1173,7 @@
             // 
             this.webToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.load1ToolStripMenuItem,
+            this.load5ToolStripMenuItem,
             this.make6ToolStripMenuItem});
             this.webToolStripMenuItem.Name = "webToolStripMenuItem";
             this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
@@ -1137,6 +1185,13 @@
             this.load1ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.load1ToolStripMenuItem.Text = "Load 1";
             this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
+            // 
+            // load5ToolStripMenuItem
+            // 
+            this.load5ToolStripMenuItem.Name = "load5ToolStripMenuItem";
+            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.load5ToolStripMenuItem.Text = "Load 5";
+            this.load5ToolStripMenuItem.Click += new System.EventHandler(this.load5ToolStripMenuItem_Click);
             // 
             // make6ToolStripMenuItem
             // 
@@ -1198,16 +1253,6 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // lCraftCnt
-            // 
-            this.lCraftCnt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lCraftCnt.Location = new System.Drawing.Point(731, 8);
-            this.lCraftCnt.Name = "lCraftCnt";
-            this.lCraftCnt.Size = new System.Drawing.Size(50, 13);
-            this.lCraftCnt.TabIndex = 14;
-            this.lCraftCnt.Text = ".";
-            this.lCraftCnt.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1235,6 +1280,8 @@
             this.panel9.ResumeLayout(false);
             this.pCraftPic.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.imgCraftPic)).EndInit();
+            this.pCraftPicTxt.ResumeLayout(false);
+            this.pCraftPicTxt.PerformLayout();
             this.pCraftSeeAlso.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
@@ -1308,8 +1355,6 @@
         private SourceGrid.Grid gridLink;
         private System.Windows.Forms.Panel panel10;
         private System.Windows.Forms.PictureBox picLinkImage;
-        private System.Windows.Forms.PictureBox imgCraftPic;
-        private System.Windows.Forms.HScrollBar sbCraftPics;
         private System.Windows.Forms.Panel pCraftSeeAlso;
         private System.Windows.Forms.Splitter splitter7;
         private System.Windows.Forms.Panel panel3;
@@ -1360,6 +1405,12 @@
         private System.Windows.Forms.Label lWorkingText;
         private System.Windows.Forms.ToolStripMenuItem load1ToolStripMenuItem;
         private System.Windows.Forms.Label lCraftCnt;
+        private System.Windows.Forms.ToolStripMenuItem load5ToolStripMenuItem;
+        private System.Windows.Forms.Splitter splitter8;
+        private System.Windows.Forms.PictureBox imgCraftPic;
+        private System.Windows.Forms.Panel pCraftPicTxt;
+        private System.Windows.Forms.TextBox tCraftPicTxt;
+        private System.Windows.Forms.HScrollBar sbCraftPics;
     }
 }
 

@@ -63,6 +63,9 @@ namespace Aik2
             var editStr50 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
             editStr50.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 50); };
 
+            var editStr100 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
+            editStr100.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 100); };
+
             var editStr255 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
             editStr255.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 255); };
 
@@ -124,7 +127,7 @@ namespace Aik2
             gridCraft[0, 1] = new SourceGrid.Cells.ColumnHeader("Construct");
             _editorsCraft.Add(editStr50);
             gridCraft[0, 2] = new SourceGrid.Cells.ColumnHeader("Name");
-            _editorsCraft.Add(editStr50);
+            _editorsCraft.Add(editStr100);
             gridCraft[0, 3] = new SourceGrid.Cells.ColumnHeader("Country");
             _editorsCraft.Add(editStr20);
             gridCraft[0, 4] = new SourceGrid.Cells.ColumnHeader("IYear");
@@ -1001,6 +1004,7 @@ namespace Aik2
                     {
                         imgCraftPic.Visible = false;
                         sbCraftPics.Visible = false;
+                        tCraftPicTxt.Text = "";
                         _craftPicDtoIndex = -1;
                     }
 
@@ -1352,6 +1356,12 @@ namespace Aik2
             File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
         }
 
+        private void pCraftPicTxt_Resize(object sender, EventArgs e)
+        {
+            if (_init) return;
+            _config["pCraftPicTxt"] = ((Panel)sender).Height.ToString();
+            File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
+        }
 
         private void sbCraftPics_ValueChanged(object sender, EventArgs e)
         {
@@ -1363,9 +1373,11 @@ namespace Aik2
         private void ShowCraftPic()
         {
             lCraftPicNum.Text = $"{_craftPicDtoIndex + 1}/{_craftPicDtos.Count}";
+            var picDto = _craftPicDtos[_craftPicDtoIndex];
+            tCraftPicTxt.Text = picDto.SText;
             try
             {
-                var picPath = $"{_imagesPath}Images{_selectedCraft.Source}\\{_craftPicDtos[_craftPicDtoIndex].Path}";
+                var picPath = $"{_imagesPath}Images{_selectedCraft.Source}\\{picDto.Path}";
                 using (var bmpTemp = new Bitmap(picPath))
                 {
                     imgCraftPic.Image = new Bitmap(bmpTemp);
