@@ -557,10 +557,11 @@ namespace Aik2
             if (pic != null)
             {
                 row = _pics.IndexOf(pic) + 1;
-                var focusPic = new Position(row, _craftPosition.Column);
+                var focusPic = new Position(row, _picPosition.Column);
                 gridPic.Selection.Focus(focusPic, true);
                 _picPosition = focusPic;
             }
+            gridPic.Focus();
         }
 
         private string GetInnerestException(Exception e)
