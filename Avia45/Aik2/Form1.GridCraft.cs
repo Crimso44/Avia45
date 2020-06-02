@@ -900,14 +900,24 @@ namespace Aik2
         private void SelectCraft(int? craftId)
         {
             if (!craftId.HasValue) return;
-            var craft = _craftDtos.Where(x => x.CraftId == craftId).SingleOrDefault();
-            if (craft != null)
+            int row;
+            var craftDto = _craftDtos.Where(x => x.CraftId == craftId).SingleOrDefault();
+            if (craftDto == null)
             {
-                var ind = _craftDtos.IndexOf(craft);
-                var pos = gridCraft.Selection.ActivePosition;
-                var newPos = new Position(ind + 1, pos == Position.Empty ? 1 : pos.Column);
-                gridCraft.Selection.Focus(newPos, true);
+                craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == craftId));
+                _craftDtos.Add(craftDto);
+                gridCraft.RowsCount++;
+                row = gridCraft.RowsCount - 1;
+                UpdateCraftRow(craftDto, row);
+                gridCraft.Refresh();
             }
+            else
+            {
+                row = _craftDtos.IndexOf(craftDto) + 1;
+            }
+            var pos = gridCraft.Selection.ActivePosition;
+            var newPos = new Position(row, pos == Position.Empty ? 1 : pos.Column);
+            gridCraft.Selection.Focus(newPos, true);
             _needLoadCraft = false;
         }
 
