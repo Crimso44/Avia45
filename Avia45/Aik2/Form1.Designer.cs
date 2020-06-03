@@ -131,6 +131,7 @@
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.load34ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -1173,6 +1174,7 @@
             // 
             this.webToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.load1ToolStripMenuItem,
+            this.load34ToolStripMenuItem,
             this.load5ToolStripMenuItem,
             this.make6ToolStripMenuItem});
             this.webToolStripMenuItem.Name = "webToolStripMenuItem";
@@ -1182,21 +1184,21 @@
             // load1ToolStripMenuItem
             // 
             this.load1ToolStripMenuItem.Name = "load1ToolStripMenuItem";
-            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.load1ToolStripMenuItem.Text = "Load 1";
             this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
             // 
             // load5ToolStripMenuItem
             // 
             this.load5ToolStripMenuItem.Name = "load5ToolStripMenuItem";
-            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.load5ToolStripMenuItem.Text = "Load 5";
             this.load5ToolStripMenuItem.Click += new System.EventHandler(this.load5ToolStripMenuItem_Click);
             // 
             // make6ToolStripMenuItem
             // 
             this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
-            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.make6ToolStripMenuItem.Text = "Make 6";
             this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
             // 
@@ -1252,6 +1254,13 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
+            // 
+            // load34ToolStripMenuItem
+            // 
+            this.load34ToolStripMenuItem.Name = "load34ToolStripMenuItem";
+            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load34ToolStripMenuItem.Text = "Load 3-4";
+            this.load34ToolStripMenuItem.Click += new System.EventHandler(this.load34ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1411,6 +1420,7 @@
         private System.Windows.Forms.Panel pCraftPicTxt;
         private System.Windows.Forms.TextBox tCraftPicTxt;
         private System.Windows.Forms.HScrollBar sbCraftPics;
+        private System.Windows.Forms.ToolStripMenuItem load34ToolStripMenuItem;
     }
 }
 

@@ -454,13 +454,15 @@
             this.clSources.Items.AddRange(new object[] {
             "1 - Airwar",
             "2 - Russian",
+            "3 - Вертолеты мира",
+            "4 - Самолеты от A до Z",
             "5 - Aerofiles",
             "6 - AviaDejavu",
             "7 - FlyingMachines",
             "8 - My Travels"});
             this.clSources.Location = new System.Drawing.Point(382, 13);
             this.clSources.Name = "clSources";
-            this.clSources.Size = new System.Drawing.Size(130, 94);
+            this.clSources.Size = new System.Drawing.Size(130, 124);
             this.clSources.TabIndex = 38;
             // 
             // cInText
@@ -485,7 +487,7 @@
             // 
             // bSrcR
             // 
-            this.bSrcR.Location = new System.Drawing.Point(382, 107);
+            this.bSrcR.Location = new System.Drawing.Point(381, 136);
             this.bSrcR.Name = "bSrcR";
             this.bSrcR.Size = new System.Drawing.Size(23, 23);
             this.bSrcR.TabIndex = 39;
@@ -495,7 +497,7 @@
             // 
             // bSrcW
             // 
-            this.bSrcW.Location = new System.Drawing.Point(411, 107);
+            this.bSrcW.Location = new System.Drawing.Point(408, 136);
             this.bSrcW.Name = "bSrcW";
             this.bSrcW.Size = new System.Drawing.Size(23, 23);
             this.bSrcW.TabIndex = 40;
@@ -505,7 +507,7 @@
             // 
             // bSrcRW
             // 
-            this.bSrcRW.Location = new System.Drawing.Point(465, 107);
+            this.bSrcRW.Location = new System.Drawing.Point(466, 136);
             this.bSrcRW.Name = "bSrcRW";
             this.bSrcRW.Size = new System.Drawing.Size(47, 23);
             this.bSrcRW.TabIndex = 41;

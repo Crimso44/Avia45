@@ -1328,6 +1328,8 @@ namespace Aik2
 
         public void PrepareWeb6(AiKEntities ctx, string _imagesPath, Label lInfo)
         {
+            if (!(MessageBox.Show("Prepare Web6 ?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)) return;
+
             is_stop = false;
             _ctx = ctx;
             _lInfo = lInfo;

@@ -38,5 +38,9 @@ namespace Aik2
         public virtual DbSet<Report> Report { get; set; }
         public virtual DbSet<vwReport> vwReport { get; set; }
         public virtual DbSet<vwArts> vwArts { get; set; }
+        public virtual DbSet<vwReportMags> vwReportMags { get; set; }
+        public virtual DbSet<CraftsOld> CraftsOld { get; set; }
+        public virtual DbSet<ParamsOld> ParamsOld { get; set; }
+        public virtual DbSet<PicsOld> PicsOld { get; set; }
     }
 }

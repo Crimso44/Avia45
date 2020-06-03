@@ -90,6 +90,9 @@
     <Compile Include="Crafts.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
+    <Compile Include="CraftsOld.cs">
+      <DependentUpon>AiK.tt</DependentUpon>
+    </Compile>
     <Compile Include="Dto\ArtDto.cs" />
     <Compile Include="Dto\CountryDto.cs" />
     <Compile Include="Dto\CraftDto.cs" />
@@ -131,7 +134,14 @@
     <Compile Include="Mags.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
+    <Compile Include="OldLoader.cs" />
+    <Compile Include="ParamsOld.cs">
+      <DependentUpon>AiK.tt</DependentUpon>
+    </Compile>
     <Compile Include="Pics.cs">
+      <DependentUpon>AiK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PicsOld.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -150,6 +160,9 @@
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
     <Compile Include="vwReport.cs">
+      <DependentUpon>AiK.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwReportMags.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
     <Compile Include="WebLoader.cs" />

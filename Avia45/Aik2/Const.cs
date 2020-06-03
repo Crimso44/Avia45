@@ -96,7 +96,7 @@ namespace Aik2
 
         public static class Sources
         {
-            public static List<string> ReadOnly = new List<string>() { "1", "5" };
+            public static List<string> ReadOnly = new List<string>() { "1", "3", "4", "5" };
             public static List<string> Writeable = new List<string>() { "2", "6", "7", "8" };
         }
 

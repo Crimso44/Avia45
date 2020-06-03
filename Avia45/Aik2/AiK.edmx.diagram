@@ -28,6 +28,10 @@
         <EntityTypeShape EntityType="AiKModel.Report" Width="1.5" PointX="5.25" PointY="6.25" />
         <EntityTypeShape EntityType="AiKModel.vwReport" Width="1.5" PointX="7" PointY="6.25" />
         <EntityTypeShape EntityType="AiKModel.vwArts" Width="1.5" PointX="9.75" PointY="0.5" />
+        <EntityTypeShape EntityType="AiKModel.vwReportMags" Width="1.5" PointX="5.75" PointY="9.75" />
+        <EntityTypeShape EntityType="AiKModel.CraftsOld" Width="1.5" PointX="9.375" PointY="6.75" />
+        <EntityTypeShape EntityType="AiKModel.ParamsOld" Width="1.5" PointX="11.375" PointY="4.75" />
+        <EntityTypeShape EntityType="AiKModel.PicsOld" Width="1.5" PointX="11.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

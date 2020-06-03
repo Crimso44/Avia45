@@ -1179,51 +1179,55 @@ namespace Aik2
                     }
                     else if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.Control)
                     {
-                        if (MessageBox.Show("Delete craft?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        var craftSource = (string)gridCraft[pos.Row, Const.Columns.Craft.Source].Value;
+                        if (Const.Sources.Writeable.Contains(craftSource))
                         {
-                            try
+                            if (MessageBox.Show("Delete craft?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
                             {
-                                var craftId = (int)gridCraft[pos.Row, Const.Columns.Craft.CraftId].Value;
-                                if (craftId > 0)
+                                try
                                 {
-                                    _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where CraftId ={craftId}");
-                                    var entity = _ctx.Crafts.Single(x => x.CraftId == craftId);
-                                    _ctx.Crafts.Remove(entity);
-                                    _ctx.SaveChanges();
-                                }
+                                    var craftId = (int)gridCraft[pos.Row, Const.Columns.Craft.CraftId].Value;
+                                    if (craftId > 0)
+                                    {
+                                        _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where CraftId ={craftId}");
+                                        var entity = _ctx.Crafts.Single(x => x.CraftId == craftId);
+                                        _ctx.Crafts.Remove(entity);
+                                        _ctx.SaveChanges();
+                                    }
 
-                                var craft = _crafts.FirstOrDefault(x => x.CraftId == craftId);
-                                if (craft != null) _crafts.Remove(craft);
-                                craft = _crafts6.FirstOrDefault(x => x.CraftId == craftId);
-                                if (craft != null)
-                                {
-                                    _crafts6.Remove(craft);
-                                    _editCraft6.Control.Items.Clear();
-                                    _editCraft6.Control.Items.AddRange(_crafts6.Select(x => x.FullName).ToArray());
-                                }
-                                craft = _crafts7.FirstOrDefault(x => x.CraftId == craftId);
-                                if (craft != null)
-                                {
-                                    _crafts7.Remove(craft);
-                                    _editCraft7.Control.Items.Clear();
-                                    _editCraft7.Control.Items.AddRange(_crafts7.Select(x => x.FullName).ToArray());
-                                }
-                                craft = _crafts678.FirstOrDefault(x => x.CraftId == craftId);
-                                if (craft != null)
-                                {
-                                    _crafts678.Remove(craft);
-                                    _editCraft678.Control.Items.Clear();
-                                    _editCraft678.Control.Items.AddRange(_crafts678.Select(x => x.FullName).ToArray());
-                                }
+                                    var craft = _crafts.FirstOrDefault(x => x.CraftId == craftId);
+                                    if (craft != null) _crafts.Remove(craft);
+                                    craft = _crafts6.FirstOrDefault(x => x.CraftId == craftId);
+                                    if (craft != null)
+                                    {
+                                        _crafts6.Remove(craft);
+                                        _editCraft6.Control.Items.Clear();
+                                        _editCraft6.Control.Items.AddRange(_crafts6.Select(x => x.FullName).ToArray());
+                                    }
+                                    craft = _crafts7.FirstOrDefault(x => x.CraftId == craftId);
+                                    if (craft != null)
+                                    {
+                                        _crafts7.Remove(craft);
+                                        _editCraft7.Control.Items.Clear();
+                                        _editCraft7.Control.Items.AddRange(_crafts7.Select(x => x.FullName).ToArray());
+                                    }
+                                    craft = _crafts678.FirstOrDefault(x => x.CraftId == craftId);
+                                    if (craft != null)
+                                    {
+                                        _crafts678.Remove(craft);
+                                        _editCraft678.Control.Items.Clear();
+                                        _editCraft678.Control.Items.AddRange(_crafts678.Select(x => x.FullName).ToArray());
+                                    }
 
-                                gridCraft.Rows.Remove(pos.Row);
-                                _craftDtos.RemoveAt(pos.Row - 1);
-                                if (pos.Row >= gridCraft.RowsCount) pos = new Position(pos.Row - 1, pos.Column);
-                                DoCraftCellGotFocus(pos);
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(GetInnerestException(ex));
+                                    gridCraft.Rows.Remove(pos.Row);
+                                    _craftDtos.RemoveAt(pos.Row - 1);
+                                    if (pos.Row >= gridCraft.RowsCount) pos = new Position(pos.Row - 1, pos.Column);
+                                    DoCraftCellGotFocus(pos);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(GetInnerestException(ex));
+                                }
                             }
                         }
                     }

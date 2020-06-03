@@ -682,5 +682,10 @@ namespace Aik2
             wm.Load5(_ctx, _imagesPath, lInfo);
         }
 
+        private void load34ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new OldLoader();
+            wm.LoadOld(_ctx, _imagesPath, lInfo);
+        }
     }
 }
