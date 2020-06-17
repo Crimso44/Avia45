@@ -499,28 +499,31 @@ namespace Aik2
             int row;
             if (chPicSelCraft.Checked)
             {
-                var craftId = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == picId).CraftId;
-                if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
-                {
-                    var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
-                    if (craftDto == null)
+                var craft = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == picId);
+                if (craft != null) {
+                    var craftId = craft.CraftId;
+                    if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
                     {
-                        craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == craftId));
-                        _craftDtos.Add(craftDto);
-                        gridCraft.RowsCount++;
-                        row = gridCraft.RowsCount - 1;
-                        UpdateCraftRow(craftDto, row);
-                        gridCraft.Refresh();
+                        var craftDto = _craftDtos.FirstOrDefault(x => x.CraftId == craftId);
+                        if (craftDto == null)
+                        {
+                            craftDto = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == craftId));
+                            _craftDtos.Add(craftDto);
+                            gridCraft.RowsCount++;
+                            row = gridCraft.RowsCount - 1;
+                            UpdateCraftRow(craftDto, row);
+                            gridCraft.Refresh();
+                        }
+                        else
+                        {
+                            row = _craftDtos.IndexOf(craftDto) + 1;
+                        }
+                        var focusPosn = new Position(row, _craftPosition.Column);
+                        gridCraft.Selection.Focus(focusPosn, true);
+                        DoCraftCellGotFocus(focusPosn);
+                        _craftPosition = focusPosn;
+                        _selectedCraft = craftDto;
                     }
-                    else
-                    {
-                        row = _craftDtos.IndexOf(craftDto) + 1;
-                    }
-                    var focusPosn = new Position(row, _craftPosition.Column);
-                    gridCraft.Selection.Focus(focusPosn, true);
-                    DoCraftCellGotFocus(focusPosn);
-                    _craftPosition = focusPosn;
-                    _selectedCraft = craftDto;
                 }
             }
             else

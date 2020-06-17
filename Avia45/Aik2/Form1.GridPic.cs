@@ -153,7 +153,7 @@ namespace Aik2
                     }
                     if (lTxt2.Any())
                     {
-                        foreach (var t in lTxt)
+                        foreach (var t in lTxt2)
                         {
                             xPicsQry2 = xPicsQry2.Where(x => (x.Text).Contains(t));
                         }
