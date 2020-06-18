@@ -1647,6 +1647,7 @@ namespace Aik2
             var IBQuery1CrftX = (
                 from a in _ctx.vwArts
                 //join m in _ctx.Mags on a.Mag equals m.Id
+                where a.Source == "6"
                 select new { a }).ToList();
             IBQuery1Crft = IBQuery1CrftX
                 .Select(x => new CraftList()
