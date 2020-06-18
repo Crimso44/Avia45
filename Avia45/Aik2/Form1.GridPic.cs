@@ -56,7 +56,9 @@ namespace Aik2
             var editStr100 = new SourceGrid.Cells.Editors.TextBox(typeof(string));
             editStr100.Control.Validating += delegate (object sender, CancelEventArgs cancelEvent) { StringMaxLen((TextBox)sender, cancelEvent, 100); };
 
-            gridPic.ColumnsCount = 14;
+            var editBool = SourceGrid.Cells.Editors.Factory.Create(typeof(bool));
+
+            gridPic.ColumnsCount = 15;
 
             gridPic.RowsCount = 1;
             gridPic.FixedRows = 1;
@@ -88,10 +90,12 @@ namespace Aik2
             _editorsPic.Add(editStr100);
             gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("SText");
             _editorsPic.Add(null);
-            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("ArtId");
-            gridPic.Columns[12].Visible = false;
-            gridPic[0, 13] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("Copyright");
+            _editorsPic.Add(editBool);
+            gridPic[0, 13] = new SourceGrid.Cells.ColumnHeader("ArtId");
             gridPic.Columns[13].Visible = false;
+            gridPic[0, 14] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic.Columns[14].Visible = false;
 
             for (var i = 1; i < gridPic.ColumnsCount; i++)
             {
@@ -393,8 +397,10 @@ namespace Aik2
             gridPic[r, 10].AddController(_gridPicController);
             gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[11]);
             gridPic[r, 11].AddController(_gridPicController);
-            gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.ArtId);
-            gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.CraftId);
+            gridPic[r, 12] = new SourceGrid.Cells.CheckBox("", Pic.Copyright ?? false);
+            gridPic[r, 12].AddController(_gridPicController);
+            gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.ArtId);
+            gridPic[r, 14] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
             if (isShowImage)
             {
@@ -431,8 +437,9 @@ namespace Aik2
                 NType = (int?)gridPic[r, 5].Value,
                 Path = (string)gridPic[r, 6].Value,
                 Grp = (string)gridPic[r, 10].Value,
-                ArtId = (int)gridPic[r, 12].Value,
-                CraftId = (int)gridPic[r, 13].Value
+                Copyright = (bool?)gridPic[r, 12].Value,
+                ArtId = (int)gridPic[r, 13].Value,
+                CraftId = (int)gridPic[r, 14].Value
             };
             return pic;
         }

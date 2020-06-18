@@ -19,6 +19,7 @@ namespace Aik2.Dto
         public string Path { get; set; }
         public string Grp { get; set; }
         public string SText { get; set; }
+        public bool? Copyright { get; set; }
         public string XType { get; set; }
         public string Text { get; set; }
     }
