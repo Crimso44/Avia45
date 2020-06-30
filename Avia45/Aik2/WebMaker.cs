@@ -839,8 +839,8 @@ namespace Aik2
 
         private string GetPrVal(CraftList craft, string indField, bool is_craft)
         {
-            var ok = false;
             s = "";
+
             if (indField == "Photos")
             {
                 s = (is_craft ? craft.cCnt : craft.aCnt).ToString();
@@ -851,35 +851,29 @@ namespace Aik2
             }
             else if (is_craft)
             {
-                try
+                switch (indField)
                 {
-                    s = GetPropValue(craft.c, indField);
-                    ok = true;
+                    case "Country": s = craft.c.Country; break;
+                    case "Eng": s = craft.ci.Eng; break;
+                    case "Construct": s = craft.c.Construct; break;
+                    case "Name": s = craft.c.Name; break;
+                    case "IYear": s = craft.c.IYear.ToString(); break;
+                    case "Wings": s = craft.c.Wings; break;
+                    case "Engines": s = craft.c.Engines; break;
+                    default: MessageBox.Show($"indField craft {indField}"); break;
                 }
-                catch { }
-                if (!ok)
-                    try
-                    {
-                        s = GetPropValue(craft.ci, indField);
-                        ok = true;
-                    }
-                    catch { }
             }
             else
             {
-                try
+                switch (indField)
                 {
-                    s = GetPropValue(craft.a, indField);
-                    ok = true;
+                    case "IYear": s = craft.a.IYear.ToString(); break;
+                    case "Template": s = craft.m?.Template ?? ""; break;
+                    case "Author": s = craft.a.Author; break;
+                    case "Name": s = craft.a.Name; break;
+                    case "Serie": s = craft.a.Serie; break;
+                    default: MessageBox.Show($"indField art {indField}"); break;
                 }
-                catch { }
-                if (!ok)
-                    try
-                    {
-                        s = GetPropValue(craft.m, indField);
-                        ok = true;
-                    }
-                    catch { }
             }
             return s;
         }
