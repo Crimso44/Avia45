@@ -50,6 +50,13 @@
           <Property Name="Proj" Type="bit" />
           <Property Name="Same" Type="int" />
           <Property Name="Single" Type="bit" />
+          <Property Name="s1" Type="int" />
+          <Property Name="s2" Type="int" />
+          <Property Name="s3" Type="int" />
+          <Property Name="s4" Type="int" />
+          <Property Name="s5" Type="int" />
+          <Property Name="s6" Type="int" />
+          <Property Name="s7" Type="int" />
         </EntityType>
         <EntityType Name="CraftsOld">
           <Key>
@@ -192,8 +199,8 @@ warning 6002: The table/view 'AiK2.dbo.vwCrafts' does not have a primary key def
             <PropertyRef Name="CraftId" />
           </Key>
           <Property Name="CraftId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Construct" Type="nvarchar" MaxLength="50" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Construct" Type="nvarchar" MaxLength="100" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
           <Property Name="Country" Type="nvarchar" MaxLength="20" />
           <Property Name="IYear" Type="int" />
           <Property Name="Vert" Type="bit" />
@@ -212,6 +219,13 @@ warning 6002: The table/view 'AiK2.dbo.vwCrafts' does not have a primary key def
           <Property Name="Same" Type="int" />
           <Property Name="Single" Type="bit" />
           <Property Name="PicCnt" Type="int" />
+          <Property Name="s1" Type="int" />
+          <Property Name="s2" Type="int" />
+          <Property Name="s3" Type="int" />
+          <Property Name="s4" Type="int" />
+          <Property Name="s5" Type="int" />
+          <Property Name="s6" Type="int" />
+          <Property Name="s7" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -443,7 +457,14 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
     [vwCrafts].[Proj] AS [Proj], 
     [vwCrafts].[Same] AS [Same], 
     [vwCrafts].[Single] AS [Single], 
-    [vwCrafts].[PicCnt] AS [PicCnt]
+    [vwCrafts].[PicCnt] AS [PicCnt], 
+    [vwCrafts].[s1] AS [s1], 
+    [vwCrafts].[s2] AS [s2], 
+    [vwCrafts].[s3] AS [s3], 
+    [vwCrafts].[s4] AS [s4], 
+    [vwCrafts].[s5] AS [s5], 
+    [vwCrafts].[s6] AS [s6], 
+    [vwCrafts].[s7] AS [s7]
     FROM [dbo].[vwCrafts] AS [vwCrafts]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwPics" EntityType="Self.vwPics" store:Type="Views" store:Schema="dbo">
@@ -762,6 +783,13 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <NavigationProperty Name="Crafts4" Relationship="AiKModel.FK_Crafts_Crafts2" FromRole="Crafts1" ToRole="Crafts" />
           <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Crafts" ToRole="Pics" />
           <NavigationProperty Name="WordLinks" Relationship="AiKModel.FK_WordLinks_Crafts" FromRole="Crafts" ToRole="WordLinks" />
+          <Property Name="s1" Type="Int32" />
+          <Property Name="s2" Type="Int32" />
+          <Property Name="s3" Type="Int32" />
+          <Property Name="s4" Type="Int32" />
+          <Property Name="s5" Type="Int32" />
+          <Property Name="s6" Type="Int32" />
+          <Property Name="s7" Type="Int32" />
         </EntityType>
         <Association Name="FK_Crafts_Crafts">
           <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
@@ -828,8 +856,8 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
             <PropertyRef Name="CraftId" />
           </Key>
           <Property Name="CraftId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Construct" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Construct" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Country" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="IYear" Type="Int32" />
           <Property Name="Vert" Type="Boolean" />
@@ -848,6 +876,13 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="Same" Type="Int32" />
           <Property Name="Single" Type="Boolean" />
           <Property Name="PicCnt" Type="Int32" />
+          <Property Name="s1" Type="Int32" />
+          <Property Name="s2" Type="Int32" />
+          <Property Name="s3" Type="Int32" />
+          <Property Name="s4" Type="Int32" />
+          <Property Name="s5" Type="Int32" />
+          <Property Name="s6" Type="Int32" />
+          <Property Name="s7" Type="Int32" />
         </EntityType>
         <EntityType Name="vwPics">
           <Key>
@@ -1057,6 +1092,13 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <EntitySetMapping Name="Crafts">
             <EntityTypeMapping TypeName="AiKModel.Crafts">
               <MappingFragment StoreEntitySet="Crafts">
+                <ScalarProperty Name="s7" ColumnName="s7" />
+                <ScalarProperty Name="s6" ColumnName="s6" />
+                <ScalarProperty Name="s5" ColumnName="s5" />
+                <ScalarProperty Name="s4" ColumnName="s4" />
+                <ScalarProperty Name="s3" ColumnName="s3" />
+                <ScalarProperty Name="s2" ColumnName="s2" />
+                <ScalarProperty Name="s1" ColumnName="s1" />
                 <ScalarProperty Name="Single" ColumnName="Single" />
                 <ScalarProperty Name="Same" ColumnName="Same" />
                 <ScalarProperty Name="Proj" ColumnName="Proj" />
@@ -1084,6 +1126,13 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <EntitySetMapping Name="vwCrafts">
             <EntityTypeMapping TypeName="AiKModel.vwCrafts">
               <MappingFragment StoreEntitySet="vwCrafts">
+                <ScalarProperty Name="s7" ColumnName="s7" />
+                <ScalarProperty Name="s6" ColumnName="s6" />
+                <ScalarProperty Name="s5" ColumnName="s5" />
+                <ScalarProperty Name="s4" ColumnName="s4" />
+                <ScalarProperty Name="s3" ColumnName="s3" />
+                <ScalarProperty Name="s2" ColumnName="s2" />
+                <ScalarProperty Name="s1" ColumnName="s1" />
                 <ScalarProperty Name="PicCnt" ColumnName="PicCnt" />
                 <ScalarProperty Name="Single" ColumnName="Single" />
                 <ScalarProperty Name="Same" ColumnName="Same" />

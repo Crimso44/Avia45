@@ -55,6 +55,9 @@
             this.sbCraftPics = new System.Windows.Forms.HScrollBar();
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.pCraftSeeAlso = new System.Windows.Forms.Panel();
+            this.pAlso = new System.Windows.Forms.Panel();
+            this.lstAlso = new System.Windows.Forms.ListBox();
+            this.splAlso = new System.Windows.Forms.Splitter();
             this.lstCraftSeeAlso = new System.Windows.Forms.ListBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lCraftPicNum = new System.Windows.Forms.Label();
@@ -124,14 +127,18 @@
             this.unusedPicsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.webToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.load1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.load34ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.load5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.links6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.links7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lWorkingText = new System.Windows.Forms.Label();
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.load34ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -144,6 +151,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgCraftPic)).BeginInit();
             this.pCraftPicTxt.SuspendLayout();
             this.pCraftSeeAlso.SuspendLayout();
+            this.pAlso.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.tabPagePics.SuspendLayout();
@@ -443,7 +451,7 @@
             // 
             // pCraftSeeAlso
             // 
-            this.pCraftSeeAlso.Controls.Add(this.lstCraftSeeAlso);
+            this.pCraftSeeAlso.Controls.Add(this.pAlso);
             this.pCraftSeeAlso.Controls.Add(this.panel3);
             this.pCraftSeeAlso.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pCraftSeeAlso.Location = new System.Drawing.Point(0, 240);
@@ -452,17 +460,49 @@
             this.pCraftSeeAlso.TabIndex = 1;
             this.pCraftSeeAlso.Resize += new System.EventHandler(this.pCraftSeeAlso_Resize);
             // 
+            // pAlso
+            // 
+            this.pAlso.Controls.Add(this.lstAlso);
+            this.pAlso.Controls.Add(this.splAlso);
+            this.pAlso.Controls.Add(this.lstCraftSeeAlso);
+            this.pAlso.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pAlso.Location = new System.Drawing.Point(0, 29);
+            this.pAlso.Name = "pAlso";
+            this.pAlso.Size = new System.Drawing.Size(200, 71);
+            this.pAlso.TabIndex = 2;
+            // 
+            // lstAlso
+            // 
+            this.lstAlso.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstAlso.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.lstAlso.FormattingEnabled = true;
+            this.lstAlso.Location = new System.Drawing.Point(103, 0);
+            this.lstAlso.Name = "lstAlso";
+            this.lstAlso.Size = new System.Drawing.Size(97, 71);
+            this.lstAlso.TabIndex = 3;
+            this.lstAlso.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstAlso_DrawItem);
+            this.lstAlso.DoubleClick += new System.EventHandler(this.lstAlso_DoubleClick);
+            // 
+            // splAlso
+            // 
+            this.splAlso.Location = new System.Drawing.Point(100, 0);
+            this.splAlso.Name = "splAlso";
+            this.splAlso.Size = new System.Drawing.Size(3, 71);
+            this.splAlso.TabIndex = 2;
+            this.splAlso.TabStop = false;
+            // 
             // lstCraftSeeAlso
             // 
             this.lstCraftSeeAlso.DisplayMember = "Name";
-            this.lstCraftSeeAlso.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstCraftSeeAlso.Dock = System.Windows.Forms.DockStyle.Left;
             this.lstCraftSeeAlso.FormattingEnabled = true;
-            this.lstCraftSeeAlso.Location = new System.Drawing.Point(0, 29);
+            this.lstCraftSeeAlso.Location = new System.Drawing.Point(0, 0);
             this.lstCraftSeeAlso.Name = "lstCraftSeeAlso";
-            this.lstCraftSeeAlso.Size = new System.Drawing.Size(200, 71);
+            this.lstCraftSeeAlso.Size = new System.Drawing.Size(100, 71);
             this.lstCraftSeeAlso.TabIndex = 1;
             this.lstCraftSeeAlso.ValueMember = "Id";
             this.lstCraftSeeAlso.DoubleClick += new System.EventHandler(this.lstCraftSeeAlso_DoubleClick);
+            this.lstCraftSeeAlso.Resize += new System.EventHandler(this.lstCraftSeeAlso_Resize);
             // 
             // panel3
             // 
@@ -1176,7 +1216,8 @@
             this.load1ToolStripMenuItem,
             this.load34ToolStripMenuItem,
             this.load5ToolStripMenuItem,
-            this.make6ToolStripMenuItem});
+            this.make6ToolStripMenuItem,
+            this.makeLinksToolStripMenuItem});
             this.webToolStripMenuItem.Name = "webToolStripMenuItem";
             this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.webToolStripMenuItem.Text = "Web";
@@ -1187,6 +1228,13 @@
             this.load1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.load1ToolStripMenuItem.Text = "Load 1";
             this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
+            // 
+            // load34ToolStripMenuItem
+            // 
+            this.load34ToolStripMenuItem.Name = "load34ToolStripMenuItem";
+            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load34ToolStripMenuItem.Text = "Load 3-4";
+            this.load34ToolStripMenuItem.Click += new System.EventHandler(this.load34ToolStripMenuItem_Click);
             // 
             // load5ToolStripMenuItem
             // 
@@ -1201,6 +1249,37 @@
             this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.make6ToolStripMenuItem.Text = "Make 6";
             this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
+            // 
+            // makeLinksToolStripMenuItem
+            // 
+            this.makeLinksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.allLinksToolStripMenuItem,
+            this.links6ToolStripMenuItem,
+            this.links7ToolStripMenuItem});
+            this.makeLinksToolStripMenuItem.Name = "makeLinksToolStripMenuItem";
+            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.makeLinksToolStripMenuItem.Text = "Make Links";
+            // 
+            // allLinksToolStripMenuItem
+            // 
+            this.allLinksToolStripMenuItem.Name = "allLinksToolStripMenuItem";
+            this.allLinksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.allLinksToolStripMenuItem.Text = "All links";
+            this.allLinksToolStripMenuItem.Click += new System.EventHandler(this.makeLinksToolStripMenuItem_Click);
+            // 
+            // links6ToolStripMenuItem
+            // 
+            this.links6ToolStripMenuItem.Name = "links6ToolStripMenuItem";
+            this.links6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.links6ToolStripMenuItem.Text = "Links 6";
+            this.links6ToolStripMenuItem.Click += new System.EventHandler(this.links6ToolStripMenuItem_Click);
+            // 
+            // links7ToolStripMenuItem
+            // 
+            this.links7ToolStripMenuItem.Name = "links7ToolStripMenuItem";
+            this.links7ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.links7ToolStripMenuItem.Text = "Links 7";
+            this.links7ToolStripMenuItem.Click += new System.EventHandler(this.links7ToolStripMenuItem_Click);
             // 
             // panel2
             // 
@@ -1255,13 +1334,6 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // load34ToolStripMenuItem
-            // 
-            this.load34ToolStripMenuItem.Name = "load34ToolStripMenuItem";
-            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.load34ToolStripMenuItem.Text = "Load 3-4";
-            this.load34ToolStripMenuItem.Click += new System.EventHandler(this.load34ToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1292,6 +1364,7 @@
             this.pCraftPicTxt.ResumeLayout(false);
             this.pCraftPicTxt.PerformLayout();
             this.pCraftSeeAlso.ResumeLayout(false);
+            this.pAlso.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
@@ -1421,6 +1494,13 @@
         private System.Windows.Forms.TextBox tCraftPicTxt;
         private System.Windows.Forms.HScrollBar sbCraftPics;
         private System.Windows.Forms.ToolStripMenuItem load34ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeLinksToolStripMenuItem;
+        private System.Windows.Forms.Panel pAlso;
+        private System.Windows.Forms.Splitter splAlso;
+        private System.Windows.Forms.ListBox lstAlso;
+        private System.Windows.Forms.ToolStripMenuItem allLinksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem links7ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem links6ToolStripMenuItem;
     }
 }
 

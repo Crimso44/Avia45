@@ -104,6 +104,18 @@ namespace Aik2
             source.Insert(index + 1, element);
         }
 
+        public static void InsertPairSortedById(this List<Util.Pair<int>> source,
+                Util.Pair<int> element)
+        {
+            int index = source.FindLastIndex(e => e.Id < element.Id);
+            if (index == -1)
+            {
+                source.Insert(0, element);
+                return;
+            }
+            source.Insert(index + 1, element);
+        }
+
         public static int InsertStringSorted(this List<string> source,
                 string element)
         {
@@ -145,6 +157,28 @@ namespace Aik2
             };
         }
 
+        public static int BinaryIndexOfPairById(this List<Util.Pair<int>> source, int elementId)
+        {
+            var ind = (source.Count + 1) / 2;
+            var step = ind;
+            if (ind >= source.Count) return -1;
+            while (true)
+            {
+                if (source[ind].Id == elementId) return ind;
+                if (step == 1) return -1;
+                step = (step + 1) / 2;
+                if (source[ind].Id < elementId)
+                {
+                    ind += step;
+                    if (ind >= source.Count) ind = source.Count - 1;
+                }
+                else
+                {
+                    ind -= step;
+                    if (ind < 0) ind = 0;
+                };
+            };
+        }
 
     }
 

@@ -100,6 +100,10 @@ namespace Aik2
             {
                 pLinkImage.Width = int.Parse(_config["pLinkImgWidth"]);
             }
+            if (_config.ContainsKey("lstCraftSeeAlso"))
+            {
+                lstCraftSeeAlso.Width = int.Parse(_config["lstCraftSeeAlso"]);
+            }
             _init = false;
         }
 
@@ -689,6 +693,24 @@ namespace Aik2
         {
             var wm = new OldLoader();
             wm.LoadOld(_ctx, _imagesPath, lInfo);
+        }
+
+        private void makeLinksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new MakeLinks();
+            wm.DoMakeLinks(_ctx, lInfo, 0);
+        }
+
+        private void links6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new MakeLinks();
+            wm.DoMakeLinks(_ctx, lInfo, 6);
+        }
+
+        private void links7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new MakeLinks();
+            wm.DoMakeLinks(_ctx, lInfo, 7);
         }
     }
 }

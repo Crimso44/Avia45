@@ -30,6 +30,13 @@ namespace Aik2.Dto
         public string Engines { get; set; }
         public int? Same { get; set; }
         public string CText { get; set; }
+        public int? s1 { get; set; }
+        public int? s2 { get; set; }
+        public int? s3 { get; set; }
+        public int? s4 { get; set; }
+        public int? s5 { get; set; }
+        public int? s6 { get; set; }
+        public int? s7 { get; set; }
 
         public string FullName { get
             {

@@ -45,6 +45,13 @@ namespace Aik2
         public Nullable<bool> Proj { get; set; }
         public Nullable<int> Same { get; set; }
         public Nullable<bool> Single { get; set; }
+        public Nullable<int> s1 { get; set; }
+        public Nullable<int> s2 { get; set; }
+        public Nullable<int> s3 { get; set; }
+        public Nullable<int> s4 { get; set; }
+        public Nullable<int> s5 { get; set; }
+        public Nullable<int> s6 { get; set; }
+        public Nullable<int> s7 { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Crafts> Crafts1 { get; set; }

@@ -35,5 +35,12 @@ namespace Aik2
         public Nullable<int> Same { get; set; }
         public Nullable<bool> Single { get; set; }
         public Nullable<int> PicCnt { get; set; }
+        public Nullable<int> s1 { get; set; }
+        public Nullable<int> s2 { get; set; }
+        public Nullable<int> s3 { get; set; }
+        public Nullable<int> s4 { get; set; }
+        public Nullable<int> s5 { get; set; }
+        public Nullable<int> s6 { get; set; }
+        public Nullable<int> s7 { get; set; }
     }
 }

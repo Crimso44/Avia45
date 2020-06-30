@@ -1083,6 +1083,24 @@ namespace Aik2
                         lstCraftSeeAlso.Items.Add(new Pair<int>() { Id = c.CraftId, Name = (c.Same.HasValue ? "- " : "") + c.FullName });
                     }
                     lstCraftSeeAlso.ForeColor = isOk ? Color.Black : Color.Red;
+
+
+
+                    lstAlso.Items.Clear();
+                    for (var k = 1; k <= 7; k++)
+                    {
+                        var crftId = (int?)_selectedCraft.GetType().GetProperty($"s{k}").GetValue(_selectedCraft);
+                        if (crftId.HasValue)
+                        {
+                            crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == crftId));
+                            lstAlso.Items.Add(new Pair<int>() { Id = crft.CraftId, Name = crft.FullName });
+                        }
+                        else
+                        {
+                            lstAlso.Items.Add(new Pair<int>() { Id = 0, Name = "" });
+                        }
+                    }
+
                 }
             }
             if (_searchMode && !_searchChanging)
@@ -1289,6 +1307,13 @@ namespace Aik2
         {
             if (_init) return;
             _config["pCraftTextWidth"] = ((Panel)sender).Width.ToString();
+            File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
+        }
+
+        private void lstCraftSeeAlso_Resize(object sender, EventArgs e)
+        {
+            if (_init) return;
+            _config["lstCraftSeeAlso"] = ((ListBox)sender).Width.ToString();
             File.WriteAllText(_confPath, JsonConvert.SerializeObject(_config));
         }
 
@@ -1621,6 +1646,31 @@ namespace Aik2
         {
             _filterOn = false;
             LoadCrafts();
+        }
+
+        private void lstAlso_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            var item = (Pair<int>)lstAlso.Items[e.Index];
+            if (item != null)
+            {
+                var font = lstAlso.Font;
+                if (item.Id == _selectedCraft.CraftId)
+                {
+                    font = new Font(font, FontStyle.Bold);
+                }
+                e.Graphics.DrawString(item.Name, font, Brushes.Black, e.Bounds);
+            }
+            e.DrawFocusRectangle();
+        }
+
+        private void lstAlso_DoubleClick(object sender, EventArgs e)
+        {
+            var item = (Pair<int>)lstAlso.SelectedItem;
+            if (item != null)
+            {
+                SelectCraft(item.Id);
+            }
         }
     }
 }
