@@ -83,5 +83,33 @@ namespace Aik2
                 clSources.SetItemChecked(i, true);
             }
         }
-    }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            bCountriesSelect_Click(sender, e);
+            bSrcW_Click(sender, e);
+
+            cVertYes.Checked = true; 
+            cUavYes.Checked = true;
+            cGlidYes.Checked = true;
+            cLlYes.Checked = true;
+            cSinglYes.Checked = true;
+            cProjYes.Checked = true;
+            cVertNo.Checked = true;
+            cUavNo.Checked = true;
+            cGlidNo.Checked = true;
+            cLlNo.Checked = true;
+            cSinglNo.Checked = true;
+            cProjNo.Checked = true;
+
+            eWings.Text = "";
+            eEngines.Text = "";
+            eText.Text = "";
+            eText2.Text = "";
+
+            nYearFrom.Value = 0;
+            nYearTo.Value = 0;
+
+        }
+}
 }

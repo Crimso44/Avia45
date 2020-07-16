@@ -73,6 +73,7 @@
             this.bSrcR = new System.Windows.Forms.Button();
             this.bSrcW = new System.Windows.Forms.Button();
             this.bSrcRW = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nYearFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nYearTo)).BeginInit();
@@ -100,12 +101,13 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 335);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(521, 41);
-            this.panel1.TabIndex = 3;
+            this.panel1.TabIndex = 0;
             // 
             // button1
             // 
@@ -515,6 +517,16 @@
             this.bSrcRW.UseVisualStyleBackColor = true;
             this.bSrcRW.Click += new System.EventHandler(this.bSrcRW_Click);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(344, 10);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "Clear";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // fFilter
             // 
             this.AcceptButton = this.button1;
@@ -619,5 +631,6 @@
         private System.Windows.Forms.Button bSrcR;
         private System.Windows.Forms.Button bSrcW;
         private System.Windows.Forms.Button bSrcRW;
+        private System.Windows.Forms.Button button2;
     }
 }

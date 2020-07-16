@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.bCopyText = new System.Windows.Forms.Button();
             this.bSaveReport = new System.Windows.Forms.Button();
             this.lbReport = new System.Windows.Forms.ListBox();
-            this.bCopyText = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,6 +44,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(800, 38);
             this.panel1.TabIndex = 0;
+            // 
+            // bCopyText
+            // 
+            this.bCopyText.Location = new System.Drawing.Point(632, 9);
+            this.bCopyText.Name = "bCopyText";
+            this.bCopyText.Size = new System.Drawing.Size(75, 23);
+            this.bCopyText.TabIndex = 1;
+            this.bCopyText.Text = "Копировать";
+            this.bCopyText.UseVisualStyleBackColor = true;
+            this.bCopyText.Click += new System.EventHandler(this.bCopyText_Click);
             // 
             // bSaveReport
             // 
@@ -67,18 +77,9 @@
             this.lbReport.TabIndex = 1;
             this.lbReport.DoubleClick += new System.EventHandler(this.lbReport_DoubleClick);
             // 
-            // bCopyText
-            // 
-            this.bCopyText.Location = new System.Drawing.Point(632, 9);
-            this.bCopyText.Name = "bCopyText";
-            this.bCopyText.Size = new System.Drawing.Size(75, 23);
-            this.bCopyText.TabIndex = 1;
-            this.bCopyText.Text = "Копировать";
-            this.bCopyText.UseVisualStyleBackColor = true;
-            this.bCopyText.Click += new System.EventHandler(this.bCopyText_Click);
-            // 
             // fReport
             // 
+            this.AcceptButton = this.bSaveReport;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);

@@ -34,7 +34,6 @@
             this.pArtTable = new System.Windows.Forms.Panel();
             this.gridArt = new SourceGrid.Grid();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.chFilterCraftsByMag = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.chArtSortYear = new System.Windows.Forms.RadioButton();
             this.chArtSortSerie = new System.Windows.Forms.RadioButton();
@@ -139,6 +138,7 @@
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.chFilterCraftsByMag = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -219,7 +219,6 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.chFilterCraftsByMag);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.chArtSortYear);
             this.panel1.Controls.Add(this.chArtSortSerie);
@@ -229,16 +228,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(786, 28);
             this.panel1.TabIndex = 0;
-            // 
-            // chFilterCraftsByMag
-            // 
-            this.chFilterCraftsByMag.AutoSize = true;
-            this.chFilterCraftsByMag.Location = new System.Drawing.Point(206, 5);
-            this.chFilterCraftsByMag.Name = "chFilterCraftsByMag";
-            this.chFilterCraftsByMag.Size = new System.Drawing.Size(115, 17);
-            this.chFilterCraftsByMag.TabIndex = 4;
-            this.chFilterCraftsByMag.Text = "Filter crafts by Mag";
-            this.chFilterCraftsByMag.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -570,6 +559,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.chFilterCraftsByMag);
             this.panel4.Controls.Add(this.lCraftCnt);
             this.panel4.Controls.Add(this.label2);
             this.panel4.Controls.Add(this.chCraftSortYear);
@@ -1225,28 +1215,28 @@
             // load1ToolStripMenuItem
             // 
             this.load1ToolStripMenuItem.Name = "load1ToolStripMenuItem";
-            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.load1ToolStripMenuItem.Text = "Load 1";
             this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
             // 
             // load34ToolStripMenuItem
             // 
             this.load34ToolStripMenuItem.Name = "load34ToolStripMenuItem";
-            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.load34ToolStripMenuItem.Text = "Load 3-4";
             this.load34ToolStripMenuItem.Click += new System.EventHandler(this.load34ToolStripMenuItem_Click);
             // 
             // load5ToolStripMenuItem
             // 
             this.load5ToolStripMenuItem.Name = "load5ToolStripMenuItem";
-            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.load5ToolStripMenuItem.Text = "Load 5";
             this.load5ToolStripMenuItem.Click += new System.EventHandler(this.load5ToolStripMenuItem_Click);
             // 
             // make6ToolStripMenuItem
             // 
             this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
-            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.make6ToolStripMenuItem.Text = "Make 6";
             this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
             // 
@@ -1257,27 +1247,27 @@
             this.links6ToolStripMenuItem,
             this.links7ToolStripMenuItem});
             this.makeLinksToolStripMenuItem.Name = "makeLinksToolStripMenuItem";
-            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.makeLinksToolStripMenuItem.Text = "Make Links";
             // 
             // allLinksToolStripMenuItem
             // 
             this.allLinksToolStripMenuItem.Name = "allLinksToolStripMenuItem";
-            this.allLinksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.allLinksToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.allLinksToolStripMenuItem.Text = "All links";
             this.allLinksToolStripMenuItem.Click += new System.EventHandler(this.makeLinksToolStripMenuItem_Click);
             // 
             // links6ToolStripMenuItem
             // 
             this.links6ToolStripMenuItem.Name = "links6ToolStripMenuItem";
-            this.links6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.links6ToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.links6ToolStripMenuItem.Text = "Links 6";
             this.links6ToolStripMenuItem.Click += new System.EventHandler(this.links6ToolStripMenuItem_Click);
             // 
             // links7ToolStripMenuItem
             // 
             this.links7ToolStripMenuItem.Name = "links7ToolStripMenuItem";
-            this.links7ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.links7ToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.links7ToolStripMenuItem.Text = "Links 7";
             this.links7ToolStripMenuItem.Click += new System.EventHandler(this.links7ToolStripMenuItem_Click);
             // 
@@ -1333,6 +1323,16 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
+            // 
+            // chFilterCraftsByMag
+            // 
+            this.chFilterCraftsByMag.AutoSize = true;
+            this.chFilterCraftsByMag.Location = new System.Drawing.Point(238, 7);
+            this.chFilterCraftsByMag.Name = "chFilterCraftsByMag";
+            this.chFilterCraftsByMag.Size = new System.Drawing.Size(115, 17);
+            this.chFilterCraftsByMag.TabIndex = 15;
+            this.chFilterCraftsByMag.Text = "Filter crafts by Mag";
+            this.chFilterCraftsByMag.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -1463,7 +1463,6 @@
         private System.Windows.Forms.Button bHere;
         private System.Windows.Forms.Button bDown;
         private System.Windows.Forms.Label lPicCnt;
-        private System.Windows.Forms.CheckBox chFilterCraftsByMag;
         private System.Windows.Forms.ToolStripMenuItem reloadToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem picsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem fillPathToolStripMenuItem1;
@@ -1501,6 +1500,7 @@
         private System.Windows.Forms.ToolStripMenuItem allLinksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem links7ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem links6ToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chFilterCraftsByMag;
     }
 }
 
