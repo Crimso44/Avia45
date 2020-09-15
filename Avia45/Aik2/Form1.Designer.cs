@@ -64,6 +64,7 @@
             this.bCraftWikiLink = new System.Windows.Forms.Button();
             this.bCraftAirwarLink = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.chFilterCraftsByMag = new System.Windows.Forms.CheckBox();
             this.lCraftCnt = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.chCraftSortYear = new System.Windows.Forms.RadioButton();
@@ -138,7 +139,7 @@
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.chFilterCraftsByMag = new System.Windows.Forms.CheckBox();
+            this.make7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -570,6 +571,16 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(786, 28);
             this.panel4.TabIndex = 0;
+            // 
+            // chFilterCraftsByMag
+            // 
+            this.chFilterCraftsByMag.AutoSize = true;
+            this.chFilterCraftsByMag.Location = new System.Drawing.Point(238, 7);
+            this.chFilterCraftsByMag.Name = "chFilterCraftsByMag";
+            this.chFilterCraftsByMag.Size = new System.Drawing.Size(115, 17);
+            this.chFilterCraftsByMag.TabIndex = 15;
+            this.chFilterCraftsByMag.Text = "Filter crafts by Mag";
+            this.chFilterCraftsByMag.UseVisualStyleBackColor = true;
             // 
             // lCraftCnt
             // 
@@ -1207,6 +1218,7 @@
             this.load34ToolStripMenuItem,
             this.load5ToolStripMenuItem,
             this.make6ToolStripMenuItem,
+            this.make7ToolStripMenuItem,
             this.makeLinksToolStripMenuItem});
             this.webToolStripMenuItem.Name = "webToolStripMenuItem";
             this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
@@ -1215,28 +1227,28 @@
             // load1ToolStripMenuItem
             // 
             this.load1ToolStripMenuItem.Name = "load1ToolStripMenuItem";
-            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.load1ToolStripMenuItem.Text = "Load 1";
             this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
             // 
             // load34ToolStripMenuItem
             // 
             this.load34ToolStripMenuItem.Name = "load34ToolStripMenuItem";
-            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.load34ToolStripMenuItem.Text = "Load 3-4";
             this.load34ToolStripMenuItem.Click += new System.EventHandler(this.load34ToolStripMenuItem_Click);
             // 
             // load5ToolStripMenuItem
             // 
             this.load5ToolStripMenuItem.Name = "load5ToolStripMenuItem";
-            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.load5ToolStripMenuItem.Text = "Load 5";
             this.load5ToolStripMenuItem.Click += new System.EventHandler(this.load5ToolStripMenuItem_Click);
             // 
             // make6ToolStripMenuItem
             // 
             this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
-            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.make6ToolStripMenuItem.Text = "Make 6";
             this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
             // 
@@ -1247,7 +1259,7 @@
             this.links6ToolStripMenuItem,
             this.links7ToolStripMenuItem});
             this.makeLinksToolStripMenuItem.Name = "makeLinksToolStripMenuItem";
-            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.makeLinksToolStripMenuItem.Text = "Make Links";
             // 
             // allLinksToolStripMenuItem
@@ -1324,15 +1336,12 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // chFilterCraftsByMag
+            // make7ToolStripMenuItem
             // 
-            this.chFilterCraftsByMag.AutoSize = true;
-            this.chFilterCraftsByMag.Location = new System.Drawing.Point(238, 7);
-            this.chFilterCraftsByMag.Name = "chFilterCraftsByMag";
-            this.chFilterCraftsByMag.Size = new System.Drawing.Size(115, 17);
-            this.chFilterCraftsByMag.TabIndex = 15;
-            this.chFilterCraftsByMag.Text = "Filter crafts by Mag";
-            this.chFilterCraftsByMag.UseVisualStyleBackColor = true;
+            this.make7ToolStripMenuItem.Name = "make7ToolStripMenuItem";
+            this.make7ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.make7ToolStripMenuItem.Text = "Make 7";
+            this.make7ToolStripMenuItem.Click += new System.EventHandler(this.make7ToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -1501,6 +1510,7 @@
         private System.Windows.Forms.ToolStripMenuItem links7ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem links6ToolStripMenuItem;
         private System.Windows.Forms.CheckBox chFilterCraftsByMag;
+        private System.Windows.Forms.ToolStripMenuItem make7ToolStripMenuItem;
     }
 }
 

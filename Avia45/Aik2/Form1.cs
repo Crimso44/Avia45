@@ -712,5 +712,11 @@ namespace Aik2
             var wm = new MakeLinks();
             wm.DoMakeLinks(_ctx, lInfo, 7);
         }
+
+        private void make7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new WebMaker();
+            wm.PrepareWeb7(_ctx, _imagesPath, lInfo);
+        }
     }
 }

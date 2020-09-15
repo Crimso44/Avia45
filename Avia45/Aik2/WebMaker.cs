@@ -22,6 +22,9 @@ namespace Aik2
         private List<TChunk>[] chunks;
         private List<string> lRuCountries;
         private List<string> lEnCountries;
+        private List<string> lSources;
+        private List<string> lSourceIds;
+        private List<string> lSourceNames;
         private int[] cnts = new int[7];
         private string[] picids = new string[7];
         private bool[] plans = new bool[5];
@@ -196,7 +199,7 @@ namespace Aik2
             var qry = _ctx.Arts.Where(x => x.Mag == sMag);
             if (!string.IsNullOrEmpty(sYear))
                 qry = qry.Where(x => x.IYear.ToString() == sYear);
-            if (!string.IsNullOrEmpty(sMonth)) { 
+            if (!string.IsNullOrEmpty(sMonth)) {
                 if (sMonth.Length == 1) sMonth = "0" + sMonth;
                 qry = qry.Where(x => x.IMonth == sMonth);
             } if (sMonth == "")
@@ -419,7 +422,7 @@ namespace Aik2
         {
             var bigpic = ""; var magpic = ""; var bigpictype = "";
             templ = File.ReadAllText(sPath + "Site\\Craft.htm");
-            while (templ.IndexOf("  ") > 0) templ = templ.Replace("  ", " ");
+            while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
             templ = new StringBuilder(templ)
                 .Replace("%Country%", GetSpanCountry(craft1.Country))
                 .Replace("%Construct%", craft1.Construct)
@@ -1541,7 +1544,7 @@ namespace Aik2
                 lInfo.Text = $"Craft {ibq1c.IYear} {ibq1c.Construct}";
                 Application.DoEvents();
                 if (is_stop) { break; };
-                
+
             }
 
 
@@ -1599,7 +1602,7 @@ namespace Aik2
                     ci = Mapper.Map<CountryDto>(x.ci),
                     cCnt = x.c.cnt + (x.cc == null ? 0 : x.cc.cnt)
                 }).ToList();
-            
+
             var crftList = IBQuery1Crft.OrderBy(x => x.c.Country).ThenBy(x => x.c.Construct).ThenBy(x => x.c.IYear).ThenBy(x => x.c.Name).ToList();
             CreatePage(crftList, "Crafts.htm", "Crafts1.htm", true, 0, 1, "Country", 1);
             for (i = 1; i <= chunks[1].Count; i++)
@@ -1644,18 +1647,18 @@ namespace Aik2
             CreatePage(crftList, "Crafts.htm", "Crafts8.htm", true, 0, 8, "Engines", 1);
             for (i = 1; i <= chunks[8].Count; i++)
                 CreatePage(crftList, "Crafts.htm", "Crafts8.htm", true, i, 8, "Engines", 1);
-                
+
 
             lInfo.Text = "Arts...";
             Application.DoEvents();
             if (is_stop) { return; };
-            
+
 
             var artQry = _ctx.vwArts.Where(x => x.Source == "6");
 
             var IBQuery1CrftX = (
                 from a in _ctx.vwArts
-                //join m in _ctx.Mags on a.Mag equals m.Id
+                    //join m in _ctx.Mags on a.Mag equals m.Id
                 where a.Source == "6"
                 select new { a }).ToList();
             IBQuery1Crft = IBQuery1CrftX
@@ -1695,8 +1698,8 @@ namespace Aik2
             CreatePage(crftList, "Arts.htm", "Arts6.htm", false, 0, 16, "Photos", 0);
             for (i = 1; i <= 10; i++)
                 CreatePage(crftList, "Arts.htm", "Arts6.htm", false, i, 16, "Photos", 0);
-              
-    
+
+
             var ibq1A = artQry
                 .OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.NN)
                 .ToList()
@@ -1808,7 +1811,7 @@ namespace Aik2
                 templ = sBeg + sEnd;
 
                 templ = templ.Replace("%ArtName%", GetArtName2(ibq1Aa));
-                
+
                 s = sPath + $"Site\\Arts\\Art{ibq1Aa.ArtId}.htm";
                 ss = sPath + $"Upload\\Site\\Arts\\Art{ibq1Aa.ArtId}.htm";
                 var is_upl = false;
@@ -1826,15 +1829,15 @@ namespace Aik2
                 {
                     File.WriteAllText(s, templ, Encoding.UTF8);
                 }
-                
+
                 AddSitemap($"Site\\Arts\\Art{ibq1Aa.ArtId}.htm", s, is_upl);
-                
+
                 lInfo.Text = $"Art {ibq1Aa.IYear} {ibq1Aa.IMonth.Trim()} {ibq1Aa.Mag.Trim()}";
                 Application.DoEvents();
                 if (is_stop) { return; };
 
             }
-            
+
             templ = File.ReadAllText(sPath + "Site\\index.htm");
             while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
 
@@ -1923,5 +1926,1142 @@ namespace Aik2
 
             MessageBox.Show("OK!");
         }
+
+        private string GetStringDate(string s)
+        {
+            var mnthes = new string[13]
+                    {"", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+            var dd = s.Substring(0, 2);
+            var mm = s.Substring(3, 2);
+            var yy = s.Substring(6, 4);
+            var last_char = dd[1];
+            var abbrev = "th";
+            if (dd[0] == '1')
+                abbrev = "th";
+            else if (last_char == '1')
+                abbrev = "st";
+            else if (last_char == '2')
+                abbrev = "nd";
+            else if (last_char == '3')
+                abbrev = "rd";
+
+            if (dd[0] == '0')
+                dd = dd.Substring(1);
+
+            return $"{mnthes[int.Parse(mm)]} {dd}{abbrev}, {int.Parse(yy) - 120}.";
+        }
+
+        void LoadPic7(CraftDto craft1, List<PicArt> pics)
+        {
+            var lLog = new List<string>();
+
+            int j, k;
+            string st;
+
+            var bigpic = ""; var bigpictype = "";
+
+            templ = File.ReadAllText(sPath + "Site2\\Craft.htm");
+            while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
+            templ = new StringBuilder(templ)
+                .Replace("%Country%", craft1.Country)
+                .Replace("%Construct%", craft1.Construct)
+                .Replace("%Name%", craft1.Name)
+                .Replace("%Year%", craft1.IYear.ToString())
+                .Replace("%Vert%", craft1.Vert ?? false ? "Вертолет" : "")
+                .Replace("%UAV%", craft1.Uav ?? false ? "Беспилотный" : "")
+                .Replace("%Glider%", craft1.Glider ?? false ? "Планер" : "")
+                .Replace("%Single%", craft1.Single ?? false ? "Единственный экземпляр" : "")
+                .Replace("%LL%", craft1.LL ?? false ? "Летающая лодка" : "")
+                .Replace("%Proj%", craft1.Proj ?? false ? " (проект)" : "")
+                .Replace("%Type%", craft1.Type)
+                .Replace("%PrevName%", PrevName)
+                .Replace("%PrevLink%", $"Craft{PrevId}.htm")
+                .Replace("%NextName%", NextName)
+                .Replace("%NextLink%", $"Craft{NextId}.htm")
+                .Replace("%ID%", craft1.CraftId.ToString())
+                .ToString();
+
+            var i = templ.IndexOf("%TextBegin%");
+            var sBeg = templ.Substring(0, i);
+            var sEnd = templ.Substring(i + 11);
+            i = sEnd.IndexOf("%TextEnd%");
+            var sMid = sEnd.Substring(0, i);
+            sEnd = sEnd.Substring(i + 9);
+            ss = craft1.CText?.Trim() ?? "";
+            var sxx = ""; var sxy = ""; var tabcnt = 0; var syy = "";
+            var cnt = 0;
+            var sspace = "";
+            string sx;
+            if (!string.IsNullOrEmpty(ss))
+            {
+                ss = new StringBuilder(ss)
+                    .Replace("\n\r ", "<br>&nbsp;&nbsp;")
+                    .Replace("\n ", "<br>&nbsp;&nbsp;")
+                    .Replace("\n\r", "<br>")
+                    .Replace("\n", "<br>")
+                    .Replace("<br><br><br><br>", "<br><br><br>")
+                    .ToString();
+                sx = "???";
+                j = 0;
+                i = ss.IndexOf("/*");
+                if (i < 0) {
+                    if (ss.Trim().StartsWith("Flight,")) {
+                        sx = "Flight";
+                        j = 5748;
+                    } else {
+                        var IBQuery3 = _ctx.Pics.Where(p => p.CraftId == craft1.CraftId).Select(p => p.ArtId).Distinct().ToList();
+                        if (!IBQuery3.Any()) {
+                            MessageBox.Show($"EOF: {craft1.Construct} {craft1.Name}");
+                            lLog.Add($"EOF: {craft1.Construct} {craft1.Name}");
+                        } else {
+                            j = IBQuery3[0];
+                            for (k = 1; k < IBQuery3.Count; k++) {
+                                if ((j == 4600) || (IBQuery3[k] == 4600)) {
+                                    if (j == 4600) j = IBQuery3[k];
+                                } else if (CheckFlight(j) && CheckFlight(IBQuery3[k])) {
+                                    // Flights
+                                    j = 5748;
+                                } else {
+                                    j = 0;
+                                    sx = "???";
+                                    MessageBox.Show($"Too much: {craft1.Construct} {craft1.Name}");
+                                    lLog.Add($"Too much: {craft1.Construct} {craft1.Name}");
+                                    break;
+                                };
+                            };
+                        };
+                    };
+                    if (j > 0) {
+                        k = lSourceIds.IndexOf(j.ToString());
+                        if (k >= 0) {
+                            sx = lSourceNames[k];
+                        } else {
+                            k = lSources.InsertStringSorted("???");
+                            lSourceNames.Insert(k, "???");
+                            lSourceIds.Insert(k, j.ToString());
+                        };
+                    };
+                };
+                if (sx == "???")
+                    sx = craft1.Name;
+                sxx = "";
+                do {
+                    if (i >= 0) {
+                        j = ss.IndexOf("{");
+                        if ((j > i) || (j < 0)) {
+                            sx = craft1.Name;
+                        } else {
+                            k = ss.IndexOf("}");
+                            sx = ss.Substring(j + 1, k - j - 1).Trim();
+                            ss = (j > 0 ? ss.Substring(0, j) : "") + ss.Substring(k + 1);
+                            k = lSources.IndexOf(sx);
+                            if (k >= 0) {
+                                sx = lSourceNames[k];
+                            } else {
+                                k = lSources.InsertStringSorted(sx);
+                                lSourceNames.Insert(k, sx);
+                                lSourceIds.Insert(k, "");
+                            };
+
+                            i = ss.IndexOf("/*");
+                        };
+                        st = ss.Substring(0, i).Trim();
+                        if (!string.IsNullOrEmpty(st)) {
+                            st = new StringBuilder(st)
+                                .Replace("<br>", "")
+                                .Replace("&nbsp;", "")
+                                .ToString().Trim();
+                            if (!string.IsNullOrEmpty(st)) {
+                                MessageBox.Show($"{craft1.Construct} {craft1.Name}\n{st}");
+                                lLog.Add($"{craft1.Construct} {craft1.Name}\n{st}");
+                            };
+                        };
+                        ss = ss.Substring(i + 2);
+                        syy += $"<li><a href='#tabs-{tabcnt}'>{sx}</a></li>\n";
+                        i = ss.IndexOf("*/");
+                        st = ss.Substring(0, i);
+                        if (st.IndexOf("/*") >= 0) {
+                            MessageBox.Show($"{craft1.Construct} {craft1.Name}\n{st}");
+                            lLog.Add($"{craft1.Construct} {craft1.Name}\n{st}");
+                        };
+                        sxx +=
+                            $"<div id='tabs-{tabcnt}'><span class='hide_me'><h3><br>{sx}</h3><br></span>";
+                        if ((sx.IndexOf("M.Goodall, A.Tagg") >= 0) || (sx.IndexOf("L.Opdyke") >= 0))
+                            st = $"<div class='cpc'>Deleted by request of (c)Schiffer Publishing</div><div class='cpcc' style='display:none'>{st}</div>";
+                        sxx += st + "\n</div>\n";
+                        ss = ss.Substring(i + 2);
+                    } else {
+                        syy += $"<li><a href='#tabs-{tabcnt}'>{sx}</a></li>\n";
+                        sxx +=
+                            $"<div id='tabs-{tabcnt}'><span class='hide_me'><h3><br>{sx}</h3><br></span>";
+                        if ((sx.IndexOf("M.Goodall, A.Tagg") >= 0) || (sx.IndexOf("L.Opdyke") >= 0)) 
+                            ss = $"<div class='cpc'>Deleted by request of (c)Schiffer Publishing</div><div class='cpcc' style='display:none'>{ss}</div>";
+                        sxx += ss + "\n</div>\n";
+                        ss = "";
+                    };
+                    tabcnt++;
+
+                    i = ss.IndexOf("/*");
+                } while (i >= 0);
+
+                ss = new StringBuilder(ss)
+                    .Replace("<br>", "")
+                    .Replace("&nbsp;", "")
+                    .ToString()
+                    .Trim();
+                if (!string.IsNullOrEmpty(ss)) {
+                    MessageBox.Show($"{craft1.Construct} {craft1.Name}\n{ss}");
+                    lLog.Add($"{craft1.Construct} {craft1.Name}\n{ss}");
+                };
+
+                ss = $"<ul>\n{syy}</ul>\n{sxx}";
+                sBeg += sMid.Replace("%Text%", ss);
+            };
+            templ = sBeg + sEnd;
+
+            i = templ.IndexOf("%begin%");
+            sBeg = templ.Substring(0, i - 1);
+            sEnd = templ.Substring(i + 7);
+            i = sEnd.IndexOf("%end%");
+            sMid = sEnd.Substring(0, i - 1);
+            sEnd = sEnd.Substring(i + 5);
+
+            if (pics.Any())
+            {
+                foreach (var pic in pics)
+                {
+                    if (bigpic == "") {
+                        bigpic = pic.p.Path.Replace("\\", "/");
+                        bigpictype = pic.p.Type;
+                    } else if ((bigpictype == "s") && (pic.p.Type != "s")) {
+                        bigpic = pic.p.Path.Replace("\\", "/");
+                        bigpictype = pic.p.Type;
+                    };
+
+                    ss = pic.p.Type;
+
+                    sx = sMid;
+                    var spic = pic.p.Path.Replace("\\", "/");
+                    var spicX = spic;
+                    if ((spic.IndexOf("/GT-0/") >= 0) || (spic.IndexOf("/Opd-0/") >= 0))
+                        spicX = $"copyright.jpg\" class='cp_i' cpi='../../Images7/{spic}'";
+                    ss = new StringBuilder(pic.p.Text)
+                        .Replace("\n\r ", "<br>&nbsp;&nbsp;")
+                        .Replace("\n ", "<br>&nbsp;&nbsp;")
+                        .Replace("\n\r", "<br>")
+                        .Replace("\n", "<br>")
+                        .ToString();
+                    sx = new StringBuilder(sx)
+                        .Replace("%PicPath%", spic)
+                        .Replace("%PicPathX%", spicX)
+                        .Replace("%ArtLink%", $"../Arts/Art{pic.a.ArtId}.htm")
+                        .Replace("%Art%", GetArtName(pic.a, true, true))
+                        .Replace("%PicText%", ss)
+                        .ToString();
+
+                    sBeg += sx;
+
+                };
+            } else {
+                sBeg += "<tr><td>Нет фотографий</td></tr>";
+                bigpic = "";
+            };
+
+            if ((bigpic.IndexOf("/GT-0/") >= 0) || (bigpic.IndexOf("/Opd-0/") >= 0))
+                bigpic = $"copyright.jpg\" class='cp_ii' cpi='../../Images7/{bigpic}'";
+            templ = (sBeg + sEnd).Replace("%BigPicPath%", bigpic);
+
+            s = $"{sPath}Site2\\Crafts\\Craft{craft1.CraftId}.htm";
+            ss = $"{sPath}Upload2\\Site2\\Crafts\\Craft{craft1.CraftId}.htm";
+            if (File.Exists(s)) {
+                upl = File.ReadAllText(s);
+                if (templ != upl)
+                    File.WriteAllText(ss, templ, Encoding.UTF8);
+            }
+            else {
+                File.WriteAllText(ss, templ, Encoding.UTF8);
+            };
+            File.WriteAllText(s, templ, Encoding.UTF8);
+
+        }
+
+
+        private void SaveToFile(List<string> list, string file)
+        {
+            var tw = new StreamWriter(file);
+
+            foreach (var s in list)
+                tw.WriteLine(s);
+
+            tw.Close();
+        }
+
+
+        private string CheckNull(string s)
+        {
+            return string.IsNullOrEmpty(s) ? "&nbsp;" : s;
+        }
+
+
+        public void PrepareWeb7(AiKEntities ctx, string _imagesPath, Label lInfo)
+        {
+            if (!(MessageBox.Show("Prepare Web7 ?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)) return;
+
+            is_stop = false;
+            _ctx = ctx;
+            _lInfo = lInfo;
+
+            int i;
+            string sBeg, sEnd, sMid;
+
+            sPath = _imagesPath + "AviaDejaVu\\";
+
+            Directory.CreateDirectory(sPath + "Upload2\\Site2");
+            Directory.CreateDirectory(sPath + "Upload2\\Site2\\Arts");
+            Directory.CreateDirectory(sPath + "Upload2\\Site2\\Crafts");
+
+            var sPathi = sPath + "..\\Images7";
+            var ssPath = sPathi + "m";
+            var dirs = Directory.GetDirectories(sPathi, "*.");
+            foreach (var dir in dirs)
+            {
+                var srx = Path.GetFileName(dir);
+                LoadDir7(sPathi + "\\" + srx, ssPath + "\\" + srx);
+                if (is_stop) { return; }
+            }
+
+
+            elements = new List<Pair<int>>[13];
+            chunks = new List<TChunk>[13];
+            for (i = 1; i < 13; i++) {
+                elements[i] = new List<Pair<int>>();
+                chunks[i] = new List<TChunk>();
+            }
+
+            lInfo.Text = "Crafts...";
+            Application.DoEvents();
+            if (is_stop) { return; };
+
+
+            var craftQry = (
+                from c in _ctx.Crafts
+                from p in _ctx.Pics.Where(p => c.CraftId == p.CraftId && !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)).DefaultIfEmpty()
+                group c by c into g
+                select new { c = g.Key, cnt = g.Count() });
+
+
+            var IBQuery1Crft = (
+                from c in craftQry
+                from ci in _ctx.Countries.Where(ci => c.c.Country == ci.Rus).DefaultIfEmpty()
+                where c.c.Source == "7"
+                select new { c, ci }).ToList()
+                .Select(x => new CraftList()
+                {
+                    c = Mapper.Map<CraftDto>(x.c.c),
+                    ci = Mapper.Map<CountryDto>(x.ci),
+                    cCnt = x.c.cnt
+                }).ToList();
+
+            var crftList = IBQuery1Crft.OrderBy(x => x.c.Country).ThenBy(x => x.c.Construct).ThenBy(x => x.c.IYear).ThenBy(x => x.c.Name).ToList();
+            CreatePage7(crftList, "Crafts.htm", "Crafts1.htm", true, 0, 1, "Country", 2);
+            for (i = 1; i <= chunks[1].Count; i++)
+                CreatePage7(crftList, "Crafts.htm", "Crafts1.htm", true, i, 1, "Country", 2);
+
+            crftList = IBQuery1Crft.OrderBy(x => x.c.Construct).ThenBy(x => x.c.IYear).ThenBy(x => x.c.Name).ToList();
+            CreatePage7(crftList, "Crafts.htm", "Crafts2.htm", true, 0, 2, "Construct", 2);
+            for (i = 1; i <= chunks[2].Count; i++)
+                CreatePage7(crftList, "Crafts.htm", "Crafts2.htm", true, i, 2, "Construct", 2);
+
+            crftList = IBQuery1Crft.OrderBy(x => x.c.Name).ThenBy(x => x.c.IYear).ThenBy(x => x.c.Construct).ToList();
+            CreatePage7(crftList, "Crafts.htm", "Crafts3.htm", true, 0, 3, "Name", 2);
+            for (i = 1; i <= chunks[3].Count; i++)
+                CreatePage7(crftList, "Crafts.htm", "Crafts3.htm", true, i, 3, "Name", 2);
+
+            crftList = IBQuery1Crft.OrderBy(x => x.c.IYear).ThenBy(x => x.c.Construct).ThenBy(x => x.c.Name).ToList();
+            CreatePage7(crftList, "Crafts.htm", "Crafts4.htm", true, 0, 4, "IYear", 1);
+            for (i = 1; i <= chunks[4].Count; i++)
+                CreatePage7(crftList, "Crafts.htm", "Crafts4.htm", true, i, 4, "IYear", 1);
+
+            crftList = IBQuery1Crft.OrderByDescending(x => x.cCnt).ThenBy(x => x.c.IYear).ThenBy(x => x.c.Construct).ThenBy(x => x.c.Name).ToList();
+            CreatePage7(crftList, "Crafts.htm", "Crafts5.htm", true, 0, 5, "Photos", 0);
+            for (i = 1; i <= 11; i++)
+                CreatePage7(crftList, "Crafts.htm", "Crafts5.htm", true, i, 5, "Photos", 0);
+
+            crftList = IBQuery1Crft.OrderByDescending(x => x.c.CText?.Length).ThenBy(x => x.c.IYear).ThenBy(x => x.c.Construct).ThenBy(x => x.c.Name).ToList();
+            CreatePage7(crftList, "Crafts.htm", "Crafts6.htm", true, 0, 6, "TextLen", 0);
+            for (i = 1; i <= 11; i++)
+                CreatePage7(crftList, "Crafts.htm", "Crafts6.htm", true, i, 6, "TextLen", 0);
+
+
+
+            lInfo.Text = "Arts...";
+            Application.DoEvents();
+            if (is_stop) { return; };
+
+            var artQry = _ctx.vwArts.Where(x => x.Source == "7");
+
+            var IBQuery1CrftX = (
+                from a in _ctx.vwArts
+                    //join m in _ctx.Mags on a.Mag equals m.Id
+                where a.Source == "7"
+                select new { a }).ToList();
+            IBQuery1Crft = IBQuery1CrftX
+                .Select(x => new CraftList()
+                {
+                    a = Mapper.Map<ArtDto>(x.a),
+                    aCnt = x.a.cnt ?? 0
+                }).ToList();
+
+            crftList = IBQuery1Crft.OrderBy(x => x.a.Serie).ThenBy(x => x.a.NN).ThenBy(x => x.a.Name).ThenBy(x => x.a.Author).ThenBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.a.Mag).ToList();
+            CreatePage7(crftList, "Arts.htm", "Arts1.htm", false, 0, 1, "IYear", 0);
+
+            crftList = IBQuery1Crft.OrderBy(x => x.a.Author).ThenBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.a.Mag).ThenBy(x => x.a.Name).ThenBy(x => x.a.NN).ToList();
+            CreatePage7(crftList, "Arts.htm", "Arts2.htm", false, 0, 2, "Author", 0);
+
+            crftList = IBQuery1Crft.OrderBy(x => x.a.Name).ThenBy(x => x.a.Author).ThenBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.a.Mag).ThenBy(x => x.a.NN).ToList();
+            CreatePage7(crftList, "Arts.htm", "Arts3.htm", false, 0, 3, "Name", 0);
+
+            crftList = IBQuery1Crft.OrderBy(x => x.a.Mag).ThenBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.a.Author).ThenBy(x => x.a.Name).ThenBy(x => x.a.NN).ToList();
+            CreatePage7(crftList, "Arts.htm", "Arts4.htm", false, 0, 4, "Mag", 0);
+
+            crftList = IBQuery1Crft.OrderByDescending(x => x.aCnt).ThenBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.a.Mag).ThenBy(x => x.a.Author).ThenBy(x => x.a.Name).ThenBy(x => x.a.NN).ToList();
+            CreatePage7(crftList, "Arts.htm", "Arts5.htm", false, 0, 5, "Photos", 0);
+
+            crftList = IBQuery1Crft.OrderBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.a.Mag).ThenBy(x => x.a.Author).ThenBy(x => x.a.Name).ThenBy(x => x.a.NN).ToList();
+            CreatePage7(crftList, "Arts.htm", "Arts6.htm", false, 0, 6, "IYear", 0);
+
+            var IBQuery1 = _ctx.Crafts.Where(x => !x.Same.HasValue && x.Source == "7")
+                .OrderBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name)
+                .Select(Mapper.Map<CraftDto>).ToList();
+
+
+            lSources = new List<string>();
+            if (File.Exists("E:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt")) {
+                var logFile = File.ReadAllLines("E:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
+                lSources = new List<string>(logFile);
+            }
+            lSourceNames = new List<string>();
+            if (File.Exists("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt")) {
+                var logFile = File.ReadAllLines("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
+                lSourceNames = new List<string>(logFile);
+            }
+            lSourceIds = new List<string>();
+            if (File.Exists("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt")) {
+                var logFile = File.ReadAllLines("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
+                lSourceIds = new List<string>(logFile);
+            }
+
+            var lLog = new List<string>();
+
+            var IBQuery2 = (
+                from p in _ctx.Pics
+                join a in _ctx.Arts on p.ArtId equals a.ArtId
+                orderby p.CraftId, p.NType, p.NNN
+                select new { p, a });
+
+            for (var ibq1 = 0; ibq1 < IBQuery1.Count; ibq1++)
+            {
+                var ibq1c = IBQuery1[ibq1];
+
+
+                if (ibq1 == IBQuery1.Count - 1)
+                {
+                    NextId = FirstId;
+                    NextName = FirstName;
+                }
+                else
+                {
+                    NextId = IBQuery1[ibq1 + 1].CraftId;
+                    NextName = GetCraftName(IBQuery1[ibq1 + 1], true);
+                }
+
+                var cnt = 0;
+                pics = IBQuery2.Where(x => x.p.CraftId == ibq1c.CraftId).ToList()
+                    .Select(x => new PicArt()
+                    {
+                        p = Mapper.Map<PicDto>(x.p),
+                        a = Mapper.Map<ArtDto>(x.a)
+                    }).ToList();
+                LoadPic7(ibq1c, pics);
+
+                PrevId = ibq1c.CraftId;
+                PrevName = GetCraftName(ibq1c, true);
+
+                lInfo.Text = $"Craft {ibq1c.IYear} {ibq1c.Construct}";
+                Application.DoEvents();
+                if (is_stop) { return; };
+
+            }
+
+            SaveToFile(lSources, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
+            SaveToFile(lSourceNames, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
+            SaveToFile(lSourceIds, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
+            SaveToFile(lLog, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\Log.txt");
+
+
+            var ibq1A = artQry
+                .OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.NN)
+                .ToList()
+                .Select(x => Mapper.Map<ArtDto>(x)).ToList();
+            var ibq2A = (
+                from p in _ctx.Pics
+                join c in _ctx.Crafts on p.CraftId equals c.CraftId
+                where !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)
+                orderby p.ArtId, p.CraftId, p.NType, p.NN
+                select new { p, c });
+
+            var sArt = "";
+            var lArts = new List<Pair<int>>();
+            var maxArt = 0; var lastArt = 0;
+            for (var ibq1AaCnt = 0; ibq1AaCnt < ibq1A.Count; ibq1AaCnt++)
+            {
+                var ibq1Aa = ibq1A[ibq1AaCnt];
+
+                if (sArt != GetArtName(ibq1Aa))
+                {
+                    sArt = GetArtName(ibq1Aa);
+                    lArts.Clear();
+
+                    var ibq1AaCnt2 = ibq1AaCnt;
+                    var ibq1Aa2 = ibq1A[ibq1AaCnt2];
+                    while ((ibq1AaCnt2 < ibq1A.Count) && (sArt == GetArtName(ibq1A[ibq1AaCnt2])))
+                    {
+                        ibq1Aa2 = ibq1A[ibq1AaCnt2];
+                        s = GetArtName2(ibq1Aa2) ?? "";
+                        if (s.Trim() == "") s = "-";
+                        lArts.Add(new Pair<int>() { Name = s, Id = ibq1Aa2.ArtId });
+
+                        ibq1AaCnt2++;
+                    }
+
+                }
+                if (maxArt < ibq1Aa.ArtId)
+                {
+                    maxArt = ibq1Aa.ArtId;
+                    lastArt = lArts[0].Id;
+                }
+
+                templ = File.ReadAllText(sPath + "Site2\\Art.htm");
+                while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
+
+
+                i = templ.IndexOf("%begin%");
+                sBeg = templ.Substring(0, i);
+                sEnd = templ.Substring(i + 7);
+                i = sEnd.IndexOf("%end%");
+                sMid = sEnd.Substring(0, i);
+                sEnd = sEnd.Substring(i + 5);
+
+                var ibq2AP = ibq2A.Where(x => x.p.ArtId == ibq1Aa.ArtId).ToList()
+                    .Select(x => new PicArt()
+                    {
+                        p = Mapper.Map<PicDto>(x.p),
+                        c = Mapper.Map<CraftDto>(x.c)
+                    }).ToList();
+
+                var phCnt = 0;
+                if (ibq2AP.Any())
+                {
+                    foreach (var ibq2APp in ibq2AP)
+                    {
+                        ss = new StringBuilder(ibq2APp.p.Text ?? "")
+                            .Replace("\n\r ", "<br>&nbsp;&nbsp;")
+                            .Replace("\n ", "<br>&nbsp;&nbsp;")
+                            .Replace("\n\r", "<br>")
+                            .Replace("\n", "<br>")
+                            .ToString();
+
+                        var spic = ibq2APp.p.Path.Replace("\\", "/");
+                        var spicX = spic;
+                        if ((spic.IndexOf("/GT-0/") >= 0) || (spic.IndexOf("/Opd-0/") >= 0))
+                            spicX = $"copyright.jpg\" class='cp_i' cpi='../../Images7/{spic}'";
+                        var sx = new StringBuilder(sMid)
+                            .Replace("%PicPath%", spic)
+                            .Replace("%PicPathX%", spicX)
+                            .Replace("%CraftLink%", $"../Crafts/Craft{ibq2APp.p.CraftId}.htm")
+                            .Replace("%CraftName%",
+                                ibq2APp.c.Construct + " " +
+                                ibq2APp.c.Name + " - " +
+                                ibq2APp.c.Country + " - " +
+                                ibq2APp.c.IYear.ToString())
+                            .Replace("%PicText%", ss)
+                            .ToString();
+
+                        sBeg += sx;
+                        phCnt++;
+                    }
+                }
+                else
+                {
+                    sBeg += "<tr><td>Нет фотографий</td></tr>";
+                }
+
+
+                templ = sBeg + sEnd;
+
+                templ = templ.Replace("%Art%", GetArtName(ibq1Aa));
+
+                /*i = templ.IndexOf("%xbegin%");
+
+                sBeg = templ.Substring(0, i);
+                sEnd = templ.Substring(i + 8);
+                i = sEnd.IndexOf("%xend%");
+                sMid = sEnd.Substring(0, i);
+                sEnd = sEnd.Substring(i + 6);
+                i = sMid.IndexOf("%xmid%");
+                var sMid2 = sMid.Substring(i + 6);
+                sMid = sMid.Substring(0, i);
+
+                for (i = 0; i < lArts.Count; i++)
+                {
+                    if (ibq1Aa.ArtId == lArts[i].Id)
+                        sx = sMid;
+                    else
+                        sx = sMid2;
+                    sx = new StringBuilder(sx)
+                        .Replace("%ArtName%", lArts[i].Name)
+                        .Replace("%ArtLink%", $"Art{lArts[i].Id}.htm")
+                        .ToString();
+                    sBeg += sx;
+                }
+
+                templ = sBeg + sEnd;
+                */
+
+                templ = new StringBuilder(templ)
+                    .Replace("%ArtName%", GetArtName2(ibq1Aa))
+                    .Replace("%ArtSerie%", CheckNull(ibq1Aa.Serie))
+                    .Replace("%ArtAuthor%", CheckNull(ibq1Aa.Author))
+                    .Replace("%ArtNaim%", CheckNull(ibq1Aa.Name))
+                    .Replace("%ArtPhoto%", phCnt.ToString())
+                    .ToString();
+
+
+                s = sPath + $"Site2\\Arts\\Art{ibq1Aa.ArtId}.htm";
+                ss = sPath + $"Upload2\\Site2\\Arts\\Art{ibq1Aa.ArtId}.htm";
+                if (File.Exists(s))
+                {
+                    upl = File.ReadAllText(s);
+                    if (templ != upl)
+                        File.WriteAllText(ss, templ, Encoding.UTF8);
+                }
+                else
+                {
+                    File.WriteAllText(ss, templ, Encoding.UTF8);
+                }
+                File.WriteAllText(s, templ, Encoding.UTF8);
+
+
+                lInfo.Text = $"Art {ibq1Aa.IYear} {ibq1Aa.IMonth.Trim()} {ibq1Aa.Mag.Trim()}";
+                Application.DoEvents();
+                if (is_stop) { return; };
+
+            }
+
+            templ = File.ReadAllText(sPath + "Site2\\index.htm");
+            while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
+
+            i = templ.IndexOf("%begin%");
+            sBeg = templ.Substring(0, i);
+            sEnd = templ.Substring(i + 7);
+            i = sEnd.IndexOf("%end%");
+            sMid = sEnd.Substring(0, i);
+            sEnd = sEnd.Substring(i + 5);
+
+            cnt = 0;
+            var uplA = File.ReadAllLines(sPath + "History2.ini");
+            var uplL = new List<string>(uplA);
+            i = 0;
+            var s0 = "";
+            do
+            {
+                s = uplL[i];
+                if (s[0] == ' ')
+                {
+                    s = uplL[i].Substring(1);
+                    ii = s.IndexOf(" ");
+                    cnt++;
+                    s = s.Substring(ii + 1);
+                    ii = s.IndexOf(" ");
+                    ss = s.Substring(0, ii);
+                    s = s.Substring(ii + 1);
+
+                    //!!! ii := GetArtId(s);
+
+                    if (s0 == "")
+                        s0 = GetStringDate(ss);
+
+                    sBeg += new StringBuilder(sMid)
+                        .Replace("%HistDate%", ss)
+                        .Replace("%HistName%", s)
+                        .ToString();
+                }
+                i++;
+            } while (cnt <= 50 && cnt < uplL.Count);
+
+            templ = (sBeg + sEnd).Replace("%StringDate%", s0);
+
+            uplA = File.ReadAllLines(sPath + "counts2.txt");
+            uplL = new List<string>(uplA);
+            cnt = int.Parse(uplL[3]);
+            var RecordCount = artQry.Select(a => new { a.Mag, a.IYear, a.IMonth }).Distinct().Count();
+            if (RecordCount > cnt)
+            {
+                uplL[7] = (RecordCount - cnt).ToString();
+                uplL[3] = RecordCount.ToString();
+
+                var newCnt = artQry.Count();
+                cnt = int.Parse(uplL[2]);
+                uplL[6] = (newCnt - cnt).ToString();
+                uplL[2] = newCnt.ToString();
+
+                newCnt = _ctx.Crafts.Where(x => x.Source == "7").Count();
+                cnt = int.Parse(uplL[1]);
+                uplL[5] = (newCnt - cnt).ToString();
+                uplL[1] = newCnt.ToString();
+
+                newCnt = (
+                    from p in _ctx.Pics
+                    join c in _ctx.Crafts on p.CraftId equals c.CraftId
+                    where c.Source == "7"
+                    select p.Path).Distinct().Count();
+                cnt = int.Parse(uplL[0]);
+                uplL[4] = (newCnt - cnt).ToString();
+                uplL[0] = newCnt.ToString();
+
+                File.WriteAllLines(sPath + "counts2.txt", uplL.ToArray());
+            }
+
+            templ = new StringBuilder(templ)
+                .Replace("%LastArtLink%", $"Site2\\Arts\\Art{lastArt}.htm")
+                .Replace("%PicCnt%", uplL[0])
+                .Replace("%CraftCnt%", uplL[1])
+                .Replace("%ArtCnt%", uplL[2])
+                .Replace("%MagCnt%", uplL[3])
+                .Replace("%PicCntAdd%", uplL[4])
+                .Replace("%CraftCntAdd%", uplL[5])
+                .Replace("%ArtCntAdd%", uplL[6])
+                .Replace("%MagCntAdd%", uplL[7])
+                .ToString();
+
+            File.WriteAllText(sPath + "Upload2\\index.htm", templ, Encoding.UTF8);
+
+            //ForceDirectories(sPath+"Upload2\Images7");
+            //CopyFile(PChar(sPath+"History2.ini"), PChar(sPath+"Upload2\Images7\History2.ini"), False);
+
+            MessageBox.Show("OK!");
+        }
+
+
+
+        private void LoadDir7(string sPath, string ssPath)
+        {
+
+            _lInfo.Text = sPath;
+            Application.DoEvents();
+            if (is_stop) { return; };
+
+            var sPath1 = sPath.Replace("\\..\\", "\\Upload2\\");
+            var ssPath1 = ssPath.Replace("\\..\\", "\\Upload2\\");
+            var dirs = Directory.GetDirectories(sPath);
+            foreach (var dir in dirs)
+            {
+                var sr = Path.GetFileName(dir);
+                LoadDir(sPath + "\\" + sr, ssPath + "\\" + sr);
+            }
+
+            var files = Directory.GetFiles(sPath, "*.jpg").ToList();
+            files.AddRange(Directory.GetFiles(sPath, "*.gif"));
+            foreach (var f in files)
+            {
+                var file = Path.GetFileName(f);
+                if (File.Exists(ssPath + "\\" + file))
+                {
+                    continue;
+                }
+
+
+                Directory.CreateDirectory(ssPath);
+                Directory.CreateDirectory(sPath1);
+                Directory.CreateDirectory(ssPath1);
+
+                const int wMax = 200;
+                const int hMax = 150;
+
+                using (var srcImage = Image.FromFile(sPath + "\\" + file))
+                {
+                    var w = wMax;
+                    var h = (srcImage.Height * wMax) / srcImage.Width;
+                    if (h > hMax)
+                    {
+                        h = hMax;
+                        w = (srcImage.Width * hMax) / srcImage.Height;
+                    }
+
+                    using (var newImage = new Bitmap(w, h))
+                    using (var graphics = Graphics.FromImage(newImage))
+                    {
+                        graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                        graphics.DrawImage(srcImage, new Rectangle(0, 0, w, h));
+
+                        var jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                        var myEncoder = System.Drawing.Imaging.Encoder.Quality;
+                        var myEncoderParameters = new EncoderParameters(1);
+                        var myEncoderParameter = new EncoderParameter(myEncoder, 80L);
+                        myEncoderParameters.Param[0] = myEncoderParameter;
+
+                        newImage.Save(ssPath + "\\" + file, jpgEncoder, myEncoderParameters);
+                        newImage.Save(ssPath1 + "\\" + file, jpgEncoder, myEncoderParameters);
+                        File.Copy(sPath + "\\" + file, sPath1 + "\\" + file);
+                    }
+                }
+            }
+        }
+
+
+
+        private void CreatePage7(List<CraftList> crafts, string sTempl, string sPage, bool is_craft, int nn, int xx, string indField, int xtype)
+        {
+            // xtype: 0 - 10 стандартных страниц; 1 - по названию; 2 - 3 первые буквы
+
+            _lInfo.Text = $"{(is_craft ? "Crafts" : "Arts")} ... {indField} {nn}";
+            Application.DoEvents();
+            if (is_stop) { return; };
+
+            string s;
+            int craftInd = 0; //!!!??? -1;
+
+            templ = File.ReadAllText(sPath + "Site2\\" + sTempl);
+            while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
+
+            var i = templ.IndexOf("%begin%");
+            var sBeg = templ.Substring(0, i);
+            var sEnd = templ.Substring(i + 7);
+            i = sEnd.IndexOf("%end%");
+            var sMid = sEnd.Substring(0, i);
+            sEnd = sEnd.Substring(i + 5);
+
+            var d = 0;
+            if (!is_craft) d = 6;
+
+            var ch = chunks[xx];
+            var chunksize = (crafts.Count / 10) + 1;
+            if (xtype > 0)
+            {
+                if (nn == 0)
+                {
+                    var ll = elements[xx];
+                    foreach (var craft in crafts)
+                    {
+                        s = GetPrVal(craft, indField, is_craft);
+                        if (xtype == 2) s = s.Substring(0, Math.Min(3, s.Length));
+                        var el = ll.FirstOrDefault(x => x.Name == s); i = el == null ? -1 : ll.IndexOf(el);
+                        if (i < 0) { ll.Add(new Pair<int>() { Name = s, Id = 0 }); i = ll.Count - 1; }
+                        ll[i].Id = ll[i].Id + 1;
+                    }
+
+                    chunk = new TChunk();
+                    for (i = 0; i < ll.Count; i++)
+                    {
+                        if (chunk.cnt == 0)
+                        {
+                            chunk.iBeg = i;
+                            chunk.sBeg = ll[i].Name;
+                        }
+                        if (ll[i].Id >= chunksize)
+                        {
+                            if (chunk.cnt > 0)
+                            {
+                                ch.Add(chunk);
+                                chunk = new TChunk();
+                                chunk.iBeg = i;
+                                chunk.sBeg = ll[i].Name;
+                            }
+                            chunk.cnt = ll[i].Id;
+                            chunk.elmts = 1;
+                            chunk.iEnd = i;
+                            chunk.sEnd = ll[i].Name;
+                            ch.Add(chunk);
+                            chunk = new TChunk();
+                        }
+                        else
+                        {
+                            chunk.cnt += ll[i].Id;
+                            chunk.elmts++;
+                            chunk.iEnd = i;
+                            chunk.sEnd = ll[i].Name;
+                        }
+                    }
+                    if (chunk.cnt > 0) ch.Add(chunk);
+
+                    i = 0;
+                    while (i < ch.Count)
+                    {
+                        chunk = ch[i];
+                        if ((chunk.cnt > Math.Floor(chunksize * 1.5)) && (chunk.elmts > 1))
+                        {
+                            var minichunks = Math.Round((float)chunk.cnt / chunksize);
+                            if (minichunks == 0) minichunks = 1;
+                            var minichunksize = (chunk.cnt / minichunks) + 1;
+
+                            var chcnt = 1;
+                            var ch1 = new TChunk();
+                            ch1.iBeg = chunk.iBeg;
+                            ch1.sBeg = chunk.sBeg;
+                            ch1.iEnd = chunk.iBeg;
+                            ch1.sEnd = chunk.sBeg;
+                            ch.Insert(i + chcnt, ch1);
+                            var j = chunk.iBeg;
+                            while ((j <= chunk.iEnd) && (chcnt < minichunks))
+                            {
+                                if ((ch1.cnt + ll[j].Id) > minichunksize)
+                                {
+                                    chcnt++;
+                                    var d1 = ch1.cnt + ll[j].Id - minichunksize;
+                                    var d2 = minichunksize - ch1.cnt;
+                                    if (d1 > d2)
+                                    {
+                                        ch1 = new TChunk();
+                                        ch1.iBeg = j;
+                                        ch1.sBeg = ll[j].Name;
+                                        ch1.iEnd = j;
+                                        ch1.sEnd = ll[j].Name;
+                                        ch1.cnt = ll[j].Id;
+                                        ch1.elmts = 1;
+                                        ch.Insert(i + chcnt, ch1);
+                                    }
+                                    else
+                                    {
+                                        ch1.cnt += ll[j].Id;
+                                        ch1.iEnd = j;
+                                        ch1.sEnd = ll[j].Name;
+                                        ch1.elmts++;
+                                        ch1 = new TChunk();
+                                        ch1.iBeg = j + 1;
+                                        ch1.iEnd = j + 1;
+                                        if ((j + 1) < ll.Count)
+                                        {
+                                            ch1.sBeg = ll[j + 1].Name;
+                                            ch1.sEnd = ll[j + 1].Name;
+                                        }
+                                        ch.Insert(i + chcnt, ch1);
+                                    }
+                                }
+                                else
+                                {
+                                    ch1.cnt += ll[j].Id;
+                                    ch1.iEnd = j;
+                                    ch1.sEnd = ll[j].Name;
+                                    ch1.elmts++;
+                                }
+                                j++;
+                            }
+                            while (j <= chunk.iEnd)
+                            {
+
+                                ch1.cnt += ll[j].Id;
+                                ch1.iEnd = j;
+                                ch1.sEnd = ll[j].Name;
+                                ch1.elmts++;
+
+                                j++;
+                            }
+                            if (ch1.cnt == 0)
+                            {
+                                ch.Remove(ch1);
+                                chcnt--;
+                            }
+
+                            ch.Remove(chunk);
+                            i += chcnt - 1;
+                        }
+
+                        i++;
+                    }
+                    craftInd = 0;
+
+                }
+                else
+                {
+                    chunk = ch[nn - 1];
+                    if (chunk.sBeg == "")
+                        craftInd = 0;
+                    else
+                    {
+                        craftInd = crafts.IndexOf(crafts.First(x =>
+                        {
+                            var sv = GetPrVal(x, indField, is_craft);
+                            return string.Compare(sv, chunk.sBeg) >= 0;
+                        }));
+                    }
+                    cnt = chunk.cnt;
+                }
+            }
+            else
+            {
+                if (nn > 0)
+                {
+                    cnt = chunksize;
+                    craftInd = chunksize * (nn - 1);
+                }
+            }
+
+            var sb = new StringBuilder(sBeg);
+            while (craftInd < crafts.Count)
+            {
+                var craft = crafts[craftInd];
+                if (is_craft)
+                {
+                    sb.Append(new StringBuilder(sMid)
+                        .Replace("%Country%", CheckNull(craft.c.Country))
+                        .Replace("%Construct%", CheckNull(craft.c.Construct))
+                        .Replace("%Name%", CheckNull(craft.c.Name))
+                        .Replace("%Year%", CheckNull(craft.c.IYear.ToString()))
+                        .Replace("%Vert%", craft.c.Vert ?? false ? "<span title='Вертолет'>В</span>" : "")
+                        .Replace("%UAV%", craft.c.Uav ?? false ? "<span title='Беспилотный'>Б</span>" : "")
+                        .Replace("%Glider%", craft.c.Glider ?? false ? "<span title='Планер'>П</span>" : "")
+                        .Replace("%Single%", craft.c.Single ?? false ? "<span title='Единственный экземпляр'>1</span>" : "")
+                        .Replace("%Type%", CheckNull(craft.c.Type))
+                        .Replace("%Photos%", CheckNull(craft.cCnt.ToString()))
+                        .Replace("%Textlen%", CheckNull((craft.cc?.CText?.Length ?? 0).ToString()))
+                        .Replace("%CraftLink%", $"../Crafts/Craft{craft.c.CraftId}.htm")
+                        .ToString());
+
+                }
+                else
+                {
+                    sb.Append(new StringBuilder(sMid)
+                        .Replace("%Date%", GetYear(craft.a))
+                        .Replace("%Mag%", GetArtName(craft.a, false, true))
+                        .Replace("%Author%", CheckNull(craft.a.Author))
+                        .Replace("%Name%", CheckNull(craft.a.Name))
+                        .Replace("%Serie%", CheckNull(craft.a.Serie))
+                        .Replace("%NN%", (craft.a.NN ?? 0) == 0 ? "" : craft.a.NN.ToString())
+                        .Replace("%Photos%", CheckNull(craft.aCnt.ToString()))
+                        .Replace("%ArtLink%", $"../Arts/Art{craft.a.ArtId}.htm")
+                        .ToString());
+                }
+                craftInd++;
+                if (nn > 0)
+                {
+                    cnt--;
+                    if (cnt == 0) break;
+                }
+
+                Application.DoEvents();
+                if (is_stop) { return; };
+            }
+
+            templ = sb.ToString() + sEnd;
+
+            sBeg = templ;
+
+
+            s = "";
+            if (xtype == 0)
+                ii = 10;
+            else
+                ii = ch.Count;
+            for (i = 0; i <= ii; i++)
+            {
+                if ((i > 0) && (xtype > 0))
+                    chunk = ch[i - 1];
+                var sx = "<span>";
+                var sw = "";
+                if (i == 0)
+                    ss = "Все";
+                else
+                {
+                    if (xtype == 0)
+                    {
+                        ss = i.ToString();
+                        sx = "<span>";
+                    }
+                    else
+                    {
+                        string s1;
+                        string s2;
+                        if ((indField == "Mag") || (indField == "Template"))
+                        {
+                            s1 = GetMagName(chunk.sBeg);
+                            s2 = GetMagName(chunk.sEnd);
+                        }
+                        else
+                        {
+                            s1 = chunk.sBeg;
+                            s2 = chunk.sEnd;
+                        }
+
+                        if (s1 == s2)
+                            ss = s1 == "" ? "&nbsp;" : s1;
+                        else
+                            ss = (s1 == "" ? "?" : s1) + " - " + s2;
+                        sx = $"<span class='pageitem{(i == nn ? "selected" : "")}' title='Записей: {chunk.cnt}'>";
+                    }
+                }
+                string sww;
+                if (i == nn)
+                {
+                    sww = "<b>" + ss + "</b></span>";
+                }
+                else
+                {
+                    var iw = xx;
+                    if (iw == 10) iw = 1;
+                    sww = $"<a class='cp' href='{(is_craft ? "Crafts" : "Arts")}{xx}{(i == 0 ? "" : "-" + i.ToString())}.htm'>{ss}</a></span>";
+                }
+                ss = sx + sww;
+                if (i != ii)
+                    ss += "&nbsp;|&nbsp;";
+
+                s += "<td>" + ss + "</td>";
+            }
+
+            sBeg = sBeg.Replace("%pager%", s);
+
+            s = "";
+            for (i = 1; i <= 6; i++)
+            {
+                ss = i == xx ? "" : $"<a class='cp' href='{(is_craft ? "Crafts" : "Arts")}{i}{(is_craft ? "-1" : "")}.htm'>";
+                var sss = i == xx ? "&nbsp;<img src='../../imgs/arrdown.gif' width='12' height='6' border='0' />" : "</a>";
+                sBeg = new StringBuilder(sBeg)
+                        .Replace($"%Sort{i}%", ss)
+                        .Replace($"%SortX{i}%", sss)
+                        .ToString();
+            }
+
+            templ = sBeg;
+
+            sPage = "Indexes\\" + sPage;
+            if (nn > 0) sPage = sPage.Replace(".htm", $"-{nn}.htm");
+            s = sPath + "Site2\\" + sPage;
+            ss = sPath + "Upload2\\Site2\\" + sPage;
+            Directory.CreateDirectory(Path.GetDirectoryName(s));
+            Directory.CreateDirectory(Path.GetDirectoryName(ss));
+            if (File.Exists(s))
+            {
+                upl = File.ReadAllText(s);
+                if (templ != upl)
+                {
+                    File.WriteAllText(ss, templ, Encoding.UTF8);
+                }
+            }
+            else
+            {
+                File.WriteAllText(ss, templ, Encoding.UTF8);
+            }
+            File.WriteAllText(s, templ, Encoding.UTF8);
+
+        }
+
+        private bool CheckFlight(int j)
+        {
+            return
+                (j == 4667) || (j == 4668) || (j == 4669) || (j == 4676) || (j == 4689) || (j == 4713) || 
+                (j == 4730) || (j == 4851) || (j == 4897) || (j == 4916) || (j == 4952);
+        }
+
     }
 }

@@ -942,6 +942,13 @@ namespace Aik2
                                 var pic = _pics[pos.Row - 1];
                                 if (pic.PicId > 0)
                                 {
+                                    var links = _ctx.Links.Where(x => x.Pict1 == pic.PicId || x.Pict2 == pic.PicId).ToList();
+                                    if (links.Any())
+                                    {
+                                        MessageBox.Show("Невозможно удалить: есть связи.");
+                                        return;
+                                    }
+
                                     _ctx.Database.ExecuteSqlCommand($"delete from WordLinks where PicId ={pic.PicId}");
                                     var entity = _ctx.Pics.Single(x => x.PicId == pic.PicId);
                                     _ctx.Pics.Remove(entity);
@@ -1209,8 +1216,8 @@ namespace Aik2
                     else
                     {
                         int.TryParse(art.IMonth.Trim(), out int artMonth);
-                        var year = art.IYear == 0 ? "" : (art.IYear % 100).ToString();
-                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{PadLeft(year.ToString(), '0', 2)}-{artMonth}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
+                        var year = (art.IYear ?? 0) == 0 ? "" : PadLeft((art.IYear % 100).ToString(), '0', 2).ToString();
+                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{year}-{artMonth}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
                     }
                     _selectedPic.Path = path;
                     gridPic[pos.Row, Const.Columns.Pic.Path].Value = path;
