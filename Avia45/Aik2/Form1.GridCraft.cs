@@ -1076,7 +1076,11 @@ namespace Aik2
 
                     crafts.Sort((f1, f2) =>
                     {
-                        return (f1.IYear ?? 0).CompareTo(f2.IYear ?? 0);
+                        var res = (f1.IYear ?? 0).CompareTo(f2.IYear ?? 0);
+                        if (res != 0) return res;
+                        res = f1.Construct.CompareTo(f2.Construct);
+                        if (res != 0) return res;
+                        return f1.Name.CompareTo(f2.Name);
                     });
                     foreach (var c in crafts)
                     {
@@ -1289,10 +1293,6 @@ namespace Aik2
                         var focusPosn = new Position(gridCraft.RowsCount - 1, pos.Column);
                         gridCraft.Selection.Focus(focusPosn, true);
                     }
-                    else if (_searchMode)
-                    {
-                        DoCraftSearch(e.KeyCode, false);
-                    }
                 }
             }
         }
@@ -1466,14 +1466,6 @@ namespace Aik2
         }
 
 
-        private void lstCraftSeeAlso_DoubleClick(object sender, EventArgs e)
-        {
-            var item = (Pair<int>)lstCraftSeeAlso.SelectedItem;
-            if (item != null)
-            {
-                SelectCraft(item.Id);
-            }
-        }
 
         private void nextCraftInMagToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1650,11 +1642,13 @@ namespace Aik2
 
         private void lstAlso_DrawItem(object sender, DrawItemEventArgs e)
         {
+            var self = (ListBox)sender;
+    
             e.DrawBackground();
-            var item = (Pair<int>)lstAlso.Items[e.Index];
+            var item = (Pair<int>)self.Items[e.Index];
             if (item != null)
             {
-                var font = lstAlso.Font;
+                var font = self.Font;
                 if (item.Id == _selectedCraft.CraftId)
                 {
                     font = new Font(font, FontStyle.Bold);
@@ -1666,11 +1660,14 @@ namespace Aik2
 
         private void lstAlso_DoubleClick(object sender, EventArgs e)
         {
-            var item = (Pair<int>)lstAlso.SelectedItem;
+            var self = (ListBox)sender;
+
+            var item = (Pair<int>)self.SelectedItem;
             if (item != null)
             {
                 SelectCraft(item.Id);
             }
         }
+
     }
 }

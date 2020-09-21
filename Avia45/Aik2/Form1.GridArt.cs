@@ -467,10 +467,6 @@ namespace Aik2
                         var focusPosn = new Position(gridArt.RowsCount - 1, col);
                         gridArt.Selection.Focus(focusPosn, true);
                     }
-                    else if (_searchMode)
-                    {
-                        DoArtSearch(e.KeyCode, false);
-                    }
                 }
             }
         }

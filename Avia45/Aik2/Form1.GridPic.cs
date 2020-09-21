@@ -1002,10 +1002,6 @@ namespace Aik2
                         var focusPosn = new Position(gridPic.RowsCount - 1, pos.Column);
                         gridPic.Selection.Focus(focusPosn, true);
                     }
-                    else if (_searchMode)
-                    {
-                        DoPicSearch(e.KeyCode, false);
-                    }
                 }
             }
         }
@@ -1052,10 +1048,6 @@ namespace Aik2
                             gridLink.Rows.Remove(pos.Row);
                             _links.RemoveAt(pos.Row);
                         }
-                    }
-                    else if (_searchMode)
-                    {
-                        DoPicSearch(e.KeyCode, false);
                     }
                 }
             }

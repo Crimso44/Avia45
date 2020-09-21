@@ -718,5 +718,6 @@ namespace Aik2
             var wm = new WebMaker();
             wm.PrepareWeb7(_ctx, _imagesPath, lInfo);
         }
+
     }
 }

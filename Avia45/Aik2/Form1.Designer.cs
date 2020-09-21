@@ -130,6 +130,7 @@
             this.load34ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.load5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.make7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.makeLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.links6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -139,7 +140,6 @@
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.make7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -485,13 +485,15 @@
             // 
             this.lstCraftSeeAlso.DisplayMember = "Name";
             this.lstCraftSeeAlso.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lstCraftSeeAlso.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.lstCraftSeeAlso.FormattingEnabled = true;
             this.lstCraftSeeAlso.Location = new System.Drawing.Point(0, 0);
             this.lstCraftSeeAlso.Name = "lstCraftSeeAlso";
             this.lstCraftSeeAlso.Size = new System.Drawing.Size(100, 71);
             this.lstCraftSeeAlso.TabIndex = 1;
             this.lstCraftSeeAlso.ValueMember = "Id";
-            this.lstCraftSeeAlso.DoubleClick += new System.EventHandler(this.lstCraftSeeAlso_DoubleClick);
+            this.lstCraftSeeAlso.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstAlso_DrawItem);
+            this.lstCraftSeeAlso.DoubleClick += new System.EventHandler(this.lstAlso_DoubleClick);
             this.lstCraftSeeAlso.Resize += new System.EventHandler(this.lstCraftSeeAlso_Resize);
             // 
             // panel3
@@ -1227,30 +1229,37 @@
             // load1ToolStripMenuItem
             // 
             this.load1ToolStripMenuItem.Name = "load1ToolStripMenuItem";
-            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.load1ToolStripMenuItem.Text = "Load 1";
             this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
             // 
             // load34ToolStripMenuItem
             // 
             this.load34ToolStripMenuItem.Name = "load34ToolStripMenuItem";
-            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.load34ToolStripMenuItem.Text = "Load 3-4";
             this.load34ToolStripMenuItem.Click += new System.EventHandler(this.load34ToolStripMenuItem_Click);
             // 
             // load5ToolStripMenuItem
             // 
             this.load5ToolStripMenuItem.Name = "load5ToolStripMenuItem";
-            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.load5ToolStripMenuItem.Text = "Load 5";
             this.load5ToolStripMenuItem.Click += new System.EventHandler(this.load5ToolStripMenuItem_Click);
             // 
             // make6ToolStripMenuItem
             // 
             this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
-            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.make6ToolStripMenuItem.Text = "Make 6";
             this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
+            // 
+            // make7ToolStripMenuItem
+            // 
+            this.make7ToolStripMenuItem.Name = "make7ToolStripMenuItem";
+            this.make7ToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.make7ToolStripMenuItem.Text = "Make 7";
+            this.make7ToolStripMenuItem.Click += new System.EventHandler(this.make7ToolStripMenuItem_Click);
             // 
             // makeLinksToolStripMenuItem
             // 
@@ -1259,7 +1268,7 @@
             this.links6ToolStripMenuItem,
             this.links7ToolStripMenuItem});
             this.makeLinksToolStripMenuItem.Name = "makeLinksToolStripMenuItem";
-            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
             this.makeLinksToolStripMenuItem.Text = "Make Links";
             // 
             // allLinksToolStripMenuItem
@@ -1335,13 +1344,6 @@
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
-            // 
-            // make7ToolStripMenuItem
-            // 
-            this.make7ToolStripMenuItem.Name = "make7ToolStripMenuItem";
-            this.make7ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.make7ToolStripMenuItem.Text = "Make 7";
-            this.make7ToolStripMenuItem.Click += new System.EventHandler(this.make7ToolStripMenuItem_Click);
             // 
             // Form1
             // 
