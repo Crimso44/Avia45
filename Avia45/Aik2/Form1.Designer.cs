@@ -358,6 +358,7 @@
             this.edCraftText.Text = "";
             this.edCraftText.TextChanged += new System.EventHandler(this.edCraftText_TextChanged);
             this.edCraftText.DoubleClick += new System.EventHandler(this.edPicText_DoubleClick);
+            this.edCraftText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edPicText_KeyDown);
             // 
             // splitter7
             // 
@@ -850,6 +851,7 @@
             this.edPicText.Text = "";
             this.edPicText.TextChanged += new System.EventHandler(this.edPicText_TextChanged);
             this.edPicText.DoubleClick += new System.EventHandler(this.edPicText_DoubleClick);
+            this.edPicText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edPicText_KeyDown);
             // 
             // pLinkTable
             // 

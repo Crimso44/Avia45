@@ -719,5 +719,16 @@ namespace Aik2
             wm.PrepareWeb7(_ctx, _imagesPath, lInfo);
         }
 
+        private void edPicText_KeyDown(object sender, KeyEventArgs e)
+        {
+            if ((e.Control && e.KeyCode == Keys.V) || (e.Shift && e.KeyCode == Keys.Insert))
+            {
+                var x = (string)Clipboard.GetData(DataFormats.Rtf);
+                if (!string.IsNullOrEmpty(x))
+                {
+                    Clipboard.SetData(DataFormats.Rtf, x.Replace("\\-", ""));
+                }
+            }
+        }
     }
 }
