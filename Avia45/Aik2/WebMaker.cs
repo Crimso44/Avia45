@@ -1095,9 +1095,9 @@ namespace Aik2
                             (craft.c.Airwar + (craft.cc?.Airwar ?? "") == "" ? "" :
                                 $"<a href=\"{craft.c.Airwar + craft.cc?.Airwar}\" target=\"_blank\" rel=\"nofollow\">" +
                                 "<img src=\"/Site/Partners/airwar_ico.gif\"></a>") +
-                            (!craft.c.FlyingM.HasValue && !(craft.cc?.FlyingM == null) ? "" :
+                            (!(craft.c.FlyingM.HasValue || (craft.cc?.FlyingM.HasValue ?? false)) ? "" :
                                 "&nbsp;<a style=\"background-color:#e6e6de;color:black;text-decoration:none;font-size:18px;font-family:'Times New Roman'\" " +
-                                $"href=\"http://flyingmachines.ru/Site2/Crafts/Craft{craft.c.FlyingM + craft.cc?.FlyingM}.htm\" target=\"_blank\" rel=\"nofollow\">" +
+                                $"href=\"http://flyingmachines.ru/Site2/Crafts/Craft{craft.c.FlyingM}{craft.cc?.FlyingM}.htm\" target=\"_blank\" rel=\"nofollow\">" +
                                 "F</a>"))
                         .Replace("%CraftLink%", "../Crafts/Craft" +
                             (craft.c.Same.HasValue ? (craft.cc?.CraftId ?? -1) : craft.c.CraftId) + ".htm")
@@ -2667,7 +2667,7 @@ namespace Aik2
             foreach (var dir in dirs)
             {
                 var sr = Path.GetFileName(dir);
-                LoadDir(sPath + "\\" + sr, ssPath + "\\" + sr);
+                LoadDir7(sPath + "\\" + sr, ssPath + "\\" + sr);
             }
 
             var files = Directory.GetFiles(sPath, "*.jpg").ToList();
