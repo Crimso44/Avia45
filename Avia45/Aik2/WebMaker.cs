@@ -1504,7 +1504,7 @@ namespace Aik2
                         }
                     }
 
-                    craftIdStr += ibq1c.CraftId.ToString("X4");
+                    craftIdStr += ibq1c.CraftId.ToString("X6");
                 }
 
                 cnt = 0;

@@ -918,6 +918,7 @@ namespace Aik2
             var pos = gridCraft.Selection.ActivePosition;
             var newPos = new Position(row, pos == Position.Empty ? 1 : pos.Column);
             gridCraft.Selection.Focus(newPos, true);
+            _selectedCraft = craftDto;
             _needLoadCraft = false;
         }
 
