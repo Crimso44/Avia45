@@ -1097,8 +1097,9 @@ namespace Aik2
                         var crftId = (int?)_selectedCraft.GetType().GetProperty($"s{k}").GetValue(_selectedCraft);
                         if (crftId.HasValue)
                         {
-                            crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == crftId));
-                            lstAlso.Items.Add(new Pair<int>() { Id = crft.CraftId, Name = crft.FullName });
+                            crft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().SingleOrDefault(x => x.CraftId == crftId));
+                            if (crft != null)
+                                lstAlso.Items.Add(new Pair<int>() { Id = crft.CraftId, Name = crft.FullName });
                         }
                         else
                         {

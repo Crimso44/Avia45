@@ -40,6 +40,7 @@ namespace Aik2
             SetConfig();
 
             _ctx = new AiKEntities();
+            _ctx.Database.CommandTimeout = 600;
 
             InitArtGrid();
             InitCraftGrid();

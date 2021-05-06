@@ -86,6 +86,30 @@ namespace Aik2
             }
         }
 
+        private class CraftData
+        {
+            public int CraftId;
+            public string CraftText;
+
+            public CraftData(int craftId)
+            {
+                CraftId = craftId;
+            }
+        }
+
+        private class ArtData
+        {
+            public int ArtId;
+            public string ArtAlias;
+            public Dictionary<int, CraftData> Crafts;
+
+            public ArtData(int artId)
+            {
+                ArtId = artId;
+                Crafts = new Dictionary<int, CraftData>();
+            }
+        }
+
         private string GetMK(int year) {
             var Result = "";
             switch (year) {
@@ -101,6 +125,7 @@ namespace Aik2
         }
 
         string sx; string sy; string sMag; string sYear; string sMonth;
+        Dictionary<int, ArtData> ArtTexts;
 
         private void GetYearArt(bool yr, bool my = false)
         {
@@ -1951,6 +1976,42 @@ namespace Aik2
             return $"{mnthes[int.Parse(mm)]} {dd}{abbrev}, {int.Parse(yy) - 120}.";
         }
 
+
+        void FindArtCraft(string artName, int artId, int craftId, out ArtData art, out CraftData crft)
+        {
+            try
+            {
+                if (!ArtTexts.ContainsKey(artId))
+                {
+                    ArtTexts[artId] = new ArtData(artId);
+                }
+                art = ArtTexts[artId];
+                if (!art.Crafts.ContainsKey(craftId))
+                {
+                    art.Crafts[craftId] = new CraftData(craftId);
+                }
+                crft = art.Crafts[craftId];
+            }
+            catch (Exception e)
+            {
+                art = null;
+                crft = null;
+                MessageBox.Show($"Art: {artName}");
+            }
+        }
+
+        string GetFlightName(string line)
+        {
+            for(var i = line.Length - 1; i > 0; i--)
+            {
+                if (Char.IsDigit(line[i]))
+                {
+                    return $"Flight, {line.Substring(i - 3, 4)}";
+                }
+            }
+            return null;
+        }
+
         void LoadPic7(CraftDto craft1, List<PicArt> pics)
         {
             var lLog = new List<string>();
@@ -1988,10 +2049,10 @@ namespace Aik2
             var sMid = sEnd.Substring(0, i);
             sEnd = sEnd.Substring(i + 9);
             ss = craft1.CText?.Trim() ?? "";
-            var sxx = ""; var sxy = ""; var tabcnt = 0; var syy = "";
-            var cnt = 0;
-            var sspace = "";
+            var sxx = ""; var tabcnt = 0; var syy = "";
             string sx;
+            CraftData crft = null;
+            ArtData art = null;
             if (!string.IsNullOrEmpty(ss))
             {
                 ss = new StringBuilder(ss)
@@ -2016,12 +2077,13 @@ namespace Aik2
                         } else {
                             j = IBQuery3[0];
                             for (k = 1; k < IBQuery3.Count; k++) {
-                                if ((j == 4600) || (IBQuery3[k] == 4600)) {
-                                    if (j == 4600) j = IBQuery3[k];
+                                /*if ((j == 4600) || (IBQuery3[k] == 4600)) {
+                                    if (j == 4600 && IBQuery3[k] != 4600) 
+                                        j = IBQuery3[k];
                                 } else if (CheckFlight(j) && CheckFlight(IBQuery3[k])) {
                                     // Flights
                                     j = 5748;
-                                } else {
+                                } else*/ {
                                     j = 0;
                                     sx = "???";
                                     MessageBox.Show($"Too much: {craft1.Construct} {craft1.Name}");
@@ -2035,6 +2097,7 @@ namespace Aik2
                         k = lSourceIds.IndexOf(j.ToString());
                         if (k >= 0) {
                             sx = lSourceNames[k];
+                            FindArtCraft(lSourceNames[k], int.Parse(lSourceIds[k]), craft1.CraftId, out art, out crft);
                         } else {
                             k = lSources.InsertStringSorted("???");
                             lSourceNames.Insert(k, "???");
@@ -2057,7 +2120,9 @@ namespace Aik2
                             k = lSources.IndexOf(sx);
                             if (k >= 0) {
                                 sx = lSourceNames[k];
-                            } else {
+                                FindArtCraft(lSourceNames[k], int.Parse(lSourceIds[k]), craft1.CraftId, out art, out crft);
+                            }
+                            else {
                                 k = lSources.InsertStringSorted(sx);
                                 lSourceNames.Insert(k, sx);
                                 lSourceIds.Insert(k, "");
@@ -2089,6 +2154,52 @@ namespace Aik2
                         if ((sx.IndexOf("M.Goodall, A.Tagg") >= 0) || (sx.IndexOf("L.Opdyke") >= 0))
                             st = $"<div class='cpc'>Deleted by request of (c)Schiffer Publishing</div><div class='cpcc' style='display:none'>{st}</div>";
                         sxx += st + "\n</div>\n";
+
+                        if (sx == craft1.Name) MessageBox.Show($"CraftName {sx}");
+                        if (CheckFlight(art?.ArtId ?? 0) )
+                        {
+                            var lines = st.Split(new [] { "<br>" }, StringSplitOptions.None);
+                            var newLines = new List<string>();
+                            var kk = -1;
+                            var artName = "";
+                            foreach (var line in lines)
+                            {
+                                if (line.StartsWith("Flight, "))
+                                {
+                                    var newArtName = GetFlightName(line);
+                                    if (artName != newArtName) {
+                                        if (artName != "")
+                                        {
+                                            if (kk >= 0)
+                                            {
+                                                FindArtCraft(lSourceNames[kk], int.Parse(lSourceIds[kk]), craft1.CraftId, out art, out crft);
+                                                crft.CraftText = string.Join("<br>", newLines);
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show($"Flight: {artName}");
+                                            }
+                                        }
+                                        artName = newArtName;
+                                        kk = lSources.IndexOf(artName);
+                                        newLines.Clear();
+                                    }
+                                }
+                                newLines.Add(line);
+                            }
+                            if (kk >= 0)
+                            {
+                                FindArtCraft(lSourceNames[kk], int.Parse(lSourceIds[kk]), craft1.CraftId, out art, out crft);
+                                crft.CraftText = string.Join("<br>", newLines);
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Flight: {artName}");
+                            }
+                        }
+                        else if (crft != null && !string.IsNullOrEmpty(st)) 
+                            crft.CraftText = st;
+
                         ss = ss.Substring(i + 2);
                     } else {
                         syy += $"<li><a href='#tabs-{tabcnt}'>{sx}</a></li>\n";
@@ -2097,11 +2208,55 @@ namespace Aik2
                         if ((sx.IndexOf("M.Goodall, A.Tagg") >= 0) || (sx.IndexOf("L.Opdyke") >= 0)) 
                             ss = $"<div class='cpc'>Deleted by request of (c)Schiffer Publishing</div><div class='cpcc' style='display:none'>{ss}</div>";
                         sxx += ss + "\n</div>\n";
+
+                        if (sx == craft1.Name) MessageBox.Show($"CraftName {sx}");
+                        if (CheckFlight(art?.ArtId ?? 0))
+                        {
+                            var lines = ss.Split(new[] { "<br>" }, StringSplitOptions.None);
+                            var newLines = new List<string>();
+                            var kk = -1;
+                            var artName = "";
+                            foreach (var line in lines)
+                            {
+                                if (line.StartsWith("Flight, "))
+                                {
+                                    var newArtName = GetFlightName(line);
+                                    if (artName != "" && artName != newArtName)
+                                    {
+                                        if (kk >= 0)
+                                        {
+                                            FindArtCraft(lSourceNames[kk], int.Parse(lSourceIds[kk]), craft1.CraftId, out art, out crft);
+                                            crft.CraftText = string.Join("<br>", newLines);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show($"Flight: {artName}");
+                                        }
+                                    }
+                                    artName = newArtName;
+                                    kk = lSources.IndexOf(artName);
+                                    newLines.Clear();
+                                }
+                                newLines.Add(line);
+                            }
+                            if (kk >= 0)
+                            {
+                                FindArtCraft(lSourceNames[kk], int.Parse(lSourceIds[kk]), craft1.CraftId, out art, out crft);
+                                crft.CraftText = string.Join("<br>", newLines);
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Flight: {artName}");
+                            }
+                        } else if (crft != null && !string.IsNullOrEmpty(ss)) 
+                            crft.CraftText = ss;
+
                         ss = "";
                     };
                     tabcnt++;
 
                     i = ss.IndexOf("/*");
+                    crft = null;
                 } while (i >= 0);
 
                 ss = new StringBuilder(ss)
@@ -2130,6 +2285,9 @@ namespace Aik2
             {
                 foreach (var pic in pics)
                 {
+
+                    FindArtCraft("Pics", pic.p.ArtId, pic.p.CraftId, out art, out crft);
+
                     if (bigpic == "") {
                         bigpic = pic.p.Path.Replace("\\", "/");
                         bigpictype = pic.p.Type;
@@ -2213,6 +2371,8 @@ namespace Aik2
 
             int i;
             string sBeg, sEnd, sMid;
+
+            ArtTexts = new Dictionary<int, ArtData>();
 
             sPath = _imagesPath + "AviaDejaVu\\";
 
@@ -2403,12 +2563,6 @@ namespace Aik2
                 .OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.NN)
                 .ToList()
                 .Select(x => Mapper.Map<ArtDto>(x)).ToList();
-            var ibq2A = (
-                from p in _ctx.Pics
-                join c in _ctx.Crafts on p.CraftId equals c.CraftId
-                where !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)
-                orderby p.ArtId, p.CraftId, p.NType, p.NN
-                select new { p, c });
 
             var sArt = "";
             var lArts = new List<Pair<int>>();
@@ -2452,7 +2606,20 @@ namespace Aik2
                 sMid = sEnd.Substring(0, i);
                 sEnd = sEnd.Substring(i + 5);
 
-                var ibq2AP = ibq2A.Where(x => x.p.ArtId == ibq1Aa.ArtId).ToList()
+                var art = ArtTexts[ibq1Aa.ArtId];
+                var craftIds = art.Crafts.Keys;
+
+                var ibq2AP = (
+                    from c in _ctx.Crafts
+                    from p in _ctx.Pics.Where(p => 
+                        p.CraftId == c.CraftId &&
+                        p.ArtId == ibq1Aa.ArtId &&
+                        !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)
+                    ).DefaultIfEmpty()
+                    where craftIds.Contains(c.CraftId)
+                    orderby c.Country, c.Construct, c.IYear, c.Name, p.NType, p.NNN
+                    select new { p, c })
+                    .ToList()
                     .Select(x => new PicArt()
                     {
                         p = Mapper.Map<PicDto>(x.p),
@@ -2462,33 +2629,58 @@ namespace Aik2
                 var phCnt = 0;
                 if (ibq2AP.Any())
                 {
+                    var curCraft = -1;
                     foreach (var ibq2APp in ibq2AP)
                     {
-                        ss = new StringBuilder(ibq2APp.p.Text ?? "")
-                            .Replace("\n\r ", "<br>&nbsp;&nbsp;")
-                            .Replace("\n ", "<br>&nbsp;&nbsp;")
-                            .Replace("\n\r", "<br>")
-                            .Replace("\n", "<br>")
-                            .ToString();
+                        if (curCraft != ibq2APp.c.CraftId)
+                        {
+                            curCraft = ibq2APp.c.CraftId;
+                            var craftLink = $"../Crafts/Craft{ibq2APp.c.CraftId}.htm";
+                            var craftName = $"{ibq2APp.c.Country} {ibq2APp.c.Construct} {ibq2APp.c.Name} {ibq2APp.c.IYear}";
+                            sBeg += $"<div class='tabletoprow'><h4><a class='cp' href='{craftLink}'>{craftName}</a></h4></div>";
+                            if (art.Crafts.ContainsKey(curCraft))
+                            {
+                                var crft = art.Crafts[curCraft];
+                                if (!string.IsNullOrEmpty(crft.CraftText))
+                                {
+                                    var st = crft.CraftText;
+                                    if (st.Length > 2000)
+                                    {
+                                        st = $"<div class='scroll'>{st}</div>";
+                                    }
+                                    sBeg += $"<div class='tablerow'>{st}</div>";
+                                }
+                            }
+                        }
 
-                        var spic = ibq2APp.p.Path.Replace("\\", "/");
-                        var spicX = spic;
-                        if ((spic.IndexOf("/GT-0/") >= 0) || (spic.IndexOf("/Opd-0/") >= 0))
-                            spicX = $"copyright.jpg\" class='cp_i' cpi='../../Images7/{spic}'";
-                        var sx = new StringBuilder(sMid)
-                            .Replace("%PicPath%", spic)
-                            .Replace("%PicPathX%", spicX)
-                            .Replace("%CraftLink%", $"../Crafts/Craft{ibq2APp.p.CraftId}.htm")
-                            .Replace("%CraftName%",
-                                ibq2APp.c.Construct + " " +
-                                ibq2APp.c.Name + " - " +
-                                ibq2APp.c.Country + " - " +
-                                ibq2APp.c.IYear.ToString())
-                            .Replace("%PicText%", ss)
-                            .ToString();
+                        if (ibq2APp.p != null)
+                        {
+                            ss = new StringBuilder(ibq2APp.p.Text ?? "")
+                                .Replace("\n\r ", "<br>&nbsp;&nbsp;")
+                                .Replace("\n ", "<br>&nbsp;&nbsp;")
+                                .Replace("\n\r", "<br>")
+                                .Replace("\n", "<br>")
+                                .ToString();
 
-                        sBeg += sx;
-                        phCnt++;
+                            var spic = ibq2APp.p.Path.Replace("\\", "/");
+                            var spicX = spic;
+                            if ((spic.IndexOf("/GT-0/") >= 0) || (spic.IndexOf("/Opd-0/") >= 0))
+                                spicX = $"copyright.jpg\" class='cp_i' cpi='../../Images7/{spic}'";
+                            var sx = new StringBuilder(sMid)
+                                .Replace("%PicPath%", spic)
+                                .Replace("%PicPathX%", spicX)
+                                /*.Replace("%CraftLink%", $"../Crafts/Craft{ibq2APp.p.CraftId}.htm")
+                                .Replace("%CraftName%",
+                                    ibq2APp.c.Construct + " " +
+                                    ibq2APp.c.Name + " - " +
+                                    ibq2APp.c.Country + " - " +
+                                    ibq2APp.c.IYear.ToString())*/
+                                .Replace("%PicText%", ss)
+                                .ToString();
+
+                            sBeg += sx;
+                            phCnt++;
+                        }
                     }
                 }
                 else
@@ -2925,7 +3117,7 @@ namespace Aik2
                         .Replace("%Single%", craft.c.Single ?? false ? "<span title='Единственный экземпляр'>1</span>" : "")
                         .Replace("%Type%", CheckNull(craft.c.Type))
                         .Replace("%Photos%", CheckNull(craft.cCnt.ToString()))
-                        .Replace("%Textlen%", CheckNull((craft.cc?.CText?.Length ?? 0).ToString()))
+                        .Replace("%Textlen%", CheckNull((craft.c.CText?.Length ?? 0).ToString()))
                         .Replace("%CraftLink%", $"../Crafts/Craft{craft.c.CraftId}.htm")
                         .ToString());
 
@@ -3060,7 +3252,7 @@ namespace Aik2
         {
             return
                 (j == 4667) || (j == 4668) || (j == 4669) || (j == 4676) || (j == 4689) || (j == 4713) || 
-                (j == 4730) || (j == 4851) || (j == 4897) || (j == 4916) || (j == 4952);
+                (j == 4730) || (j == 4851) || (j == 4897) || (j == 4916) || (j == 4952) || (j == 5748);
         }
 
     }
