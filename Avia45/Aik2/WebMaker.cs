@@ -100,7 +100,6 @@ namespace Aik2
         private class ArtData
         {
             public int ArtId;
-            public string ArtAlias;
             public Dictionary<int, CraftData> Crafts;
 
             public ArtData(int artId)
@@ -1992,7 +1991,7 @@ namespace Aik2
                 }
                 crft = art.Crafts[craftId];
             }
-            catch (Exception e)
+            catch 
             {
                 art = null;
                 crft = null;
@@ -2405,21 +2404,23 @@ namespace Aik2
 
             var craftQry = (
                 from c in _ctx.Crafts
-                from p in _ctx.Pics.Where(p => c.CraftId == p.CraftId && !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)).DefaultIfEmpty()
-                group c by c into g
-                select new { c = g.Key, cnt = g.Count() });
+                join p in _ctx.Pics on c.CraftId equals p.CraftId
+                where !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)
+                group c by c.CraftId into g
+                select new { cid = g.Key, cnt = g.Count() });
 
 
             var IBQuery1Crft = (
-                from c in craftQry
-                from ci in _ctx.Countries.Where(ci => c.c.Country == ci.Rus).DefaultIfEmpty()
-                where c.c.Source == "7"
-                select new { c, ci }).ToList()
+                from c in _ctx.Crafts
+                from ci in _ctx.Countries.Where(ci => c.Country == ci.Rus).DefaultIfEmpty()
+                from cq in craftQry.Where(cq => c.CraftId == cq.cid).DefaultIfEmpty()
+                where c.Source == "7"
+                select new { c, ci, cq }).ToList()
                 .Select(x => new CraftList()
                 {
-                    c = Mapper.Map<CraftDto>(x.c.c),
+                    c = Mapper.Map<CraftDto>(x.c),
                     ci = Mapper.Map<CountryDto>(x.ci),
-                    cCnt = x.c.cnt
+                    cCnt = x.cq?.cnt ?? 0
                 }).ToList();
 
             var crftList = IBQuery1Crft.OrderBy(x => x.c.Country).ThenBy(x => x.c.Construct).ThenBy(x => x.c.IYear).ThenBy(x => x.c.Name).ToList();
@@ -2535,7 +2536,6 @@ namespace Aik2
                     NextName = GetCraftName(IBQuery1[ibq1 + 1], true);
                 }
 
-                var cnt = 0;
                 pics = IBQuery2.Where(x => x.p.CraftId == ibq1c.CraftId).ToList()
                     .Select(x => new PicArt()
                     {
@@ -2935,9 +2935,6 @@ namespace Aik2
             var sMid = sEnd.Substring(0, i);
             sEnd = sEnd.Substring(i + 5);
 
-            var d = 0;
-            if (!is_craft) d = 6;
-
             var ch = chunks[xx];
             var chunksize = (crafts.Count / 10) + 1;
             if (xtype > 0)
@@ -3161,7 +3158,6 @@ namespace Aik2
                 if ((i > 0) && (xtype > 0))
                     chunk = ch[i - 1];
                 var sx = "<span>";
-                var sw = "";
                 if (i == 0)
                     ss = "Все";
                 else
