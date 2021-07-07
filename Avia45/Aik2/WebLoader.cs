@@ -266,6 +266,8 @@ namespace Aik2
             _lInfo = lInfo;
             if (!(MessageBox.Show("Load Airwar?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)) return;
 
+            ctx.Database.ExecuteSqlCommand("Delete From dbo.WordLinks From dbo.WordLinks wl join dbo.Pics p on wl.PicId = p.PicId join dbo.Crafts c on c.CraftId = p.CraftId where c.Source = '1'");
+            ctx.Database.ExecuteSqlCommand("Delete From dbo.WordLinks From dbo.WordLinks wl join dbo.Crafts c on c.CraftId = wl.CraftId where c.Source = '1'");
             ctx.Database.ExecuteSqlCommand("Delete From dbo.Pics From dbo.Pics p join dbo.Crafts c on c.CraftId = p.CraftId where c.Source = '1'");
             ctx.Database.ExecuteSqlCommand("Delete From dbo.Crafts where Source = '1'");
             ctx.Database.Connection.Close();
