@@ -55,7 +55,8 @@ namespace Aik2
                             if (item[0] != '-')
                             {
                                 var path = _imagesPath + item;
-                                zip.CreateEntryFromFile(path, item);
+                                if (File.Exists(path))
+                                    zip.CreateEntryFromFile(path, item);
                             }
                         }
                     }
@@ -64,7 +65,8 @@ namespace Aik2
                         if (item[0] != '-')
                         {
                             var path = _imagesPath + item;
-                            File.Delete(path);
+                            if (File.Exists(path))
+                                File.Delete(path);
                         }
                     }
                     MessageBox.Show("Ok");
