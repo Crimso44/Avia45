@@ -103,7 +103,7 @@ namespace Aik2
             if (chArtSortAuthor.Checked)
                 artsQry = artsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag);
             else if (chArtSortSerie.Checked)
-                artsQry = artsQry.OrderBy(x => x.Serie).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth);
+                artsQry = artsQry.OrderBy(x => x.Serie).ThenBy(x => x.NN).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Name);
             else if (chArtSortYear.Checked)
                 artsQry = artsQry.OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Author).ThenBy(x => x.Name);
             var arts = artsQry.ToList();
