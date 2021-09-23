@@ -435,49 +435,79 @@ namespace Aik2
                     if (linkCnt > 0)
                     {
                         var menu = new ContextMenu();
+                        _menuLinks = _ctx.Database.SqlQuery<WordLinks>(
+                            GetWordLinkSql(15, word, false)
+                        ).ToList();
+                        AddLinksToMenu(menu, _menuLinks, sender);
+                        if (_menuLinks.Count < 15 && _menuLinks.Count < linkCnt)
+                        {
+                            var addLinks = _ctx.Database.SqlQuery<WordLinks>(
+                                GetWordLinkSql(15 - _menuLinks.Count, word, true)
+                            ).ToList();
+                            if (addLinks.Any())
+                            {
+                                if (_menuLinks.Any()) {
+                                    menu.MenuItems.Add("-");
+                                }
+                                AddLinksToMenu(menu, addLinks, sender);
+                                _menuLinks.Add(null);
+                                _menuLinks.AddRange(addLinks);
+                            }
+                        }
+
                         if (linkCnt > 15)
                         {
+                            menu.MenuItems.Add("-");
                             menu.MenuItems.Add($"{linkCnt} слов");
                         }
-                        else
-                        {
-                            _menuLinks = _ctx.Database.SqlQuery<WordLinks>(
-                                $"select wl.* from Words w join WordLinks wl on w.WordId = wl.WordId where w.Word = '{word}'").ToList();
-                            var captions = new List<Pair<object>>();
-                            foreach (var link in _menuLinks)
-                            {
-                                if (link.PicId.HasValue)
-                                {
-                                    var pic = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == link.PicId);
-                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == pic.CraftId));
-                                    captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName} {pic.Path}" });
-                                } else
-                                {
-                                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == link.CraftId));
-                                    captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName}" });
-                                }
-                            }
-                            captions.Sort((f1, f2) =>
-                            {
-                                return f1.Name.CompareTo(f2.Name);
-                            });
-                            foreach(var cap in captions)
-                            {
-                                var mnuItem = new MenuItem() { Text = cap.Name, Tag = cap.Id };
-                                if ((sender == edCraftText && _selectedCraft.CraftId == ((WordLinks)cap.Id).CraftId) ||
-                                    (sender == edPicText && _selectedPic.PicId == ((WordLinks)cap.Id).PicId))
-                                {
-                                    mnuItem.Checked = true;
-                                }
-                                mnuItem.Click += OnWordMenuClick;
-                                menu.MenuItems.Add(mnuItem);
-                            }
-                        }
-                        menu.Show(richText, richText.PointToClient(Control.MousePosition));
+                        menu.Show(richText, richText.PointToClient(MousePosition));
                     }
                 }
             }
 
+        }
+
+        private string GetWordLinkSql(int top, string word, bool not)
+        {
+            return $@"select top {top} wl.* 
+                from Words w 
+                join WordLinks wl on w.WordId = wl.WordId 
+                left join Pics p on p.PicId = wl.PicId
+                left join Crafts c on c.CraftId = wl.CraftId or c.CraftId = p.CraftId
+                where w.Word = '{word}' and c.Source {(not ? "not" : "")} in ('2', '6', '7', '8')
+                order by c.Construct, c.IYear, c.Name, c.Source, p.Path";
+
+        }
+
+
+        private void AddLinksToMenu(ContextMenu menu, List<WordLinks> menuLinks, object sender)
+        {
+            var captions = new List<Pair<object>>();
+            foreach (var link in menuLinks)
+            {
+                if (link.PicId.HasValue)
+                {
+                    var pic = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == link.PicId);
+                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == pic.CraftId));
+                    captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName} {pic.Path}" });
+                }
+                else
+                {
+                    var craft = Mapper.Map<CraftDto>(_ctx.vwCrafts.AsNoTracking().Single(x => x.CraftId == link.CraftId));
+                    captions.Add(new Pair<object>() { Id = (object)link, Name = $"{craft.FullName}" });
+                }
+            }
+            foreach (var cap in captions)
+            {
+                var mnuItem = new MenuItem() { Text = cap.Name, Tag = cap.Id };
+                if ((sender == edCraftText && _selectedCraft.CraftId == ((WordLinks)cap.Id).CraftId) ||
+                    (sender == edPicText && _selectedPic.PicId == ((WordLinks)cap.Id).PicId))
+                {
+                    mnuItem.Checked = true;
+                }
+                mnuItem.Click += OnWordMenuClick;
+                menu.MenuItems.Add(mnuItem);
+            }
         }
 
         private void OnWordMenuClick(object sender, EventArgs e)
