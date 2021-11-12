@@ -2143,7 +2143,16 @@ namespace Aik2
                         ss = ss.Substring(i + 2);
                         syy += $"<li><a href='#tabs-{tabcnt}'>{sx}</a></li>\n";
                         i = ss.IndexOf("*/");
-                        st = ss.Substring(0, i);
+                        if (i < 0)
+                        {
+                            MessageBox.Show($"{craft1.Construct} {craft1.Name}\n*/");
+                            lLog.Add($"{craft1.Construct} {craft1.Name}\n*/");
+                            st = "";
+                        }
+                        else
+                        {
+                            st = ss.Substring(0, i);
+                        }
                         if (st.IndexOf("/*") >= 0) {
                             MessageBox.Show($"{craft1.Construct} {craft1.Name}\n{st}");
                             lLog.Add($"{craft1.Construct} {craft1.Name}\n{st}");

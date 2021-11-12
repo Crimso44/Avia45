@@ -1166,6 +1166,10 @@ namespace Aik2
             {
                 gridPic.Focus();
             }
+            else if (tabControl1.SelectedIndex == 1)
+            {
+                gridCraft.Focus();
+            }
         }
 
         private void mnuAlt2_Click(object sender, EventArgs e)
