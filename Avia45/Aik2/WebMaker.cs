@@ -919,12 +919,18 @@ namespace Aik2
             templ = File.ReadAllText(sPath + "Site\\" + sTempl);
             while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
 
+            var sBeg = templ;
+            var sEnd = "";
+            var sMid = "";
             var i = templ.IndexOf("%begin%");
-            var sBeg = templ.Substring(0, i);
-            var sEnd = templ.Substring(i + 7);
-            i = sEnd.IndexOf("%end%");
-            var sMid = sEnd.Substring(0, i);
-            sEnd = sEnd.Substring(i + 5);
+            if (i >= 0)
+            {
+                sBeg = templ.Substring(0, i);
+                sEnd = templ.Substring(i + 7);
+                i = sEnd.IndexOf("%end%");
+                sMid = sEnd.Substring(0, i);
+                sEnd = sEnd.Substring(i + 5);
+            }
 
             var d = 0;
             if (!is_craft) d = 10;
@@ -1067,6 +1073,7 @@ namespace Aik2
             }
 
             var sb = new StringBuilder(sBeg);
+            var sl = new List<string>();
             while (craftInd < crafts.Count) {
                 var craft = crafts[craftInd];
                 if (is_craft) {
@@ -1089,47 +1096,28 @@ namespace Aik2
                     }
                     else MessageBox.Show($"MagPic {craft.c.CraftId}");
 
-                    var sxMid = new StringBuilder(sMid)
-                        .Replace("%Country%", GetSpanCountry(craft.c.Country))
-                        .Replace("%Construct%", craft.c.Construct)
-                        .Replace("%Name%", craft.c.Name)
-                        .Replace("%Year%", craft.c.IYear.ToString())
-                        .Replace("%Vert%", craft.c.Vert ?? false ? "В" : "")
-                        .Replace("%UAV%", craft.c.Uav ?? false ? "Б" : "")
-                        .Replace("%Glider%", craft.c.Glider ?? false ? "П" : "")
-                        .Replace("%Single%", craft.c.Single ?? false ? "1" : "")
-                        .Replace("%LL%", craft.c.LL ?? false ? "Л" : "")
-                        .Replace("%Proj%", craft.c.Proj ?? false ? "Х" : "")
-                        .Replace("%Wings%", craft.c.Wings)
-                        .Replace("%Engines%", craft.c.Engines)
-                        .Replace("%Type%", craft.c.Type)
-                        .Replace("%Photos%", craft.cCnt.ToString())
-                        .Replace("%Textlen%",
-                            (craft.c.Same.HasValue ? craft.cc?.CText?.Length ?? 0 : craft.c.CText?.Length ?? 0).ToString())
-                        .Replace("%Same%",
-                            craft.c.Same.HasValue ?
-                                $"<span title=\"{craft.cc?.Country} - {craft.cc?.Construct} - {craft.cc?.Name} - {craft.cc?.IYear}\" > "
-                            : "")
-                        .Replace("%SameEnd%",
-                            craft.c.Same.HasValue ? "</span>" : "")
-                        .Replace("%Links%",
-                            (craft.c.Wiki + (craft.cc?.Wiki ?? "") == "" ? "" :
-                                $"<a href=\"{craft.c.Wiki + craft.cc?.Wiki}\" target=\"_blank\" rel=\"nofollow\">" +
-                                "<img src=\"/Site/Partners/Wiki_ico.gif\"></a>&nbsp;") +
-                            (craft.c.Airwar + (craft.cc?.Airwar ?? "") == "" ? "" :
-                                $"<a href=\"{craft.c.Airwar + craft.cc?.Airwar}\" target=\"_blank\" rel=\"nofollow\">" +
-                                "<img src=\"/Site/Partners/airwar_ico.gif\"></a>") +
-                            (!(craft.c.FlyingM.HasValue || (craft.cc?.FlyingM.HasValue ?? false)) ? "" :
-                                "&nbsp;<a style=\"background-color:#e6e6de;color:black;text-decoration:none;font-size:18px;font-family:'Times New Roman'\" " +
-                                $"href=\"http://flyingmachines.ru/Site2/Crafts/Craft{craft.c.FlyingM}{craft.cc?.FlyingM}.htm\" target=\"_blank\" rel=\"nofollow\">" +
-                                "F</a>"))
-                        .Replace("%CraftLink%", "../Crafts/Craft" +
-                            (craft.c.Same.HasValue ? (craft.cc?.CraftId ?? -1) : craft.c.CraftId) + ".htm")
-                        .Replace("%MainPicPath%", bigpic)
-                        .Replace("%MagPic%", ((magpic == "") || (magpic == "-") ? "" : GetMagPic(magpic)))
-                        .ToString();
-                    sb.Append(sxMid);
+                    var sSame = craft.c.Same.HasValue 
+                        ? $"{craft.cc?.Country} - {craft.cc?.Construct} - {craft.cc?.Name} - {craft.cc?.IYear}"
+                        : "";
+                    var sCraftLink = (craft.c.Same.HasValue ? (craft.cc?.CraftId ?? -1) : craft.c.CraftId).ToString();
+                    var magCode = (magpic == "") || (magpic == "-") ? "" : magpic;
+                    var magName = "";
+                    var magDiv = magCode != "" ? GetMagPic(magpic, out magName) : "";
+                    var sTextLen = (craft.c.Same.HasValue ? craft.cc?.CText?.Length ?? 0 : craft.c.CText?.Length ?? 0).ToString();
 
+                    // %Country% %CountryEn% %Construct% %Name% %Year% 
+                    // %Vert%UAV%Glider%LL%Single%Proj% 
+                    // %Wings% %Engines% %Type% %Photos% 
+                    // %MagCode% %MagName% %Textlen%
+                    // %Wiki% %Airwar% %FlyingM%
+                    // %MainPicPath% %Same% %CraftLink%
+                    sl.Add(
+                        $"{craft.c.Country}~{GetEnCountry(craft.c.Country)}~{craft.c.Construct}~{craft.c.Name}~{craft.c.IYear}~"+
+                        $"{(craft.c.Vert ?? false ? "В" : "")}{(craft.c.Uav ?? false ? "Б" : "")}{(craft.c.Glider ?? false ? "П" : "")}{(craft.c.Single ?? false ? "1" : "")}{(craft.c.LL ?? false ? "Л" : "")}{(craft.c.Proj ?? false ? "Х" : "")}~" +
+                        $"{craft.c.Wings}~{craft.c.Engines}~{craft.c.Type}~{craft.cCnt}~" +
+                        $"{magCode}~{magName}~{sTextLen}~" +
+                        $"{craft.c.Wiki + craft.cc?.Wiki}~{craft.c.Airwar + craft.cc?.Airwar}~{craft.c.FlyingM}{craft.cc?.FlyingM}~" +
+                        $"{bigpic}~{sSame}~{sCraftLink}");
                 }
                 else {
                     sb.Append(new StringBuilder(sMid)
@@ -1243,12 +1231,40 @@ namespace Aik2
             }
             AddSitemap("Site\\" + sPage, s, is_upl);
 
+            if (is_craft)
+            {
+                s = s.Replace(".htm", ".dat");
+                ss = ss.Replace(".htm", ".dat");
+                is_upl = false;
+                templ = string.Join("\n", sl.ToArray());
+                if (File.Exists(s))
+                {
+                    upl = File.ReadAllText(s);
+                    if (templ != upl)
+                    {
+                        File.WriteAllText(ss, templ, Encoding.UTF8);
+                        is_upl = true;
+                    }
+                }
+                else
+                {
+                    File.WriteAllText(ss, templ, Encoding.UTF8);
+                    is_upl = true;
+                }
+                if (is_upl)
+                {
+                    File.WriteAllText(s, templ, Encoding.UTF8);
+                }
+
+            }
+
             Application.DoEvents();
 
         }
 
-        private string GetMagPic(string magpic) {
-            var Result = "";
+        private string GetMagPic(string magpic, out string Result) {
+            Result = "";
+            var div = "";
             switch (magpic) {
                 case "AE": Result = "Air Enthusiast"; break;
                 case "AH": Result = "АэроХобби"; break;
@@ -1274,10 +1290,10 @@ namespace Aik2
             }
 
             if (!string.IsNullOrEmpty(Result))
-                Result = "&nbsp;" +
+                div = "&nbsp;" +
                     $"<span class=\"ru smallest\" title=\"Фото: {Result}\">{magpic}</span>" +
                     $"<span class=\"en smallest\" title=\"Photos: {Result}\" style=\"display:none\">{magpic}</span>";
-            return Result;
+            return div;
         }
 
         private void LoadDir(string sPath, string ssPath) {
