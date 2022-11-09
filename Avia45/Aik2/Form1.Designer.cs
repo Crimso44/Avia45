@@ -140,6 +140,7 @@
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.lArtCount = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -220,6 +221,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.lArtCount);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.chArtSortYear);
             this.panel1.Controls.Add(this.chArtSortSerie);
@@ -1347,6 +1349,16 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
+            // lArtCount
+            // 
+            this.lArtCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lArtCount.Location = new System.Drawing.Point(728, 6);
+            this.lArtCount.Name = "lArtCount";
+            this.lArtCount.Size = new System.Drawing.Size(50, 13);
+            this.lArtCount.TabIndex = 14;
+            this.lArtCount.Text = ".";
+            this.lArtCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1515,6 +1527,7 @@
         private System.Windows.Forms.ToolStripMenuItem links6ToolStripMenuItem;
         private System.Windows.Forms.CheckBox chFilterCraftsByMag;
         private System.Windows.Forms.ToolStripMenuItem make7ToolStripMenuItem;
+        private System.Windows.Forms.Label lArtCount;
     }
 }
 

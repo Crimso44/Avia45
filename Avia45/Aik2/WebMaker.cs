@@ -2112,7 +2112,14 @@ namespace Aik2
                         k = lSourceIds.IndexOf(j.ToString());
                         if (k >= 0) {
                             sx = lSourceNames[k];
-                            FindArtCraft(lSourceNames[k], int.Parse(lSourceIds[k]), craft1.CraftId, out art, out crft);
+                            if (!int.TryParse(lSourceIds[k], out var ind))
+                            {
+                                MessageBox.Show($"Unknown source: {sx}");
+                            }
+                            else
+                            {
+                                FindArtCraft(sx, ind, craft1.CraftId, out art, out crft);
+                            }
                         } else {
                             k = lSources.InsertStringSorted("???");
                             lSourceNames.Insert(k, "???");
@@ -2135,7 +2142,14 @@ namespace Aik2
                             k = lSources.IndexOf(sx);
                             if (k >= 0) {
                                 sx = lSourceNames[k];
-                                FindArtCraft(lSourceNames[k], int.Parse(lSourceIds[k]), craft1.CraftId, out art, out crft);
+                                if (!int.TryParse(lSourceIds[k], out var ind))
+                                {
+                                    MessageBox.Show($"Unknown source: {sx}");
+                                }
+                                else
+                                {
+                                    FindArtCraft(sx, ind, craft1.CraftId, out art, out crft);
+                                }
                             }
                             else {
                                 k = lSources.InsertStringSorted(sx);

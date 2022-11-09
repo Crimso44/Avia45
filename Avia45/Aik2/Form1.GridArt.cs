@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -210,6 +208,13 @@ namespace Aik2
 
 
                 _form.CheckArtSort(sender.Position, isForce);
+
+                if (sender.Position.Column == Const.Columns.Art.Author)
+                {
+                    var cnt = _form._artDtos.Where(a => a.Author == art.Author).Count();
+                    var cntAll = _form._artDtos.Where(a => a.Author?.Contains(art.Author) ?? false).Count();
+                    _form.lArtCount.Text = $"{cnt}/{cntAll}";
+                }
             }
         }
 

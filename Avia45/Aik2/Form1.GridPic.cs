@@ -1232,6 +1232,7 @@ namespace Aik2
                 var nnnFrom = picFrom.NNN;
                 var picTo = _pics[pos.Row - 2];
                 var nnnTo = picTo.NNN;
+                if (nnnFrom == nnnTo) nnnTo--;
                 picFrom.NNN = nnnTo;
                 picTo.NNN = nnnFrom;
 
@@ -1283,6 +1284,7 @@ namespace Aik2
                     var nnnFrom = picFrom.NNN;
                     var picTo = _pics[pos.Row];
                     var nnnTo = picTo.NNN;
+                    if (nnnFrom == nnnTo) nnnTo++;
                     picFrom.NNN = nnnTo;
                     picTo.NNN = nnnFrom;
 
@@ -1364,14 +1366,14 @@ namespace Aik2
                 }
             }
 
-            foreach (var img in baseImg)
+            /*foreach (var img in baseImg)
             {
                 var i = existImg.BinaryIndexOf(img);
                 if (i < 0)
                 {
                     unusedImg.Add("-" + img);
                 }
-            }
+            }*/
 
             var frep = new fReport(_ctx, _imagesPath);
             frep.SaveButton.Text = "Удалить";
