@@ -99,6 +99,8 @@ namespace Aik2
         {
             var artsQry = _ctx.vwArts.AsNoTracking().AsQueryable();
             if (chArtSortAuthor.Checked)
+                artsQry = artsQry.OrderBy(x => x.Author).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Name);
+            else if (chArtSortAuthorArt.Checked)
                 artsQry = artsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag);
             else if (chArtSortSerie.Checked)
                 artsQry = artsQry.OrderBy(x => x.Serie).ThenBy(x => x.NN).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Name);
@@ -223,6 +225,8 @@ namespace Aik2
             int[] sortIndexes;
             if (chArtSortAuthor.Checked)
                 sortIndexes = Const.Columns.Art.SortAuthor;
+            else if (chArtSortAuthorArt.Checked)
+                sortIndexes = Const.Columns.Art.SortAuthorArt;
             else if (chArtSortSerie.Checked)
                 sortIndexes = Const.Columns.Art.SortSerie;
             else //if (_form.chArtSortYear.Checked)

@@ -34,6 +34,8 @@
             this.pArtTable = new System.Windows.Forms.Panel();
             this.gridArt = new SourceGrid.Grid();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chArtSortAuthorArt = new System.Windows.Forms.RadioButton();
+            this.lArtCount = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.chArtSortYear = new System.Windows.Forms.RadioButton();
             this.chArtSortSerie = new System.Windows.Forms.RadioButton();
@@ -140,7 +142,6 @@
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.lArtCount = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -221,6 +222,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chArtSortAuthorArt);
             this.panel1.Controls.Add(this.lArtCount);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.chArtSortYear);
@@ -231,6 +233,28 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(786, 28);
             this.panel1.TabIndex = 0;
+            // 
+            // chArtSortAuthorArt
+            // 
+            this.chArtSortAuthorArt.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chArtSortAuthorArt.AutoSize = true;
+            this.chArtSortAuthorArt.Location = new System.Drawing.Point(98, 1);
+            this.chArtSortAuthorArt.Name = "chArtSortAuthorArt";
+            this.chArtSortAuthorArt.Size = new System.Drawing.Size(67, 23);
+            this.chArtSortAuthorArt.TabIndex = 15;
+            this.chArtSortAuthorArt.Text = "Author, Art";
+            this.chArtSortAuthorArt.UseVisualStyleBackColor = true;
+            this.chArtSortAuthorArt.Click += new System.EventHandler(this.chArtSortYear_Click);
+            // 
+            // lArtCount
+            // 
+            this.lArtCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lArtCount.Location = new System.Drawing.Point(728, 6);
+            this.lArtCount.Name = "lArtCount";
+            this.lArtCount.Size = new System.Drawing.Size(50, 13);
+            this.lArtCount.TabIndex = 14;
+            this.lArtCount.Text = ".";
+            this.lArtCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label1
             // 
@@ -246,7 +270,7 @@
             this.chArtSortYear.Appearance = System.Windows.Forms.Appearance.Button;
             this.chArtSortYear.AutoSize = true;
             this.chArtSortYear.Checked = true;
-            this.chArtSortYear.Location = new System.Drawing.Point(145, 1);
+            this.chArtSortYear.Location = new System.Drawing.Point(218, 1);
             this.chArtSortYear.Name = "chArtSortYear";
             this.chArtSortYear.Size = new System.Drawing.Size(39, 23);
             this.chArtSortYear.TabIndex = 2;
@@ -259,7 +283,7 @@
             // 
             this.chArtSortSerie.Appearance = System.Windows.Forms.Appearance.Button;
             this.chArtSortSerie.AutoSize = true;
-            this.chArtSortSerie.Location = new System.Drawing.Point(98, 1);
+            this.chArtSortSerie.Location = new System.Drawing.Point(171, 1);
             this.chArtSortSerie.Name = "chArtSortSerie";
             this.chArtSortSerie.Size = new System.Drawing.Size(41, 23);
             this.chArtSortSerie.TabIndex = 1;
@@ -1349,16 +1373,6 @@
             this.panel7.Size = new System.Drawing.Size(800, 400);
             this.panel7.TabIndex = 0;
             // 
-            // lArtCount
-            // 
-            this.lArtCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lArtCount.Location = new System.Drawing.Point(728, 6);
-            this.lArtCount.Name = "lArtCount";
-            this.lArtCount.Size = new System.Drawing.Size(50, 13);
-            this.lArtCount.TabIndex = 14;
-            this.lArtCount.Text = ".";
-            this.lArtCount.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1528,6 +1542,7 @@
         private System.Windows.Forms.CheckBox chFilterCraftsByMag;
         private System.Windows.Forms.ToolStripMenuItem make7ToolStripMenuItem;
         private System.Windows.Forms.Label lArtCount;
+        private System.Windows.Forms.RadioButton chArtSortAuthorArt;
     }
 }
 

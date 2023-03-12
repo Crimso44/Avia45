@@ -33,8 +33,12 @@ namespace Aik2
         private SourceGrid.Cells.Views.CheckBox _redCraftCheckView;
         private SourceGrid.Cells.Views.Cell _grayCraftCellView;
         private SourceGrid.Cells.Views.CheckBox _grayCraftCheckView;
+        private SourceGrid.Cells.Views.Cell _ltGrayCraftCellView;
+        private SourceGrid.Cells.Views.CheckBox _ltGrayCraftCheckView;
         private SourceGrid.Cells.Views.Cell _navyCraftCellView;
         private SourceGrid.Cells.Views.CheckBox _navyCraftCheckView;
+        private SourceGrid.Cells.Views.Cell _greenCraftCellView;
+        private SourceGrid.Cells.Views.CheckBox _greenCraftCheckView;
         private string _editingCraftFullName;
         private List<CraftDto> _crafts;
         private List<CraftDto> _crafts6;
@@ -188,10 +192,18 @@ namespace Aik2
             _redCraftCellView.BackColor = Color.FromArgb(0xff, 0xcc, 0xcc);
             _redCraftCheckView = new SourceGrid.Cells.Views.CheckBox();
             _redCraftCheckView.BackColor = Color.FromArgb(0xff, 0xcc, 0xcc);
+            _greenCraftCellView = new SourceGrid.Cells.Views.Cell();
+            _greenCraftCellView.BackColor = Color.FromArgb(0xcc, 0xff, 0xcc);
+            _greenCraftCheckView = new SourceGrid.Cells.Views.CheckBox();
+            _greenCraftCheckView.BackColor = Color.FromArgb(0xcc, 0xff, 0xcc);
             _grayCraftCellView = new SourceGrid.Cells.Views.Cell();
             _grayCraftCellView.BackColor = Color.FromArgb(0xdd, 0xdd, 0xdd);
             _grayCraftCheckView = new SourceGrid.Cells.Views.CheckBox();
             _grayCraftCheckView.BackColor = Color.FromArgb(0xdd, 0xdd, 0xdd);
+            _ltGrayCraftCellView = new SourceGrid.Cells.Views.Cell();
+            _ltGrayCraftCellView.BackColor = Color.FromArgb(0xee, 0xee, 0xee);
+            _ltGrayCraftCheckView = new SourceGrid.Cells.Views.CheckBox();
+            _ltGrayCraftCheckView.BackColor = Color.FromArgb(0xee, 0xee, 0xee);
             _navyCraftCellView = new SourceGrid.Cells.Views.Cell();
             _navyCraftCellView.BackColor = Color.FromArgb(0xdd, 0xdd, 0xff);
             _navyCraftCheckView = new SourceGrid.Cells.Views.CheckBox();
@@ -659,6 +671,16 @@ namespace Aik2
             {
                 view = _redCraftCellView;
                 viewCheck = _redCraftCheckView;
+            }
+            else if (Craft.Source == "7")
+            {
+                view = _greenCraftCellView;
+                viewCheck = _greenCraftCheckView;
+            }
+            else if (Craft.Source == "2" || Craft.Source == "8")
+            {
+                view = _ltGrayCraftCellView;
+                viewCheck = _ltGrayCraftCheckView;
             }
 
             if (gridCraft[r, 0].View != view)

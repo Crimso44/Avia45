@@ -8,7 +8,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -1197,7 +1196,7 @@ namespace Aik2
             s = "";
             for (i = 1; i <= 8; i++) {
                 if (is_craft || (i < 7)) {
-                    ss = (i == (xx - d) ? "b" : $"a class=\"en_href\" href=\"{(is_craft ? "Crafts" : "Arts")}{i}-1.htm\"");
+                    ss = (i == (xx - d) ? "b" : $"a class=\"en_href\" href=\"{(is_craft ? "Crafts" : "Arts")}{i}{(is_craft ? "" : "-1")}.htm\"");
                     var sss = (i == (xx - d) ? "/b" : "/a");
                     sBeg = new StringBuilder(sBeg)
                         .Replace($"%Sort{i}%", ss)
