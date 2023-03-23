@@ -470,14 +470,48 @@ namespace Aik2
             var ss = "";
             var craftsSame = _ctx.Crafts.Where(x => x.Same == craft1.CraftId).OrderBy(x => x.IYear).ThenBy(x => x.Construct).ThenBy(x => x.Name).ToList();
             if (craftsSame.Any()) {
-                foreach (var craftSame in craftsSame) {
-                    ss += craftSame.Construct + " " + craftSame.Name;
-                    if (craftSame.Country != craft1.Country) {
-                        ss += " (" + GetSpanCountry(craftSame.Country) + ")";
+                var isCountry = craftsSame.Any(x => x.Country != craft1.Country);
+                var isYear = craftsSame.Any(x => x.IYear != craft1.IYear);
+                if (isCountry || isYear)
+                {
+                    ss += "&nbsp;&nbsp; &nbsp;&nbsp;<span class='smaller blue'>";
+                    if (isCountry)
+                    {
+                        ss += GetSpanCountry(craft1.Country);
                     }
-                    ss += ", ";
+                    if (isYear)
+                    {
+                        if (isCountry)
+                        {
+                            ss += ", ";
+                        }
+                        ss += craft1.IYear.ToString();
+                    }
+                    ss += "</span>";
                 }
-                ss = " <span class=\"smaller\">(" + ss.Substring(0, ss.Length - 2) + ")</span>";
+                foreach (var craftSame in craftsSame) {
+                    ss += 
+                        "</div><div class='caption'><span class='smaller'>" +
+                        craftSame.Construct + " " + craftSame.Name;
+                    if (isCountry || isYear)
+                    {
+                        ss += "&nbsp;&nbsp; &nbsp;&nbsp;<span class='blue'>";
+                        if (isCountry)
+                        {
+                            ss += GetSpanCountry(craftSame.Country);
+                        }
+                        if (isYear)
+                        {
+                            if (isCountry)
+                            {
+                                ss += ", ";
+                            }
+                            ss += craftSame.IYear.ToString();
+                        }
+                        ss += "</span>";
+                    }
+                }
+                ss += "</span>";
             }
             templ = templ.Replace("%Same%", ss);
 
