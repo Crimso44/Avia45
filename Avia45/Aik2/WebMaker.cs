@@ -189,7 +189,7 @@ namespace Aik2
                 GetYearArt(false);
             } else if (sx == "Aviation Historian") {
                 sMag = "HI";
-                GetYearArt(false);
+                GetYearArt(true);
             } else if (sx == "История Авиации") {
                 sMag = "IA";
                 GetYearArt(false);
@@ -2569,18 +2569,18 @@ namespace Aik2
 
 
             lSources = new List<string>();
-            if (File.Exists("E:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt")) {
-                var logFile = File.ReadAllLines("E:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
+            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt")) {
+                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
                 lSources = new List<string>(logFile);
             }
             lSourceNames = new List<string>();
-            if (File.Exists("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt")) {
-                var logFile = File.ReadAllLines("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
+            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt")) {
+                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
                 lSourceNames = new List<string>(logFile);
             }
             lSourceIds = new List<string>();
-            if (File.Exists("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt")) {
-                var logFile = File.ReadAllLines("E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
+            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt")) {
+                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
                 lSourceIds = new List<string>(logFile);
             }
 
@@ -2625,10 +2625,10 @@ namespace Aik2
 
             }
 
-            SaveToFile(lSources, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
-            SaveToFile(lSourceNames, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
-            SaveToFile(lSourceIds, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
-            SaveToFile(lLog, "E:\\Live\\Avia\\AviaDejaVu\\Site2\\Log.txt");
+            SaveToFile(lSources, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
+            SaveToFile(lSourceNames, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
+            SaveToFile(lSourceIds, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
+            SaveToFile(lLog, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\Log.txt");
 
 
             var ibq1A = artQry

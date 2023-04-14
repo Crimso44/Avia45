@@ -25,14 +25,12 @@ namespace Aik2
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Arts> Arts { get; set; }
         public virtual DbSet<Countries> Countries { get; set; }
         public virtual DbSet<Links> Links { get; set; }
         public virtual DbSet<Mags> Mags { get; set; }
         public virtual DbSet<Pics> Pics { get; set; }
         public virtual DbSet<WordLinks> WordLinks { get; set; }
         public virtual DbSet<Words> Words { get; set; }
-        public virtual DbSet<Crafts> Crafts { get; set; }
         public virtual DbSet<vwCrafts> vwCrafts { get; set; }
         public virtual DbSet<vwPics> vwPics { get; set; }
         public virtual DbSet<Report> Report { get; set; }
@@ -42,5 +40,7 @@ namespace Aik2
         public virtual DbSet<CraftsOld> CraftsOld { get; set; }
         public virtual DbSet<ParamsOld> ParamsOld { get; set; }
         public virtual DbSet<PicsOld> PicsOld { get; set; }
+        public virtual DbSet<Arts> Arts { get; set; }
+        public virtual DbSet<Crafts> Crafts { get; set; }
     }
 }

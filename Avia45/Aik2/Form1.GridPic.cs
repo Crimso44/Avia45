@@ -1211,7 +1211,7 @@ namespace Aik2
                     }
                     else
                     {
-                        int.TryParse(art.IMonth.Trim(), out int artMonth);
+                        int.TryParse(art.IMonth?.Trim() ?? "", out int artMonth);
                         var year = (art.IYear ?? 0) == 0 ? "" : PadLeft((art.IYear % 100).ToString(), '0', 2).ToString();
                         path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}{year}-{artMonth}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
                     }
@@ -1332,6 +1332,7 @@ namespace Aik2
                     r--;
                 }
                 _ctx.SaveChanges();
+                Util.DetachAllEntities(_ctx);
             }
         }
 
@@ -1366,14 +1367,14 @@ namespace Aik2
                 }
             }
 
-            /*foreach (var img in baseImg)
+            foreach (var img in baseImg)
             {
                 var i = existImg.BinaryIndexOf(img);
                 if (i < 0)
                 {
                     unusedImg.Add("-" + img);
                 }
-            }*/
+            }
 
             var frep = new fReport(_ctx, _imagesPath);
             frep.SaveButton.Text = "Удалить";

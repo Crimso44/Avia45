@@ -1,11 +1,16 @@
-﻿using System;
+﻿using DevAge.Windows.Forms;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using static Aik2.Const;
+using static Aik2.Const.Columns;
 
 namespace Aik2
 {
@@ -274,6 +279,7 @@ namespace Aik2
             ctx.Database.Connection.Open();
 
             var artId = ctx.Arts.Where(x => x.Name == "Airwar").Single().ArtId;
+            var maxCraftId = ctx.Crafts.Max(c => c.CraftId);
 
             using (var M = File.CreateText(_imagesPath + "Bads.txt"))
             {
@@ -295,7 +301,7 @@ namespace Aik2
                         Application.DoEvents();
                         try
                         {
-                            s = File.ReadAllText(file, Encoding.GetEncoding("KOI8-R"));
+                            s = File.ReadAllText(file, Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage));
                             lc.Clear();
                             lcc.Clear();
                             lct.Clear();
@@ -318,6 +324,7 @@ namespace Aik2
                             }
                             var craft = new Crafts()
                             {
+                                CraftId = ++maxCraftId,
                                 Source = "1",
                                 Name = ClearString(sName)
                             };
@@ -614,7 +621,7 @@ namespace Aik2
             return "0123456789".Contains(c);
         }
 
-        private void SaveCraft()
+        private void SaveCraft(ref int maxCraftId)
         {
             int i;
             string sx, ssx;
@@ -638,6 +645,7 @@ namespace Aik2
                     cnt++;
                     var craft = new Crafts()
                     {
+                        CraftId = ++maxCraftId,
                         Source = "5"
                     };
                     if (iy == 0) {
@@ -730,10 +738,11 @@ namespace Aik2
             ctx.Database.Connection.Close();
             ctx.Database.Connection.Open();
 
+            var maxCraftId = _ctx.Crafts.Max(c => c.CraftId);
             using (var G = File.CreateText(_imagesPath + "Images5.lst"))
             {
 
-                var files = Directory.GetFiles("E:\\download\\aerofiles.com", "_*.html");
+                var files = Directory.GetFiles("D:\\download\\aerofiles.com", "_*.html");
                 foreach (var file in files)
                 {
                     _lInfo.Text = file;
@@ -806,11 +815,11 @@ namespace Aik2
                             }
                             while (i >= 0) {
                                 if (/*((q=2) or(Length(sr.Name) <= 8)) and*/(bq == 0) && (stt != ""))
-                                    SaveCraft();
+                                    SaveCraft(ref maxCraftId);
 
                                 ss = ExtName(s.Substring(0, i + 4));
                                 if (ss.StartsWith("logo-")) {
-                                    SaveCraft();
+                                    SaveCraft(ref maxCraftId);
                                     i = s.IndexOf("alt=");
                                     if (i < 0) {
                                         i = ss.IndexOf(".");
@@ -902,7 +911,7 @@ namespace Aik2
                             if (i >= 0) {
 
                                 if (/*{((q=2) or(Length(sr.Name) <= 8)) and}*/(bq == 0) && (stt != "")) {
-                                    SaveCraft();
+                                    SaveCraft(ref maxCraftId);
                                     ss = st + " ";
                                 }
 
@@ -994,12 +1003,12 @@ namespace Aik2
 
 
                             if (su.IndexOf("<HR") >= 0) {
-                                SaveCraft();
+                                SaveCraft(ref maxCraftId);
                             }
 
                             s = ReadLn2();
                             if (s.IndexOf("home.html") >= 0) {
-                                SaveCraft();
+                                SaveCraft(ref maxCraftId);
                                 break;
                             }
                             su = s.ToUpper();
@@ -1021,7 +1030,7 @@ namespace Aik2
                         }
                         if (cnt > 0) break;
                     }
-                    SaveCraft();
+                    SaveCraft(ref maxCraftId);
                 }
 
             }
@@ -1030,5 +1039,758 @@ namespace Aik2
             MessageBox.Show("OK!");
         }
 
+        public void Load6(AiKEntities ctx, string _imagesPath, Label lInfo)
+        {
+            _ctx = ctx;
+            imagesPath = _imagesPath;
+
+            _lInfo = lInfo;
+            if (!(MessageBox.Show("Load AviaDejavu?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)) return;
+
+
+            _lInfo.Text = "Deleting...";
+            Application.DoEvents();
+
+            ctx.Database.ExecuteSqlCommand("delete from WordLinks where PicId in (select PicId from Pics where CraftId in (select CraftId from Crafts where source = '6'))");
+            ctx.Database.ExecuteSqlCommand("delete from Links where Pict1 in (select PicId from Pics where CraftId in (select CraftId from Crafts where source = '6'))" +
+              " or Pict2 in (select PicId from Pics where CraftId in (select CraftId from Crafts where source = '6'))");
+            ctx.Database.ExecuteSqlCommand("delete from WordLinks where CraftId in (select CraftId from Crafts where source = '6')");
+            ctx.Database.ExecuteSqlCommand("delete from pics where CraftId in (select CraftId from Crafts where source = '6')");
+            ctx.Database.ExecuteSqlCommand("delete from Crafts where source = '6'");
+            ctx.Database.ExecuteSqlCommand("delete from arts where artid in (select artid from vwArts where cnt = 0 and mag<> 'Fl')");
+            ctx.Database.Connection.Close();
+            ctx.Database.Connection.Open();
+            Util.DetachAllEntities(ctx);
+
+
+            _lInfo.Text = "Preparing...";
+            Application.DoEvents();
+
+            var datFile = File.ReadAllLines("D:\\Restore\\Indexes\\Crafts1.dat");
+            var datList = new List<string>(datFile);
+            var datSplitList = datList.Select(d => d.Split('~'));
+
+            var maxCraftId = ctx.Crafts.Max(c => c.CraftId);
+            var maxCraftIdLst = datSplitList.Max(datStr => int.Parse(datStr[18]));
+            if (maxCraftId < maxCraftIdLst) maxCraftId = maxCraftIdLst;
+
+            var sameCrafts = new Dictionary<string, int>();
+
+            foreach (var datStr in datSplitList)
+            {
+                var craft = new Crafts()
+                {
+                    CraftId = datStr[17] == "" ? int.Parse(datStr[18]) : ++maxCraftIdLst,
+                    Source = "6",
+                    Country = datStr[0],
+                    Construct = datStr[2],
+                    Name = datStr[3],
+                    Vert = datStr[5].Contains("В"),
+                    Uav = datStr[5].Contains("Б"),
+                    Glider = datStr[5].Contains("П"),
+                    Single = datStr[5].Contains("1"),
+                    LL = datStr[5].Contains("Л"),
+                    Proj = datStr[5].Contains("Х"),
+                    Wings = datStr[6],
+                    Engines = datStr[7],
+                    Type = datStr[8],
+                    Wiki = datStr[13],
+                    Airwar = datStr[14],
+                };
+
+                if (datStr[4] != "")
+                    craft.IYear = int.Parse(datStr[4]);
+                if (datStr[15] != "")
+                {
+                    var craft7Id = int.Parse(datStr[15]);
+                    var craft7 = ctx.Crafts.FirstOrDefault(c => c.CraftId == craft7Id);
+                    if (craft7 != null)
+                        craft.FlyingM = craft7Id;
+                }
+
+                _ctx.Crafts.Add(craft);
+                _ctx.SaveChanges();
+                Util.DetachAllEntities(ctx);
+
+                if (datStr[17] != "")
+                {
+                    var idStr = $"{craft.Country}~{craft.Construct}~{craft.Name}~{craft.IYear}";
+                    sameCrafts[idStr] = craft.CraftId;
+                }
+
+                var text = $"{craft.Country}~{craft.Construct}";
+                if (text != _lInfo.Text)
+                {
+                    _lInfo.Text = text;
+                    Application.DoEvents();
+                }
+
+            }
+
+            foreach (var datStr in datSplitList)
+            {
+                if (datStr[17] != "")
+                {
+                    var idStr = $"{datStr[0]}~{datStr[2]}~{datStr[3]}~{datStr[4]}";
+                    var mainId = sameCrafts[idStr];
+                    var main = _ctx.Crafts.First(c => c.CraftId == mainId);
+                    main.Same = int.Parse(datStr[18]);
+                    _ctx.SaveChanges();
+                    Util.DetachAllEntities(ctx);
+
+                    var text = $"Same: {main.Country}~{main.Construct}";
+                    if (text != _lInfo.Text)
+                    {
+                        _lInfo.Text = text;
+                        Application.DoEvents();
+                    }
+                }
+            }
+
+            var artFile = File.ReadAllLines("D:\\Restore\\Indexes\\Arts2.htm");
+            var artList = new List<string>(artFile);
+            var i = 0;
+            while (i < artList.Count)
+            {
+                if (FindString("<tr>", artList, ref i))
+                {
+                    var art = new Arts();
+
+                    s = artList[i + 1];
+                    var j = s.IndexOf("/Arts/Art");
+                    var k = s.IndexOf(".htm");
+                    art.ArtId = int.Parse(s.Substring(j + 9, k - j - 9));
+
+                    var yearMonth = UntagString(s).Trim();
+                    j = yearMonth.IndexOf("-");
+                    if (j > 0)
+                    {
+                        art.IYear = int.Parse(yearMonth.Substring(0, j));
+                        art.IMonth = yearMonth.Substring(j + 1);
+                    }
+                    else
+                    {
+                        art.IYear = int.Parse(yearMonth);
+                    }
+
+                    var magStr = UntagString(artList[i + 3]).Trim();
+                    art.Mag = DecodeMag(magStr);
+
+                    magStr = UntagString(artList[i + 5]).Trim();
+                    art.Author = magStr;
+
+                    magStr = UntagString(artList[i + 7]).Trim();
+                    art.Name = magStr;
+
+                    magStr = UntagString(artList[i + 9]).Trim();
+                    art.Serie = magStr;
+
+                    magStr = UntagString(artList[i + 11]).Trim();
+                    if (magStr != "")
+                        art.NN = int.Parse(magStr);
+
+                    _ctx.Arts.Add(art);
+                    _ctx.SaveChanges();
+                    Util.DetachAllEntities(ctx);
+
+                    var text = $"{art.Mag}~{art.IYear}";
+                    if (text != _lInfo.Text)
+                    {
+                        _lInfo.Text = text;
+                        Application.DoEvents();
+                    }
+                    i += 15;
+                }
+
+            }
+
+
+            var nnn = ctx.Pics.Max(p => p.PicId) + 1;
+            var nx = ctx.Pics.Max(p => p.NNN ?? 0) + 1;
+            if (nnn < nx) nnn = nx;
+
+            var files = Directory.GetFiles("D:\\Restore\\Crafts").OrderBy(x => x).ToList();
+            //files = files.Where(f => f.Contains("20622")).ToList();
+            foreach (var file in files)
+            {
+                var xfile = file;
+                var sfile = file;
+                i = xfile.IndexOf("-1.");
+                if (i > 0)
+                {
+                    sfile = xfile.Substring(0, i) + ".htm";
+                    if (files.Any(x => x == sfile))
+                    {
+                        xfile = sfile;
+                    }
+                }
+                else if (xfile.IndexOf("-") < 0)
+                {
+                    sfile = xfile.Substring(0, xfile.Length - 4) + "-1.htm";
+                    if (files.Any(x => x == sfile))
+                    {
+                        xfile = sfile;
+                    }
+                }
+
+                var craftFile = File.ReadAllLines(xfile);
+                var craftPage = new List<string>(craftFile);
+
+                var nn = 3;
+                sfile = xfile;
+                i = sfile.IndexOf('-');
+                if (i > 0)
+                {
+                    nn = int.Parse(sfile.Substring(i + 1, 1));
+                    sfile = sfile.Substring(0, i) + sfile.Substring(i + 2);
+                }
+                else
+                {
+                    s = sfile.Substring(0, sfile.Length - 4) + "-";
+                    if (files.Any(x => x.StartsWith(s)))
+                    {
+                        nn = 2;
+                    }
+                }
+                var craftId = GetCraftId(sfile);
+
+                var mainCraft = ctx.Crafts.FirstOrDefault(c => c.CraftId == craftId);
+
+                if (mainCraft != null)
+                {
+                    i = 0;
+                    if (FindString("<span class=\"ru small\">Варианты:</span>", craftPage, ref i, true))
+                    {
+                        Crafts prevCraft = mainCraft;
+                        Crafts nextCraft = null;
+                        while (FindString("<div class=\"w500\">", craftPage, ref i, true))
+                        {
+                            var nextCraftId = GetCraftId(craftPage[i + 1]);
+                            nextCraft = ctx.Crafts.First(c => c.CraftId == nextCraftId);
+                            nextCraft.SeeAlso = prevCraft.CraftId;
+                            prevCraft = nextCraft;
+
+                            i++;
+                        }
+                        if (nextCraft != null)
+                        {
+                            mainCraft.SeeAlso = nextCraft.CraftId;
+                            _ctx.SaveChanges();
+                        }
+                    }
+
+                    var k = 0;
+                    i = 0;
+                    var fullDescr = "";
+                    while (FindString($"<div id=\"ltabs-{k}\"", craftPage, ref i, false, true))
+                    {
+                        i++;
+                        FindString($"<div id=\"tabs-{k}\"", craftPage, ref i, false, true);
+                        var i0 = i;
+                        FindString($"</div>", craftPage, ref i);
+                        var descr = "";
+                        while(++i0 < i)
+                        {
+                            descr += craftPage[i0];
+                        }
+                        fullDescr += descr;
+
+                        k++;
+                        i = 0;
+                    }
+                    var isHead = fullDescr.Contains("<h3>");
+                    fullDescr = fullDescr
+                        .Replace("<br>", "\n")
+                        .Replace("&nbsp;", " ")
+                        .Replace("<h3>", "*/\n\n{")
+                        .Replace("</h3>", "}\n\n/*")
+                        .Replace("<span class=\"ru\">Дальше</span><span class=\"en\" style=\"display:none\">More</span>&gt;&gt;&gt;</span>", "");
+                    if (isHead)
+                    {
+                        var n = fullDescr.IndexOf("*/\n\n{");
+                        fullDescr = fullDescr.Substring(0, n) + fullDescr.Substring(n + 4) + "*/";
+                    }
+                    fullDescr = UntagString(fullDescr);
+
+                    if (!string.IsNullOrEmpty(fullDescr))
+                    {
+                        mainCraft.CText = fullDescr;
+                        _ctx.SaveChanges();
+                    }
+
+
+                    i = 0;
+                    if (FindString("<div id=\"all_pics\"", craftPage, ref i, false, true))
+                    {
+                        var grp = "";
+                        while (i < craftPage.Count)
+                        {
+                            if (craftPage[i].StartsWith("<div class=\"pic_group"))
+                            {
+                                grp = UntagString(craftPage[i]).Replace("&nbsp;", "-");
+                            }
+
+                            if (craftPage[i].Contains("<div class=\"lite\">"))
+                            {
+                                i += 2;
+                                s = craftPage[i];
+                                j = s.IndexOf("Images6/");
+                                k = s.IndexOf(".jpg");
+                                var picPath = s.Substring(j + 8, k - j - 4);
+
+                                var pic = new Pics()
+                                {
+                                    CraftId = craftId,
+                                    Path = picPath.Replace("/", "\\"),
+                                    NNN = nnn++,
+                                    Grp = grp
+                                };
+
+                                j = picPath.LastIndexOf("/");
+                                picPath = picPath.Substring(j + 1);
+                                picPath = picPath.Substring(0, picPath.Length - 4);
+                                j = picPath.IndexOf("-");
+                                if (j >= 1 && j <= 4 && (picPath.Length - j - 1) <= 5)
+                                {
+                                    pic.XPage = picPath.Substring(0, j);
+                                    pic.NN = picPath.Substring(j + 1);
+                                }
+
+                                var type = "f";
+                                switch(nn)
+                                {
+                                    case 1: type = "s"; break;
+                                    case 2: type = "fc"; break;
+                                    case 3: type = "f"; break;
+                                    case 4: type = "c"; break;
+                                    case 5: type = "fd"; break;
+                                    case 6: type = "p"; break;
+                                };
+                                pic.Type = type;
+                                pic.NType = Util.GetNType(type);
+
+                                i += 5;
+                                s = "";
+                                while (craftPage[i].Trim() != "</div>")
+                                {
+                                    s += craftPage[i];
+                                    i++;
+                                }
+
+                                pic.Text = s
+                                    .Replace("<br>", "\n")
+                                    .Replace("&nbsp;", " ")
+                                    .Trim();
+
+                                i += 2;
+                                s = craftPage[i];
+                                j = s.IndexOf("/Arts/Art");
+                                k = s.IndexOf(".htm");
+                                s = s.Substring(j + 9, k - j - 9);
+                                pic.ArtId = int.Parse(s);
+
+
+                                ctx.Pics.Add(pic);
+                                ctx.SaveChanges();
+
+                                grp = "";
+                            }
+
+                            i++;
+                        }
+                    }
+
+
+                    var text = $"{mainCraft.CraftId}~{mainCraft.Country}~{mainCraft.Construct}~{mainCraft.Name}";
+                    if (text != _lInfo.Text)
+                    {
+                        _lInfo.Text = text;
+                        Application.DoEvents();
+                    }
+                    Util.DetachAllEntities(ctx);
+                }
+
+            }
+
+            _lInfo.Text = "";
+            MessageBox.Show("OK!");
+        }
+
+        public void Load7(AiKEntities ctx, string _imagesPath, Label lInfo)
+        {
+            _ctx = ctx;
+            imagesPath = _imagesPath;
+
+            _lInfo = lInfo;
+            if (!(MessageBox.Show("Load FlyingMachines?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)) return;
+
+
+            _lInfo.Text = "Deleting...";
+            Application.DoEvents();
+
+            ctx.Database.ExecuteSqlCommand("delete from WordLinks where PicId in (select PicId from Pics where CraftId in (select CraftId from Crafts where source = '7'))");
+            ctx.Database.ExecuteSqlCommand("delete from Links where Pict1 in (select PicId from Pics where CraftId in (select CraftId from Crafts where source = '7'))" +
+              " or Pict2 in (select PicId from Pics where CraftId in (select CraftId from Crafts where source = '7'))");
+            ctx.Database.ExecuteSqlCommand("delete from WordLinks where CraftId in (select CraftId from Crafts where source = '7')");
+            ctx.Database.ExecuteSqlCommand("delete from pics where CraftId in (select CraftId from Crafts where source = '7')");
+            ctx.Database.ExecuteSqlCommand("update Crafts set FlyingM = null");
+            ctx.Database.ExecuteSqlCommand("delete from Crafts where source = '7'");
+            ctx.Database.ExecuteSqlCommand("delete from arts where artid in (select artid from vwArts where cnt = 0)");
+            ctx.Database.Connection.Close();
+            ctx.Database.Connection.Open();
+            Util.DetachAllEntities(ctx);
+
+            _lInfo.Text = "Preparing...";
+            Application.DoEvents();
+
+            var datFile = File.ReadAllLines("D:\\Restore\\Site2\\Indexes\\Crafts1.htm");
+            var datList = new List<string>(datFile);
+
+            var i = 0;
+            while (i < datList.Count)
+            {
+                if (datList[i] == "<div class=\"tablerow\">")
+                {
+
+                    var craft = new Crafts()
+                    {
+                        CraftId = GetCraftId(datList[i + 1]),
+                        Source = "7",
+                        Country = UntagString(datList[i + 1]),
+                        Construct = UntagString(datList[i + 2]),
+                        Name = UntagString(datList[i + 3]),
+                        Vert = datList[i + 5].Contains("Вертолет"),
+                        Glider = datList[i + 5].Contains("Планер"),
+                        Type = UntagString(datList[i + 6]).Replace("&nbsp;", "")
+                    };
+
+                    var s = UntagString(datList[i + 4]);
+                    if (s != "&nbsp;")
+                        craft.IYear = int.Parse(s);
+
+                    _ctx.Crafts.Add(craft);
+                    _ctx.SaveChanges();
+                    Util.DetachAllEntities(ctx);
+
+                    var text = $"{craft.Country}~{craft.Construct}";
+                    if (text != _lInfo.Text)
+                    {
+                        _lInfo.Text = text;
+                        Application.DoEvents();
+                    }
+                }
+                i++;
+            }
+
+            var srcFile = File.ReadAllLines("D:\\Restore\\Site2\\Sources.txt");
+            var srcList = new List<string>(srcFile);
+            var srcNamesFile = File.ReadAllLines("D:\\Restore\\Site2\\SourceNames.txt");
+            var srcNamesList = new List<string>(srcNamesFile);
+            var srcNames2File = File.ReadAllLines("D:\\Restore\\Site2\\SourceNames2.txt");
+            var srcNames2List = new List<string>(srcNames2File);
+            var srcIdsFile = File.ReadAllLines("D:\\Restore\\Site2\\SourceIds.txt");
+            var srcIdsList = new List<string>(srcIdsFile);
+            var srcMagFile = File.ReadAllLines("D:\\Restore\\Site2\\SourceMag.txt");
+            var srcMagList = new List<string>(srcMagFile);
+
+            var artFile = File.ReadAllLines("D:\\Restore\\Site2\\Indexes\\Arts2.htm");
+            var artList = new List<string>(artFile);
+            i = 0;
+            while (i < artList.Count)
+            {
+                if (artList[i] == "<div class=\"tablerow\">")
+                {
+                    s = artList[i + 1];
+                    var j = s.IndexOf("/Arts/Art");
+                    var k = s.IndexOf(".htm");
+                    var artId = int.Parse(s.Substring(j + 9, k - j - 9));
+                    var serie = UntagString(artList[i + 1]).Replace("&nbsp;", "");
+                    var serie0 = serie;
+                    var author = UntagString(artList[i + 2]).Replace("&nbsp;", "");
+                    var name = UntagString(artList[i + 3]).Replace("&nbsp;", "");
+                    var fullName = $"{author} {name}".Trim();
+                    var iyear = 0;
+                    if (name.EndsWith(" г."))
+                    {
+                        var iy = int.Parse(name.Substring(name.Length - 7, 4));
+                        if (iy < 1920) iyear = iy;
+                    }
+                    if (serie == "Centennial Perspective")
+                    {
+                        for (j = 1; j < 60; j++)
+                        {
+                            var serx = $"A Centennial Perspective on Great War Airplanes {j}";
+                            s = fullName + $" ({serx})";
+                            if (srcNamesList.Contains(s))
+                            {
+                                serie = serx;
+                                iyear = j;
+                                break;
+                            }
+                        }
+                    }
+                    if (serie != "")
+                    {
+                        fullName += $" ({serie})";
+                    }
+
+                    var art = new Arts()
+                    {
+                        ArtId = artId,
+                        Name = name,
+                        Author = author,
+                        Serie = serie0
+                    };
+
+                    if (iyear > 0) art.IYear = iyear;
+
+                    j = srcNamesList.IndexOf(fullName);
+                    if (j < 0 && fullName != "")
+                    {
+                        MessageBox.Show($"Art not found: {fullName}");
+                    }
+                    else if (j >= 0)
+                    {
+                        art.Mag = srcMagList[j];
+                    }
+
+                    _ctx.Arts.Add(art);
+                    _ctx.SaveChanges();
+                    Util.DetachAllEntities(ctx);
+
+                    var text = $"{art.Mag}~{art.IYear}";
+                    if (text != _lInfo.Text)
+                    {
+                        _lInfo.Text = text;
+                        Application.DoEvents();
+                    }
+                }
+                i++;
+            }
+
+            
+            var nnn = ctx.Pics.Max(p => p.PicId) + 1;
+            var nx = ctx.Pics.Max(p => p.NNN ?? 0) + 1;
+            if (nnn < nx) nnn = nx;
+
+            var files = Directory.GetFiles("D:\\Restore\\Site2\\Crafts").OrderByDescending(x => x).ToList();
+            var bads = new List<string>();
+            foreach (var file in files)
+            {
+                var craftFile = File.ReadAllLines(file);
+                var craftPage = new List<string>(craftFile);
+
+                var craftId = GetCraftId(file);
+
+                var mainCraft = ctx.Crafts.FirstOrDefault(c => c.CraftId == craftId);
+
+                if (mainCraft != null)
+                {
+
+                    var kk = 0;
+                    i = 0;
+                    var fullDescr = "";
+                    while (FindString($"<div id='tabs-{kk}'", craftPage, ref i, false, true))
+                    {
+                        var i0 = i;
+                        FindString($"</div>", craftPage, ref i);
+                        var descr = "";
+                        while (i0 < i)
+                        {
+                            descr += craftPage[i0];
+                            i0++;
+                        }
+
+                        j = descr.IndexOf("<h3>");
+                        var k = descr.IndexOf("</h3>");
+                        var artName = UntagString(descr.Substring(j + 4, k - j - 4));
+                        j = srcNames2List.IndexOf(artName);
+                        if (j < 0)
+                        {
+                            if (!bads.Contains(artName)) bads.Add(artName);
+                        } else
+                        {
+                            var descrx = descr.Substring(k + 5);
+                            if (descrx.StartsWith("<br>")) descrx = descrx.Substring(4);
+                            descr = $"{{{srcList[j]}}}\n\n/*{descrx}*/\n\n\n\n";
+                        }
+
+                        fullDescr += descr;
+
+                        kk++;
+                        i = 0;
+                    }
+                    fullDescr = fullDescr
+                        .Replace("<br>", "\n")
+                        .Replace("&nbsp;", " ");
+                    fullDescr = UntagString(fullDescr);
+
+                    if (!string.IsNullOrEmpty(fullDescr))
+                    {
+                        mainCraft.CText = fullDescr;
+                        _ctx.SaveChanges();
+                    }
+
+
+                    i = 0;
+                    if (FindString("<table id=\"all_pics\"", craftPage, ref i, true, true))
+                    {
+                        var grp = "";
+                        while (i < craftPage.Count)
+                        {
+                            if (craftPage[i].Contains("<td class=\"preview\""))
+                            {
+                                s = craftPage[i];
+                                j = s.LastIndexOf("Images7/");
+                                var k = s.IndexOf(".jpg", j);
+                                if (k < 0) k = s.IndexOf(".gif", j);
+                                if (k < 0) k = s.IndexOf(".GIF", j);
+                                if (k < 0) k = s.IndexOf(".JPG", j);
+                                var picPath = s.Substring(j + 8, k - j - 4);
+
+                                var pic = new Pics()
+                                {
+                                    CraftId = craftId,
+                                    Path = picPath.Replace("/", "\\"),
+                                    NNN = nnn++,
+                                    Grp = grp
+                                };
+
+                                j = picPath.LastIndexOf("/");
+                                picPath = picPath.Substring(j + 1);
+                                picPath = picPath.Substring(0, picPath.Length - 4);
+                                j = picPath.IndexOf("-");
+                                if (j >= 1 && j <= 4 && (picPath.Length - j - 1) <= 5)
+                                {
+                                    pic.XPage = picPath.Substring(0, j);
+                                    pic.NN = picPath.Substring(j + 1);
+                                }
+
+                                var type = "f";
+                                pic.Type = type;
+                                pic.NType = Util.GetNType(type);
+
+                                i += 2;
+                                s = craftPage[i];
+                                j = s.IndexOf("/Arts/Art");
+                                k = s.IndexOf(".htm");
+                                s = s.Substring(j + 9, k - j - 9);
+                                pic.ArtId = int.Parse(s);
+
+                                i += 4;
+                                s = "";
+                                while (craftPage[i].Trim() != "</td>")
+                                {
+                                    s += craftPage[i];
+                                    i++;
+                                }
+
+                                s = s
+                                    .Replace("<br>", "\n")
+                                    .Replace("&nbsp;", " ")
+                                    .Trim();
+                                pic.Text = UntagString(s);
+
+
+                                ctx.Pics.Add(pic);
+                                ctx.SaveChanges();
+
+                                grp = "";
+                            }
+
+                            i++;
+                        }
+                    }
+
+
+                    var text = $"{mainCraft.CraftId}~{mainCraft.Country}~{mainCraft.Construct}~{mainCraft.Name}";
+                    if (text != _lInfo.Text)
+                    {
+                        _lInfo.Text = text;
+                        Application.DoEvents();
+                    }
+                    Util.DetachAllEntities(ctx);
+                }
+
+            }
+
+            _lInfo.Text = "";
+            MessageBox.Show($"OK!\n{string.Join("\n", bads)}");
+        }
+
+
+        private bool FindString(string str, List<string> page, ref int i, bool isTrim = false, bool isStarting = false)
+        {
+            while (i < page.Count)
+            {
+                var s = page[i];
+                if (isTrim) s = s.Trim();
+                if ((isStarting && s.StartsWith(str)) || (!isStarting && s == str)) return true;
+                i++;
+            }
+            return false;
+        }
+
+        private string UntagString(string str)
+        {
+            var res = "";
+            var inTag = false;
+            var i0 = 0;
+            for (var i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '<' && (str.Length < (i + 5) || str.Substring(i, 5) != "<...>"))
+                {
+                    inTag = true;
+                    if (i0 != i)
+                    {
+                        res += str.Substring(i0, i - i0);
+                    }
+                }
+                else if (inTag && str[i] == '>')
+                {
+                    inTag = false;
+                    i0 = i + 1;
+                };
+            }
+            if (i0 < str.Length) res += str.Substring(i0);
+            return res;
+        }
+
+        private string DecodeMag(string str)
+        {
+            if (str.StartsWith("Air Enthusiast")) return "AE";
+            if (str.StartsWith("АэроХобби")) return "AH";
+            if (str.StartsWith("Air Pictorial")) return "AI";
+            if (str.StartsWith("Авиация и Космонавтика")) return "AK";
+            if (str.StartsWith("АвиаМастер")) return "AM";
+            if (str.StartsWith("Air International")) return "AN";
+            if (str.StartsWith("АвиаПарк")) return "AP";
+            if (str.StartsWith("АС")) return "AS";
+            if (str.StartsWith("Авиация и Время")) return "AV";
+            if (str.StartsWith("Flight")) return "FT";
+            if (str.StartsWith("Aviation Historian")) return "HI";
+            if (str.StartsWith("История Авиации")) return "IA";
+            if (str.StartsWith("In Action")) return "IN";
+            if (str.StartsWith("Jane's All the World Aircraft")) return "JS";
+            if (str.StartsWith("Мир Авиации")) return "MA";
+            if (str.StartsWith("My photos")) return "ME";
+            if (str.StartsWith("Моделист-Конструктор")) return "MK";
+            if (str.StartsWith("Мировая Авиация")) return "MM";
+            if (str.StartsWith("Aeroplane Monthly")) return "MY";
+            if (str.StartsWith("Изд-во Osprey")) return "OS";
+            if (str.StartsWith("Изд-во Schiffer")) return "SC";
+
+            MessageBox.Show($"Unknown mag {str}");
+            return "";
+        }
+
+        private int GetCraftId(string str)
+        {
+            var j = str.IndexOf(".htm");
+            str = str.Substring(0, j + 4);
+            var i = str.LastIndexOf("Craft");
+            var s = str.Substring(i + 5, j - i - 5);
+            return int.Parse(s);
+        }
     }
 }

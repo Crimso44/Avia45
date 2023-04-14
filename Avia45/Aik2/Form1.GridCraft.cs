@@ -800,10 +800,10 @@ namespace Aik2
                 var craftDto = _form.GetCraftFromTable(row);
                 if (craftDto.CraftId == 0)
                 {
+                    craftDto.CraftId = _form._ctx.Crafts.Max(c => c.CraftId) + 1;
                     var entity = Mapper.Map<Crafts>(craftDto);
                     _form._ctx.Crafts.Add(entity);
                     _form._ctx.SaveChanges();
-                    craftDto.CraftId = entity.CraftId;
                     _form.gridCraft[row, Const.Columns.Craft.CraftId].Value = entity.CraftId;
                     isForce = true;
                 }

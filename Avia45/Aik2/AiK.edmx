@@ -4,12 +4,12 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="AiKModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="AiKModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Arts">
           <Key>
             <PropertyRef Name="ArtId" />
           </Key>
-          <Property Name="ArtId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ArtId" Type="int" Nullable="false" />
           <Property Name="Mag" Type="nchar" MaxLength="5" />
           <Property Name="IYear" Type="int" />
           <Property Name="IMonth" Type="nchar" MaxLength="5" />
@@ -29,7 +29,7 @@
           <Key>
             <PropertyRef Name="CraftId" />
           </Key>
-          <Property Name="CraftId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CraftId" Type="int" Nullable="false" />
           <Property Name="Construct" Type="nvarchar" MaxLength="100" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" />
           <Property Name="Country" Type="nvarchar" MaxLength="20" />
@@ -548,20 +548,6 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="AiKModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Arts">
-          <Key>
-            <PropertyRef Name="ArtId" />
-          </Key>
-          <Property Name="ArtId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Mag" Type="String" MaxLength="5" FixedLength="true" Unicode="true" />
-          <Property Name="IYear" Type="Int32" />
-          <Property Name="IMonth" Type="String" MaxLength="5" FixedLength="true" Unicode="true" />
-          <Property Name="Author" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="NN" Type="Int32" />
-          <Property Name="Serie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Pics" Relationship="Self.FK_Pics_Arts" FromRole="Arts" ToRole="Pics" />
-        </EntityType>
         <EntityType Name="Countries">
           <Key>
             <PropertyRef Name="Rus" />
@@ -603,12 +589,12 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="Path" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Grp" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Arts" Relationship="Self.FK_Pics_Arts" FromRole="Pics" ToRole="Arts" />
           <NavigationProperty Name="Links" Relationship="Self.FK_Links_Pics" FromRole="Pics" ToRole="Links" />
           <NavigationProperty Name="Links1" Relationship="Self.FK_Links_Pics1" FromRole="Pics" ToRole="Links" />
           <NavigationProperty Name="WordLinks" Relationship="Self.FK_WordLinks_Pics" FromRole="Pics" ToRole="WordLinks" />
-          <NavigationProperty Name="Crafts" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Pics" ToRole="Crafts" />
           <Property Name="Copyright" Type="Boolean" />
+          <NavigationProperty Name="Arts" Relationship="AiKModel.FK_Pics_Arts" FromRole="Pics" ToRole="Arts" />
+          <NavigationProperty Name="Crafts" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Pics" ToRole="Crafts" />
         </EntityType>
         <EntityType Name="WordLinks">
           <Key>
@@ -631,18 +617,6 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="Cnt" Type="Int32" />
           <NavigationProperty Name="WordLinks" Relationship="Self.FK_WordLinks_Words" FromRole="Words" ToRole="WordLinks" />
         </EntityType>
-        <Association Name="FK_Pics_Arts">
-          <End Role="Arts" Type="Self.Arts" Multiplicity="1" />
-          <End Role="Pics" Type="Self.Pics" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Arts">
-              <PropertyRef Name="ArtId" />
-            </Principal>
-            <Dependent Role="Pics">
-              <PropertyRef Name="ArtId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Links_Pics">
           <End Role="Pics" Type="Self.Pics" Multiplicity="1" />
           <End Role="Links" Type="Self.Links" Multiplicity="*" />
@@ -692,17 +666,12 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="AiKEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Arts" EntityType="Self.Arts" />
           <EntitySet Name="Countries" EntityType="Self.Countries" />
           <EntitySet Name="Links" EntityType="Self.Links" />
           <EntitySet Name="Mags" EntityType="Self.Mags" />
           <EntitySet Name="Pics" EntityType="Self.Pics" />
           <EntitySet Name="WordLinks" EntityType="Self.WordLinks" />
           <EntitySet Name="Words" EntityType="Self.Words" />
-          <AssociationSet Name="FK_Pics_Arts" Association="Self.FK_Pics_Arts">
-            <End Role="Arts" EntitySet="Arts" />
-            <End Role="Pics" EntitySet="Pics" />
-          </AssociationSet>
           <AssociationSet Name="FK_Links_Pics" Association="Self.FK_Links_Pics">
             <End Role="Pics" EntitySet="Pics" />
             <End Role="Links" EntitySet="Links" />
@@ -719,7 +688,21 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
             <End Role="Words" EntitySet="Words" />
             <End Role="WordLinks" EntitySet="WordLinks" />
           </AssociationSet>
+          <EntitySet Name="vwCrafts" EntityType="AiKModel.vwCrafts" />
+          <EntitySet Name="vwPics" EntityType="AiKModel.vwPics" />
+          <EntitySet Name="Report" EntityType="AiKModel.Report" />
+          <EntitySet Name="vwReport" EntityType="AiKModel.vwReport" />
+          <EntitySet Name="vwArts" EntityType="AiKModel.vwArts" />
+          <EntitySet Name="vwReportMags" EntityType="AiKModel.vwReportMags" />
+          <EntitySet Name="CraftsOld" EntityType="AiKModel.CraftsOld" />
+          <EntitySet Name="ParamsOld" EntityType="AiKModel.ParamsOld" />
+          <EntitySet Name="PicsOld" EntityType="AiKModel.PicsOld" />
+          <EntitySet Name="Arts" EntityType="AiKModel.Arts" />
           <EntitySet Name="Crafts" EntityType="AiKModel.Crafts" />
+          <AssociationSet Name="FK_Pics_Arts" Association="AiKModel.FK_Pics_Arts">
+            <End Role="Arts" EntitySet="Arts" />
+            <End Role="Pics" EntitySet="Pics" />
+          </AssociationSet>
           <AssociationSet Name="FK_Crafts_Crafts" Association="AiKModel.FK_Crafts_Crafts">
             <End Role="Crafts" EntitySet="Crafts" />
             <End Role="Crafts1" EntitySet="Crafts" />
@@ -740,117 +723,7 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
             <End Role="Crafts" EntitySet="Crafts" />
             <End Role="WordLinks" EntitySet="WordLinks" />
           </AssociationSet>
-          <EntitySet Name="vwCrafts" EntityType="AiKModel.vwCrafts" />
-          <EntitySet Name="vwPics" EntityType="AiKModel.vwPics" />
-          <EntitySet Name="Report" EntityType="AiKModel.Report" />
-          <EntitySet Name="vwReport" EntityType="AiKModel.vwReport" />
-          <EntitySet Name="vwArts" EntityType="AiKModel.vwArts" />
-          <EntitySet Name="vwReportMags" EntityType="AiKModel.vwReportMags" />
-          <EntitySet Name="CraftsOld" EntityType="AiKModel.CraftsOld" />
-          <EntitySet Name="ParamsOld" EntityType="AiKModel.ParamsOld" />
-          <EntitySet Name="PicsOld" EntityType="AiKModel.PicsOld" />
         </EntityContainer>
-        <EntityType Name="Crafts">
-          <Key>
-            <PropertyRef Name="CraftId" />
-          </Key>
-          <Property Name="CraftId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Construct" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Country" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="IYear" Type="Int32" />
-          <Property Name="Vert" Type="Boolean" />
-          <Property Name="Uav" Type="Boolean" />
-          <Property Name="Glider" Type="Boolean" />
-          <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SeeAlso" Type="Int32" />
-          <Property Name="Wiki" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Airwar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="FlyingM" Type="Int32" />
-          <Property Name="Wings" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Engines" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="LL" Type="Boolean" />
-          <Property Name="Proj" Type="Boolean" />
-          <Property Name="Same" Type="Int32" />
-          <Property Name="Single" Type="Boolean" />
-          <NavigationProperty Name="Crafts1" Relationship="AiKModel.FK_Crafts_Crafts" FromRole="Crafts" ToRole="Crafts1" />
-          <NavigationProperty Name="Crafts2" Relationship="AiKModel.FK_Crafts_Crafts" FromRole="Crafts1" ToRole="Crafts" />
-          <NavigationProperty Name="Crafts11" Relationship="AiKModel.FK_Crafts_Crafts1" FromRole="Crafts" ToRole="Crafts1" />
-          <NavigationProperty Name="Crafts3" Relationship="AiKModel.FK_Crafts_Crafts1" FromRole="Crafts1" ToRole="Crafts" />
-          <NavigationProperty Name="Crafts12" Relationship="AiKModel.FK_Crafts_Crafts2" FromRole="Crafts" ToRole="Crafts1" />
-          <NavigationProperty Name="Crafts4" Relationship="AiKModel.FK_Crafts_Crafts2" FromRole="Crafts1" ToRole="Crafts" />
-          <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Crafts" ToRole="Pics" />
-          <NavigationProperty Name="WordLinks" Relationship="AiKModel.FK_WordLinks_Crafts" FromRole="Crafts" ToRole="WordLinks" />
-          <Property Name="s1" Type="Int32" />
-          <Property Name="s2" Type="Int32" />
-          <Property Name="s3" Type="Int32" />
-          <Property Name="s4" Type="Int32" />
-          <Property Name="s5" Type="Int32" />
-          <Property Name="s6" Type="Int32" />
-          <Property Name="s7" Type="Int32" />
-        </EntityType>
-        <Association Name="FK_Crafts_Crafts">
-          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
-          <End Type="AiKModel.Crafts" Role="Crafts1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Crafts">
-              <PropertyRef Name="CraftId" />
-            </Principal>
-            <Dependent Role="Crafts1">
-              <PropertyRef Name="FlyingM" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Crafts_Crafts1">
-          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
-          <End Type="AiKModel.Crafts" Role="Crafts1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Crafts">
-              <PropertyRef Name="CraftId" />
-            </Principal>
-            <Dependent Role="Crafts1">
-              <PropertyRef Name="Same" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Crafts_Crafts2">
-          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
-          <End Type="AiKModel.Crafts" Role="Crafts1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Crafts">
-              <PropertyRef Name="CraftId" />
-            </Principal>
-            <Dependent Role="Crafts1">
-              <PropertyRef Name="SeeAlso" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Pics_Crafts">
-          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="1" />
-          <End Type="AiKModel.Pics" Role="Pics" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Crafts">
-              <PropertyRef Name="CraftId" />
-            </Principal>
-            <Dependent Role="Pics">
-              <PropertyRef Name="CraftId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_WordLinks_Crafts">
-          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
-          <End Type="AiKModel.WordLinks" Role="WordLinks" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Crafts">
-              <PropertyRef Name="CraftId" />
-            </Principal>
-            <Dependent Role="WordLinks">
-              <PropertyRef Name="CraftId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="vwCrafts">
           <Key>
             <PropertyRef Name="CraftId" />
@@ -1005,26 +878,139 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="TxtBeg" Type="Int32" />
           <Property Name="TxtEnd" Type="Int32" />
         </EntityType>
+        <EntityType Name="Arts">
+          <Key>
+            <PropertyRef Name="ArtId" />
+          </Key>
+          <Property Name="ArtId" Type="Int32" Nullable="false" />
+          <Property Name="Mag" Type="String" MaxLength="5" FixedLength="true" Unicode="true" />
+          <Property Name="IYear" Type="Int32" />
+          <Property Name="IMonth" Type="String" MaxLength="5" FixedLength="true" Unicode="true" />
+          <Property Name="Author" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NN" Type="Int32" />
+          <Property Name="Serie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Pics_Arts" FromRole="Arts" ToRole="Pics" />
+        </EntityType>
+        <EntityType Name="Crafts">
+          <Key>
+            <PropertyRef Name="CraftId" />
+          </Key>
+          <Property Name="CraftId" Type="Int32" Nullable="false" />
+          <Property Name="Construct" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IYear" Type="Int32" />
+          <Property Name="Vert" Type="Boolean" />
+          <Property Name="Uav" Type="Boolean" />
+          <Property Name="Glider" Type="Boolean" />
+          <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SeeAlso" Type="Int32" />
+          <Property Name="Wiki" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Airwar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FlyingM" Type="Int32" />
+          <Property Name="Wings" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Engines" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="LL" Type="Boolean" />
+          <Property Name="Proj" Type="Boolean" />
+          <Property Name="Same" Type="Int32" />
+          <Property Name="Single" Type="Boolean" />
+          <Property Name="s1" Type="Int32" />
+          <Property Name="s2" Type="Int32" />
+          <Property Name="s3" Type="Int32" />
+          <Property Name="s4" Type="Int32" />
+          <Property Name="s5" Type="Int32" />
+          <Property Name="s6" Type="Int32" />
+          <Property Name="s7" Type="Int32" />
+          <NavigationProperty Name="Crafts1" Relationship="AiKModel.FK_Crafts_Crafts" FromRole="Crafts" ToRole="Crafts1" />
+          <NavigationProperty Name="Crafts2" Relationship="AiKModel.FK_Crafts_Crafts" FromRole="Crafts1" ToRole="Crafts" />
+          <NavigationProperty Name="Crafts11" Relationship="AiKModel.FK_Crafts_Crafts1" FromRole="Crafts" ToRole="Crafts1" />
+          <NavigationProperty Name="Crafts3" Relationship="AiKModel.FK_Crafts_Crafts1" FromRole="Crafts1" ToRole="Crafts" />
+          <NavigationProperty Name="Crafts12" Relationship="AiKModel.FK_Crafts_Crafts2" FromRole="Crafts" ToRole="Crafts1" />
+          <NavigationProperty Name="Crafts4" Relationship="AiKModel.FK_Crafts_Crafts2" FromRole="Crafts1" ToRole="Crafts" />
+          <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Crafts" ToRole="Pics" />
+          <NavigationProperty Name="WordLinks" Relationship="AiKModel.FK_WordLinks_Crafts" FromRole="Crafts" ToRole="WordLinks" />
+        </EntityType>
+        <Association Name="FK_Pics_Arts">
+          <End Type="AiKModel.Arts" Role="Arts" Multiplicity="1" />
+          <End Type="AiKModel.Pics" Role="Pics" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Arts">
+              <PropertyRef Name="ArtId" />
+            </Principal>
+            <Dependent Role="Pics">
+              <PropertyRef Name="ArtId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crafts_Crafts">
+          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
+          <End Type="AiKModel.Crafts" Role="Crafts1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crafts">
+              <PropertyRef Name="CraftId" />
+            </Principal>
+            <Dependent Role="Crafts1">
+              <PropertyRef Name="FlyingM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crafts_Crafts1">
+          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
+          <End Type="AiKModel.Crafts" Role="Crafts1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crafts">
+              <PropertyRef Name="CraftId" />
+            </Principal>
+            <Dependent Role="Crafts1">
+              <PropertyRef Name="Same" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crafts_Crafts2">
+          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
+          <End Type="AiKModel.Crafts" Role="Crafts1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crafts">
+              <PropertyRef Name="CraftId" />
+            </Principal>
+            <Dependent Role="Crafts1">
+              <PropertyRef Name="SeeAlso" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Pics_Crafts">
+          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="1" />
+          <End Type="AiKModel.Pics" Role="Pics" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crafts">
+              <PropertyRef Name="CraftId" />
+            </Principal>
+            <Dependent Role="Pics">
+              <PropertyRef Name="CraftId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WordLinks_Crafts">
+          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="0..1" />
+          <End Type="AiKModel.WordLinks" Role="WordLinks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crafts">
+              <PropertyRef Name="CraftId" />
+            </Principal>
+            <Dependent Role="WordLinks">
+              <PropertyRef Name="CraftId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="AiKModelStoreContainer" CdmEntityContainer="AiKEntities">
-          <EntitySetMapping Name="Arts">
-            <EntityTypeMapping TypeName="AiKModel.Arts">
-              <MappingFragment StoreEntitySet="Arts">
-                <ScalarProperty Name="ArtId" ColumnName="ArtId" />
-                <ScalarProperty Name="Mag" ColumnName="Mag" />
-                <ScalarProperty Name="IYear" ColumnName="IYear" />
-                <ScalarProperty Name="IMonth" ColumnName="IMonth" />
-                <ScalarProperty Name="Author" ColumnName="Author" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="NN" ColumnName="NN" />
-                <ScalarProperty Name="Serie" ColumnName="Serie" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Countries">
             <EntityTypeMapping TypeName="AiKModel.Countries">
               <MappingFragment StoreEntitySet="Countries">
@@ -1086,40 +1072,6 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
                 <ScalarProperty Name="WordId" ColumnName="WordId" />
                 <ScalarProperty Name="Word" ColumnName="Word" />
                 <ScalarProperty Name="Cnt" ColumnName="Cnt" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Crafts">
-            <EntityTypeMapping TypeName="AiKModel.Crafts">
-              <MappingFragment StoreEntitySet="Crafts">
-                <ScalarProperty Name="s7" ColumnName="s7" />
-                <ScalarProperty Name="s6" ColumnName="s6" />
-                <ScalarProperty Name="s5" ColumnName="s5" />
-                <ScalarProperty Name="s4" ColumnName="s4" />
-                <ScalarProperty Name="s3" ColumnName="s3" />
-                <ScalarProperty Name="s2" ColumnName="s2" />
-                <ScalarProperty Name="s1" ColumnName="s1" />
-                <ScalarProperty Name="Single" ColumnName="Single" />
-                <ScalarProperty Name="Same" ColumnName="Same" />
-                <ScalarProperty Name="Proj" ColumnName="Proj" />
-                <ScalarProperty Name="LL" ColumnName="LL" />
-                <ScalarProperty Name="Engines" ColumnName="Engines" />
-                <ScalarProperty Name="Wings" ColumnName="Wings" />
-                <ScalarProperty Name="FlyingM" ColumnName="FlyingM" />
-                <ScalarProperty Name="Airwar" ColumnName="Airwar" />
-                <ScalarProperty Name="Wiki" ColumnName="Wiki" />
-                <ScalarProperty Name="SeeAlso" ColumnName="SeeAlso" />
-                <ScalarProperty Name="CText" ColumnName="CText" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="Glider" ColumnName="Glider" />
-                <ScalarProperty Name="Uav" ColumnName="Uav" />
-                <ScalarProperty Name="Vert" ColumnName="Vert" />
-                <ScalarProperty Name="IYear" ColumnName="IYear" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Construct" ColumnName="Construct" />
-                <ScalarProperty Name="CraftId" ColumnName="CraftId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1280,6 +1232,54 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
                 <ScalarProperty Name="Picture" ColumnName="Picture" />
                 <ScalarProperty Name="CraftID" ColumnName="CraftID" />
                 <ScalarProperty Name="PictID" ColumnName="PictID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Arts">
+            <EntityTypeMapping TypeName="AiKModel.Arts">
+              <MappingFragment StoreEntitySet="Arts">
+                <ScalarProperty Name="Serie" ColumnName="Serie" />
+                <ScalarProperty Name="NN" ColumnName="NN" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Author" ColumnName="Author" />
+                <ScalarProperty Name="IMonth" ColumnName="IMonth" />
+                <ScalarProperty Name="IYear" ColumnName="IYear" />
+                <ScalarProperty Name="Mag" ColumnName="Mag" />
+                <ScalarProperty Name="ArtId" ColumnName="ArtId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Crafts">
+            <EntityTypeMapping TypeName="AiKModel.Crafts">
+              <MappingFragment StoreEntitySet="Crafts">
+                <ScalarProperty Name="s7" ColumnName="s7" />
+                <ScalarProperty Name="s6" ColumnName="s6" />
+                <ScalarProperty Name="s5" ColumnName="s5" />
+                <ScalarProperty Name="s4" ColumnName="s4" />
+                <ScalarProperty Name="s3" ColumnName="s3" />
+                <ScalarProperty Name="s2" ColumnName="s2" />
+                <ScalarProperty Name="s1" ColumnName="s1" />
+                <ScalarProperty Name="Single" ColumnName="Single" />
+                <ScalarProperty Name="Same" ColumnName="Same" />
+                <ScalarProperty Name="Proj" ColumnName="Proj" />
+                <ScalarProperty Name="LL" ColumnName="LL" />
+                <ScalarProperty Name="Engines" ColumnName="Engines" />
+                <ScalarProperty Name="Wings" ColumnName="Wings" />
+                <ScalarProperty Name="FlyingM" ColumnName="FlyingM" />
+                <ScalarProperty Name="Airwar" ColumnName="Airwar" />
+                <ScalarProperty Name="Wiki" ColumnName="Wiki" />
+                <ScalarProperty Name="SeeAlso" ColumnName="SeeAlso" />
+                <ScalarProperty Name="CText" ColumnName="CText" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Glider" ColumnName="Glider" />
+                <ScalarProperty Name="Uav" ColumnName="Uav" />
+                <ScalarProperty Name="Vert" ColumnName="Vert" />
+                <ScalarProperty Name="IYear" ColumnName="IYear" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Construct" ColumnName="Construct" />
+                <ScalarProperty Name="CraftId" ColumnName="CraftId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

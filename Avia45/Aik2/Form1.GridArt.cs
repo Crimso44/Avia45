@@ -286,6 +286,7 @@ namespace Aik2
             var isAdded = false;
             if (art.ArtId == 0)
             {
+                art.ArtId = _ctx.Arts.Max(c => c.ArtId) + 1;
                 var entity = Mapper.Map<Arts>(art);
                 _ctx.Arts.Add(entity);
                 _ctx.SaveChanges();

@@ -35,13 +35,13 @@ namespace Aik2
         public string Grp { get; set; }
         public Nullable<bool> Copyright { get; set; }
     
-        public virtual Arts Arts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Links> Links { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Links> Links1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WordLinks> WordLinks { get; set; }
+        public virtual Arts Arts { get; set; }
         public virtual Crafts Crafts { get; set; }
     }
 }

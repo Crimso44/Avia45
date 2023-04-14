@@ -137,6 +137,9 @@
             this.allLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.links6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.links7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.load6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.load7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lWorkingText = new System.Windows.Forms.Label();
             this.lWorking = new System.Windows.Forms.Label();
@@ -869,6 +872,7 @@
             // edPicText
             // 
             this.edPicText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.edPicText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.edPicText.Location = new System.Drawing.Point(0, 0);
             this.edPicText.Margin = new System.Windows.Forms.Padding(1);
             this.edPicText.Name = "edPicText";
@@ -1249,7 +1253,8 @@
             this.load5ToolStripMenuItem,
             this.make6ToolStripMenuItem,
             this.make7ToolStripMenuItem,
-            this.makeLinksToolStripMenuItem});
+            this.makeLinksToolStripMenuItem,
+            this.restoreToolStripMenuItem});
             this.webToolStripMenuItem.Name = "webToolStripMenuItem";
             this.webToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.webToolStripMenuItem.Text = "Web";
@@ -1319,6 +1324,29 @@
             this.links7ToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.links7ToolStripMenuItem.Text = "Links 7";
             this.links7ToolStripMenuItem.Click += new System.EventHandler(this.links7ToolStripMenuItem_Click);
+            // 
+            // restoreToolStripMenuItem
+            // 
+            this.restoreToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.load6ToolStripMenuItem,
+            this.load7ToolStripMenuItem});
+            this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(133, 22);
+            this.restoreToolStripMenuItem.Text = "Restore";
+            // 
+            // load6ToolStripMenuItem
+            // 
+            this.load6ToolStripMenuItem.Name = "load6ToolStripMenuItem";
+            this.load6ToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.load6ToolStripMenuItem.Text = "Load 6";
+            this.load6ToolStripMenuItem.Click += new System.EventHandler(this.load6ToolStripMenuItem_Click);
+            // 
+            // load7ToolStripMenuItem
+            // 
+            this.load7ToolStripMenuItem.Name = "load7ToolStripMenuItem";
+            this.load7ToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.load7ToolStripMenuItem.Text = "Load 7";
+            this.load7ToolStripMenuItem.Click += new System.EventHandler(this.load7ToolStripMenuItem_Click);
             // 
             // panel2
             // 
@@ -1543,6 +1571,9 @@
         private System.Windows.Forms.ToolStripMenuItem make7ToolStripMenuItem;
         private System.Windows.Forms.Label lArtCount;
         private System.Windows.Forms.RadioButton chArtSortAuthorArt;
+        private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem load6ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem load7ToolStripMenuItem;
     }
 }
 

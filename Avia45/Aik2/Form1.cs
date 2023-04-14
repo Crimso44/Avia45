@@ -762,5 +762,16 @@ namespace Aik2
             }
         }
 
+        private void load6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new WebLoader();
+            wm.Load6(_ctx, _imagesPath, lInfo);
+        }
+
+        private void load7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new WebLoader();
+            wm.Load7(_ctx, _imagesPath, lInfo);
+        }
     }
 }
