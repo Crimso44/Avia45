@@ -250,7 +250,7 @@ namespace Aik2
                     return Result;
                 }
             }
-            Result += a.IMonth.Trim();
+            Result += a.IMonth?.Trim() ?? "";
             return Result;
         }
 
@@ -1563,6 +1563,7 @@ namespace Aik2
                                         plans[2] = true;
                                         break;
                                     case "p":
+                                    case "pn":
                                         plans[3] = true;
                                         break;
                                     default:

@@ -62,6 +62,7 @@ namespace Aik2
             if (type == "d") return 90;
             if (type == "k") return 100;
             if (type == "p") return 110;
+            if (type == "pn") return 115;
             return 120;
         }
 

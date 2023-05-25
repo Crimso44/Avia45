@@ -9,8 +9,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -226,9 +224,12 @@ namespace Aik2
             lPicCnt.Text = _pics.Count.ToString();
 
             var saved = -1;
+            var savedCol = 1;
+            var empty = false;
             if (_picPosition != Position.Empty && _picPosition.Row > 0)
             {
                 saved = (int)gridPic[_picPosition.Row, Const.Columns.Pic.PicId].Value;
+                savedCol = _picPosition.Column;
             }
 
             gridPic.RowsCount = _pics.Count + 1;
@@ -257,10 +258,12 @@ namespace Aik2
                 var Pic = new PicDto() { PicId = -1 };
                 _pics.Add(Pic);
                 UpdatePicRow(Pic, 1, true);
+                empty = true;
             }
             if (!focused)
             {
-                _picPosition = new Position(1, 1);
+                if (empty) savedCol = 1;
+                _picPosition = new Position(1, savedCol);
                 gridPic.Selection.Focus(_picPosition, true);
             }
 
@@ -1405,5 +1408,27 @@ namespace Aik2
                 LoadDirectories(dir, shPath, imgs);
             }
         }
+
+        private void bNextCraft_Click(object sender, EventArgs e)
+        {
+
+            var i = _craftDtos.IndexOf(_selectedCraft);
+            if (i >= 0 && i < (_craftDtos.Count - 1))
+            {
+                SelectCraft(_craftDtos[i + 1].CraftId);
+            }
+            LoadPics(true);
+        }
+
+        private void bPrevCraft_Click(object sender, EventArgs e)
+        {
+            var i = _craftDtos.IndexOf(_selectedCraft);
+            if (i > 0)
+            {
+                SelectCraft(_craftDtos[i - 1].CraftId);
+            }
+            LoadPics(true);
+        }
+
     }
 }
