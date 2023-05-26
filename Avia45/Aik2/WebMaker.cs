@@ -2817,7 +2817,7 @@ namespace Aik2
                 File.WriteAllText(s, templ, Encoding.UTF8);
 
 
-                lInfo.Text = $"Art {ibq1Aa.IYear} {ibq1Aa.IMonth.Trim()} {ibq1Aa.Mag.Trim()}";
+                lInfo.Text = $"Art {ibq1Aa.IYear} {ibq1Aa.IMonth?.Trim()} {ibq1Aa.Mag.Trim()}";
                 Application.DoEvents();
                 if (is_stop) { return; };
 
