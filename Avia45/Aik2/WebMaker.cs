@@ -451,7 +451,10 @@ namespace Aik2
                 .Replace("%Construct%", craft1.Construct)
                 .Replace("%Name%", craft1.Name)
                 .Replace("%Year%", craft1.IYear.ToString())
-                .Replace("%Vert%", craft1.Vert ?? false ? GetSpanRuEn("Вертолет", "Helicopter") : "")
+                .Replace("%Vert%", craft1.Vert ?? false ? 
+                    craft1.Wings == "аж" ? GetSpanRuEn("Автожир", "Autogyro") :
+                    craft1.Wings == "конв" ? GetSpanRuEn("Конвертоплан", "Tiltrotor") :
+                    GetSpanRuEn("Вертолет", "Helicopter") : "")
                 .Replace("%UAV%", craft1.Uav ?? false ? GetSpanRuEn("Беспилотный", "Unmanned") : "")
                 .Replace("%Glider%", craft1.Glider ?? false ? GetSpanRuEn("Планер", "Glider") : "")
                 .Replace("%Single%", craft1.Single ?? false ? GetSpanRuEn("Единственный экземпляр", "One-off model") : "")
@@ -1906,7 +1909,7 @@ namespace Aik2
 
                 AddSitemap($"Site\\Arts\\Art{ibq1Aa.ArtId}.htm", s, is_upl);
 
-                lInfo.Text = $"Art {ibq1Aa.IYear} {ibq1Aa.IMonth.Trim()} {ibq1Aa.Mag.Trim()}";
+                lInfo.Text = $"Art {ibq1Aa.IYear} {ibq1Aa.IMonth?.Trim()} {ibq1Aa.Mag.Trim()}";
                 Application.DoEvents();
                 if (is_stop) { return; };
 
