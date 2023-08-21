@@ -220,6 +220,8 @@ namespace Aik2
             else if (sx == "M.Simons The World's Vintage Sailplanes")
             {
                 sMag = "GL";
+                sYear = "";
+                sMonth = "";
             } else
                 MessageBox.Show("Unknown Mag: " + sx);
 
