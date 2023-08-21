@@ -216,6 +216,10 @@ namespace Aik2
             } else if (sx == "Aeroplane Monthly") {
                 sMag = "MY";
                 GetYearArt(false);
+            }
+            else if (sx == "M.Simons The World's Vintage Sailplanes")
+            {
+                sMag = "GL";
             } else
                 MessageBox.Show("Unknown Mag: " + sx);
 
@@ -1322,6 +1326,7 @@ namespace Aik2
                 case "MM": Result = "Мировая Авиация"; break;
                 case "MY": Result = "Aeroplane Monthly"; break;
                 case "OS": Result = "Изд-во Osprey"; break;
+                case "GL": Result = "Изд-во Kookaburra"; break;
                 case "SC": Result = "Изд-во Schiffer"; break;
             }
 

@@ -1778,6 +1778,7 @@ namespace Aik2
             if (str.StartsWith("Мировая Авиация")) return "MM";
             if (str.StartsWith("Aeroplane Monthly")) return "MY";
             if (str.StartsWith("Изд-во Osprey")) return "OS";
+            if (str.StartsWith("Изд-во Kookaburra")) return "GL";
             if (str.StartsWith("Изд-во Schiffer")) return "SC";
 
             MessageBox.Show($"Unknown mag {str}");
