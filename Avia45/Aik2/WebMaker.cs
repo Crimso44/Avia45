@@ -1841,6 +1841,10 @@ namespace Aik2
 
                 if (ibq2AP.Any()) {
                     foreach (var ibq2APp in ibq2AP) {
+                        if (ibq2AP.Any(x => x.p.Path == ibq2APp.p.Path && x.c.CraftId < ibq2APp.c.CraftId))
+                        {
+                            continue;
+                        }
                         ss = new StringBuilder(ibq2APp.p.Text ?? "")
                             .Replace("\n\r ", "<br>&nbsp;&nbsp;")
                             .Replace("\n ", "<br>&nbsp;&nbsp;")
@@ -1848,14 +1852,24 @@ namespace Aik2
                             .Replace("\n", "<br>")
                             .ToString();
 
+                        var crafts = ibq2AP.Where(x => x.p.Path == ibq2APp.p.Path).ToList();
+                        var sz = "";
+                        var first = true;
+                        foreach (var craft in crafts)
+                        {
+                            if (!first) sz += "<br/>";
+                            first = false;
+                            var craftName = craft.c.Construct + " " +
+                                craft.c.Name + " - " +
+                                GetSpanCountry(craft.c.Country) + " - " +
+                                craft.c.IYear.ToString();
+                            var craftLink = $"../Crafts/Craft{craft.p.CraftId}.htm";
+                            sz += $"<a class=\"en_href\" href=\"{craftLink}\">{craftName}</a>";
+                        }
+
                         var sx = new StringBuilder(sMid)
                             .Replace("%PicPath%", ibq2APp.p.Path.Replace("\\", "/"))
-                            .Replace("%CraftLink%", $"../Crafts/Craft{ibq2APp.p.CraftId}.htm")
-                            .Replace("%CraftName%",
-                                ibq2APp.c.Construct + " " +
-                                ibq2APp.c.Name + " - " +
-                                GetSpanCountry(ibq2APp.c.Country) + " - " +
-                                ibq2APp.c.IYear.ToString())
+                            .Replace("%CraftLink%", sz)
                             .Replace("%PicText%", ss)
                             .ToString();
 
