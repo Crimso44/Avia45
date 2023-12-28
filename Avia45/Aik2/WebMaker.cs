@@ -58,7 +58,7 @@ namespace Aik2
         int cnt;
 
 
-        List<string> picDbls;
+        List<PicArt> picDbls;
 
         private class PicDbl
         {
@@ -748,21 +748,9 @@ namespace Aik2
 
                         var xArtLink = $"../Arts/Art{pic.p.ArtId}.htm";
                         var sArtLink = $"<a class=\"en_href\" href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
-                        if (picDbls.Contains(pic.p.Path))
+                        var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path && x.p.PicId != pic.p.PicId).ToList();
+                        if (otherPics.Any())
                         { 
-                            var qry = (
-                                from p in _ctx.Pics
-                                join c in _ctx.Crafts on p.CraftId equals c.CraftId
-                                where !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)
-                                orderby p.CraftId, p.NType, p.NNN
-                                select new { p, c });
-                            var otherPics = qry.Where(x => x.p.Path == pic.p.Path && x.p.PicId != pic.p.PicId).ToList()
-                                .Select(x => new PicArt()
-                                {
-                                    p = Mapper.Map<PicDto>(x.p),
-                                    c = Mapper.Map<CraftDto>(x.c)
-                                }).ToList();
-
                             sArtLink = "<br/>" + sArtLink;
                             foreach (var otherPic in otherPics)
                             {
@@ -770,7 +758,7 @@ namespace Aik2
                                     otherPic.c.Name + " - " +
                                     GetSpanCountry(otherPic.c.Country) + " - " +
                                     otherPic.c.IYear.ToString();
-                                var xCraftLink = $"../Crafts/Craft{otherPic.p.CraftId}.htm";
+                                var xCraftLink = $"../Crafts/Craft{otherPic.c.CraftId}.htm";
                                 var craftLink = $"<a class=\"en_href\" href=\"{xCraftLink}\">{craftName}</a>";
                                 sArtLink = $"{craftLink}<br/>{sArtLink}";
                             }
@@ -1531,10 +1519,21 @@ namespace Aik2
             lAlso = new List<Pair<int>>();
             lAlsoYears = new List<string>();
 
-            picDbls = _ctx.Pics.Where(p =>
+            picDbls = (
+                from p in _ctx.Pics
+                join c in _ctx.Crafts on p.CraftId equals c.CraftId
+                where _ctx.Pics.Where(p =>
                     !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false))
-                .GroupBy(x => x.Path).Select(x => new { x.Key, cnt = x.Count() } ).ToList()
-                .Where(x => x.cnt > 1).Select(x => x.Key).ToList();
+                    .GroupBy(x => x.Path).Select(x => new { x.Key, cnt = x.Count() }).ToList()
+                    .Where(x => x.cnt > 1).Select(x => x.Key).Contains(p.Path)
+                orderby c.Construct, c.Name, c.Country, c.IYear
+                select new { p, c })
+                .ToList()
+                .Select(x => new PicArt()
+                {
+                    p = Mapper.Map<PicDto>(x.p),
+                    c = Mapper.Map<CraftDto>(x.c)
+                }).ToList();
 
             var IBQuery2 = (
                 from p in _ctx.Pics
