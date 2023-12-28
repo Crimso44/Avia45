@@ -746,12 +746,10 @@ namespace Aik2
                             .Replace("\n", "<br>")
                             .ToString();
 
-                        var xArtLink = $"../Arts/Art{pic.p.ArtId}.htm";
-                        var sArtLink = $"<a class=\"en_href\" href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
+                        var sArtLink = "";
                         var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path && x.p.PicId != pic.p.PicId).ToList();
                         if (otherPics.Any())
                         { 
-                            sArtLink = "<br/>" + sArtLink;
                             foreach (var otherPic in otherPics)
                             {
                                 var craftName = otherPic.c.Construct + " " +
@@ -760,9 +758,12 @@ namespace Aik2
                                     otherPic.c.IYear.ToString();
                                 var xCraftLink = $"../Crafts/Craft{otherPic.c.CraftId}.htm";
                                 var craftLink = $"<a class=\"en_href\" href=\"{xCraftLink}\">{craftName}</a>";
-                                sArtLink = $"{craftLink}<br/>{sArtLink}";
+                                sArtLink += $"{craftLink}<br/>";
                             }
+                            sArtLink += "<br/>";
                         }
+                        var xArtLink = $"../Arts/Art{pic.p.ArtId}.htm";
+                        sArtLink = $"{sArtLink}<a class=\"en_href\" href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
                         sx = new StringBuilder(sMid)
                             .Replace("%PicPath%", pic.p.Path.Replace("\\", "/"))
                             .Replace("%ArtLink%", sArtLink)
