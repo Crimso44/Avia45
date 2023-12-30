@@ -1896,7 +1896,9 @@ namespace Aik2
                             .Replace("\n", "<br>")
                             .ToString();
 
-                        var crafts = ibq2AP.Where(x => x.p.Path == ibq2APp.p.Path).ToList();
+                        var crafts = ibq2AP.Where(x => x.p.Path == ibq2APp.p.Path)
+                            .OrderBy(x => x.c.Construct).ThenBy(x =>x.c.Name).ThenBy(x => x.c.Country).ThenBy(x => x.c.IYear)
+                            .ToList();
                         var sz = "";
                         var first = true;
                         foreach (var craft in crafts)
