@@ -421,6 +421,7 @@ namespace Aik2
                         var i = s.IndexOf(t);
                         while (i >= 0)
                         {
+                            if (!_filter.WholeWords) { found = true; break; };
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
                             i = s.IndexOf(t, i + 1);
                         }
@@ -436,6 +437,7 @@ namespace Aik2
                         var i = s.IndexOf(t);
                         while (i >= 0)
                         {
+                            if (!_filter.WholeWords) { found = true; break; };
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
                             i = s.IndexOf(t, i + 1);
                         }
@@ -456,6 +458,7 @@ namespace Aik2
                         var i = s.IndexOf(t);
                         while (i >= 0)
                         {
+                            if (!_filter.WholeWords) { found = true; break; };
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
                             i = s.IndexOf(t, i + 1);
                         }
@@ -475,6 +478,7 @@ namespace Aik2
                         var i = s.IndexOf(t);
                         while (i >= 0)
                         {
+                            if (!_filter.WholeWords) { found = true; break; };
                             if (!Char.IsLetterOrDigit(s[i - 1]) && !Char.IsLetterOrDigit(s[i + t.Length])) { found = true; break; };
                             i = s.IndexOf(t, i + 1);
                         }

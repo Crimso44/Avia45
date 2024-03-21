@@ -54,7 +54,7 @@ namespace Aik2
 
             _editorsArt.Add(null);
             _editorsArt.Add(editStr5);
-            _editorsArt.Add(editInt);
+            _editorsArt.Add(editIntNull);
             _editorsArt.Add(editStr5);
             _editorsArt.Add(editStr50);
             _editorsArt.Add(editStr100);
