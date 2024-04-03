@@ -233,6 +233,12 @@ namespace Aik2
                 sMag = "GL";
                 sYear = "";
                 sMonth = "";
+            }
+            else if (sx == "M.Hardy. Gliders & Sailplanes of the")
+            {
+                sMag = "GL";
+                sYear = "1982";
+                sMonth = "";
             } else
                 MessageBox.Show("Unknown Mag: " + sx);
 
