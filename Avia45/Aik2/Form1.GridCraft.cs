@@ -426,7 +426,7 @@ namespace Aik2
                             i = s.IndexOf(t, i + 1);
                         }
                         if (found) isOk = true;
-                        else break;
+                        else { isOk = false; break; }
                     }
                     if (isOk) return true;
 
@@ -442,7 +442,7 @@ namespace Aik2
                             i = s.IndexOf(t, i + 1);
                         }
                         if (found) isOk = true;
-                        else break;
+                        else { isOk = false; break; }
                     }
                     if (isOk) return true;
                     if (!_filter.InText) return false;
