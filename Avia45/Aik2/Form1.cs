@@ -774,5 +774,10 @@ namespace Aik2
             wm.Load7(_ctx, _imagesPath, lInfo);
         }
 
+        private void make6NewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var wm = new WebMaker();
+            wm.PrepareWeb6New(_ctx, _imagesPath, lInfo);
+        }
     }
 }
