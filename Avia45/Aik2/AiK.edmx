@@ -58,36 +58,6 @@
           <Property Name="s6" Type="int" />
           <Property Name="s7" Type="int" />
         </EntityType>
-        <EntityType Name="CraftsOld">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Type" Type="nvarchar" MaxLength="255" />
-          <Property Name="IYear" Type="int" />
-          <Property Name="YearBad" Type="bit" />
-          <Property Name="Country" Type="nvarchar" MaxLength="255" />
-          <Property Name="Construct" Type="nvarchar" MaxLength="255" />
-          <Property Name="Source" Type="int" Nullable="false" />
-          <Property Name="TxtBeg" Type="int" />
-          <Property Name="TxtEnd" Type="int" />
-          <Property Name="Vert" Type="bit" />
-          <Property Name="Craft" Type="bit" />
-          <Property Name="MM" Type="bit" />
-          <Property Name="UAV" Type="bit" />
-          <Property Name="Glider" Type="bit" />
-          <Property Name="S1" Type="int" />
-          <Property Name="S2" Type="int" />
-          <Property Name="S3" Type="int" />
-          <Property Name="S4" Type="int" />
-          <Property Name="S5" Type="int" />
-          <Property Name="S6" Type="int" />
-          <Property Name="S7" Type="int" />
-          <Property Name="PicCnt" Type="int" />
-          <Property Name="TxtLen" Type="int" />
-          <Property Name="ParamCnt" Type="int" />
-        </EntityType>
         <EntityType Name="Links">
           <Key>
             <PropertyRef Name="LinkId" />
@@ -104,16 +74,6 @@
           </Key>
           <Property Name="Id" Type="nchar" MaxLength="3" Nullable="false" />
           <Property Name="Template" Type="nvarchar" MaxLength="100" />
-        </EntityType>
-        <EntityType Name="ParamsOld">
-          <Key>
-            <PropertyRef Name="ParamId" />
-          </Key>
-          <Property Name="ParamId" Type="int" Nullable="false" />
-          <Property Name="CraftId" Type="int" Nullable="false" />
-          <Property Name="Source" Type="int" Nullable="false" />
-          <Property Name="ParamName" Type="nvarchar(max)" />
-          <Property Name="ParamData" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Pics">
           <Key>
@@ -132,17 +92,6 @@
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
           <Property Name="Copyright" Type="bit" />
         </EntityType>
-        <EntityType Name="PicsOld">
-          <Key>
-            <PropertyRef Name="PictID" />
-          </Key>
-          <Property Name="PictID" Type="int" Nullable="false" />
-          <Property Name="CraftID" Type="int" Nullable="false" />
-          <Property Name="Picture" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Source" Type="int" Nullable="false" />
-          <Property Name="TxtBeg" Type="int" />
-          <Property Name="TxtEnd" Type="int" />
-        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="Report">
@@ -157,6 +106,14 @@ warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defin
           <Property Name="pics" Type="int" />
           <Property Name="crafts" Type="int" />
           <Property Name="uniq" Type="int" />
+        </EntityType>
+        <EntityType Name="Serials">
+          <Key>
+            <PropertyRef Name="Serial" />
+            <PropertyRef Name="PicId" />
+          </Key>
+          <Property Name="Serial" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="PicId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="WordLinks">
           <Key>
@@ -248,6 +205,7 @@ warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defin
           <Property Name="Copyright" Type="bit" />
           <Property Name="SText" Type="nvarchar(max)" />
           <Property Name="XType" Type="nvarchar" MaxLength="20" />
+          <Property Name="Serial" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -361,6 +319,18 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Serials_Pics">
+          <End Role="Pics" Type="Self.Pics" Multiplicity="1" />
+          <End Role="Serials" Type="Self.Serials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pics">
+              <PropertyRef Name="PicId" />
+            </Principal>
+            <Dependent Role="Serials">
+              <PropertyRef Name="PicId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_WordLinks_Crafts">
           <End Role="Crafts" Type="Self.Crafts" Multiplicity="0..1" />
           <End Role="WordLinks" Type="Self.WordLinks" Multiplicity="*" />
@@ -401,12 +371,10 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <EntitySet Name="Arts" EntityType="Self.Arts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Crafts" EntityType="Self.Crafts" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CraftsOld" EntityType="Self.CraftsOld" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Links" EntityType="Self.Links" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mags" EntityType="Self.Mags" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ParamsOld" EntityType="Self.ParamsOld" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pics" EntityType="Self.Pics" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PicsOld" EntityType="Self.PicsOld" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Serials" EntityType="Self.Serials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WordLinks" EntityType="Self.WordLinks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Words" EntityType="Self.Words" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Report" EntityType="Self.Report" store:Type="Tables" store:Schema="dbo">
@@ -481,7 +449,8 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
     [vwPics].[Grp] AS [Grp], 
     [vwPics].[Copyright] AS [Copyright], 
     [vwPics].[SText] AS [SText], 
-    [vwPics].[XType] AS [XType]
+    [vwPics].[XType] AS [XType], 
+    [vwPics].[Serial] AS [Serial]
     FROM [dbo].[vwPics] AS [vwPics]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwReport" EntityType="Self.vwReport" store:Type="Views" store:Schema="dbo">
@@ -530,6 +499,10 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <AssociationSet Name="FK_Pics_Crafts" Association="Self.FK_Pics_Crafts">
             <End Role="Crafts" EntitySet="Crafts" />
             <End Role="Pics" EntitySet="Pics" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Serials_Pics" Association="Self.FK_Serials_Pics">
+            <End Role="Pics" EntitySet="Pics" />
+            <End Role="Serials" EntitySet="Serials" />
           </AssociationSet>
           <AssociationSet Name="FK_WordLinks_Crafts" Association="Self.FK_WordLinks_Crafts">
             <End Role="Crafts" EntitySet="Crafts" />
@@ -595,6 +568,7 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="Copyright" Type="Boolean" />
           <NavigationProperty Name="Arts" Relationship="AiKModel.FK_Pics_Arts" FromRole="Pics" ToRole="Arts" />
           <NavigationProperty Name="Crafts" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Pics" ToRole="Crafts" />
+          <NavigationProperty Name="Serials" Relationship="AiKModel.FK_Serials_Pics" FromRole="Pics" ToRole="Serials" />
         </EntityType>
         <EntityType Name="WordLinks">
           <Key>
@@ -694,9 +668,6 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <EntitySet Name="vwReport" EntityType="AiKModel.vwReport" />
           <EntitySet Name="vwArts" EntityType="AiKModel.vwArts" />
           <EntitySet Name="vwReportMags" EntityType="AiKModel.vwReportMags" />
-          <EntitySet Name="CraftsOld" EntityType="AiKModel.CraftsOld" />
-          <EntitySet Name="ParamsOld" EntityType="AiKModel.ParamsOld" />
-          <EntitySet Name="PicsOld" EntityType="AiKModel.PicsOld" />
           <EntitySet Name="Arts" EntityType="AiKModel.Arts" />
           <EntitySet Name="Crafts" EntityType="AiKModel.Crafts" />
           <AssociationSet Name="FK_Pics_Arts" Association="AiKModel.FK_Pics_Arts">
@@ -722,6 +693,11 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <AssociationSet Name="FK_WordLinks_Crafts" Association="AiKModel.FK_WordLinks_Crafts">
             <End Role="Crafts" EntitySet="Crafts" />
             <End Role="WordLinks" EntitySet="WordLinks" />
+          </AssociationSet>
+          <EntitySet Name="Serials" EntityType="AiKModel.Serials" />
+          <AssociationSet Name="FK_Serials_Pics" Association="AiKModel.FK_Serials_Pics">
+            <End Role="Pics" EntitySet="Pics" />
+            <End Role="Serials" EntitySet="Serials" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="vwCrafts">
@@ -774,6 +750,7 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="SText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="XType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Copyright" Type="Boolean" />
+          <Property Name="Serial" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -826,57 +803,6 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="IYear" Type="Int32" Nullable="false" />
           <Property Name="IMonth" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
-        </EntityType>
-        <EntityType Name="CraftsOld">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="IYear" Type="Int32" />
-          <Property Name="YearBad" Type="Boolean" />
-          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Construct" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Source" Type="Int32" Nullable="false" />
-          <Property Name="TxtBeg" Type="Int32" />
-          <Property Name="TxtEnd" Type="Int32" />
-          <Property Name="Vert" Type="Boolean" />
-          <Property Name="Craft" Type="Boolean" />
-          <Property Name="MM" Type="Boolean" />
-          <Property Name="UAV" Type="Boolean" />
-          <Property Name="Glider" Type="Boolean" />
-          <Property Name="S1" Type="Int32" />
-          <Property Name="S2" Type="Int32" />
-          <Property Name="S3" Type="Int32" />
-          <Property Name="S4" Type="Int32" />
-          <Property Name="S5" Type="Int32" />
-          <Property Name="S6" Type="Int32" />
-          <Property Name="S7" Type="Int32" />
-          <Property Name="PicCnt" Type="Int32" />
-          <Property Name="TxtLen" Type="Int32" />
-          <Property Name="ParamCnt" Type="Int32" />
-        </EntityType>
-        <EntityType Name="ParamsOld">
-          <Key>
-            <PropertyRef Name="ParamId" />
-          </Key>
-          <Property Name="ParamId" Type="Int32" Nullable="false" />
-          <Property Name="CraftId" Type="Int32" Nullable="false" />
-          <Property Name="Source" Type="Int32" Nullable="false" />
-          <Property Name="ParamName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ParamData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="PicsOld">
-          <Key>
-            <PropertyRef Name="PictID" />
-          </Key>
-          <Property Name="PictID" Type="Int32" Nullable="false" />
-          <Property Name="CraftID" Type="Int32" Nullable="false" />
-          <Property Name="Picture" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Source" Type="Int32" Nullable="false" />
-          <Property Name="TxtBeg" Type="Int32" />
-          <Property Name="TxtEnd" Type="Int32" />
         </EntityType>
         <EntityType Name="Arts">
           <Key>
@@ -1005,6 +931,27 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Serials">
+          <Key>
+            <PropertyRef Name="Serial" />
+            <PropertyRef Name="PicId" />
+          </Key>
+          <Property Name="Serial" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" />
+          <Property Name="PicId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Serials_Pics" FromRole="Serials" ToRole="Pics" />
+        </EntityType>
+        <Association Name="FK_Serials_Pics">
+          <End Type="AiKModel.Pics" Role="Pics" Multiplicity="1" />
+          <End Type="AiKModel.Serials" Role="Serials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Pics">
+              <PropertyRef Name="PicId" />
+            </Principal>
+            <Dependent Role="Serials">
+              <PropertyRef Name="PicId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1112,6 +1059,7 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <EntitySetMapping Name="vwPics">
             <EntityTypeMapping TypeName="AiKModel.vwPics">
               <MappingFragment StoreEntitySet="vwPics">
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
                 <ScalarProperty Name="Copyright" ColumnName="Copyright" />
                 <ScalarProperty Name="XType" ColumnName="XType" />
                 <ScalarProperty Name="SText" ColumnName="SText" />
@@ -1181,60 +1129,6 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="CraftsOld">
-            <EntityTypeMapping TypeName="AiKModel.CraftsOld">
-              <MappingFragment StoreEntitySet="CraftsOld">
-                <ScalarProperty Name="ParamCnt" ColumnName="ParamCnt" />
-                <ScalarProperty Name="TxtLen" ColumnName="TxtLen" />
-                <ScalarProperty Name="PicCnt" ColumnName="PicCnt" />
-                <ScalarProperty Name="S7" ColumnName="S7" />
-                <ScalarProperty Name="S6" ColumnName="S6" />
-                <ScalarProperty Name="S5" ColumnName="S5" />
-                <ScalarProperty Name="S4" ColumnName="S4" />
-                <ScalarProperty Name="S3" ColumnName="S3" />
-                <ScalarProperty Name="S2" ColumnName="S2" />
-                <ScalarProperty Name="S1" ColumnName="S1" />
-                <ScalarProperty Name="Glider" ColumnName="Glider" />
-                <ScalarProperty Name="UAV" ColumnName="UAV" />
-                <ScalarProperty Name="MM" ColumnName="MM" />
-                <ScalarProperty Name="Craft" ColumnName="Craft" />
-                <ScalarProperty Name="Vert" ColumnName="Vert" />
-                <ScalarProperty Name="TxtEnd" ColumnName="TxtEnd" />
-                <ScalarProperty Name="TxtBeg" ColumnName="TxtBeg" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="Construct" ColumnName="Construct" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
-                <ScalarProperty Name="YearBad" ColumnName="YearBad" />
-                <ScalarProperty Name="IYear" ColumnName="IYear" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ParamsOld">
-            <EntityTypeMapping TypeName="AiKModel.ParamsOld">
-              <MappingFragment StoreEntitySet="ParamsOld">
-                <ScalarProperty Name="ParamData" ColumnName="ParamData" />
-                <ScalarProperty Name="ParamName" ColumnName="ParamName" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="CraftId" ColumnName="CraftId" />
-                <ScalarProperty Name="ParamId" ColumnName="ParamId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PicsOld">
-            <EntityTypeMapping TypeName="AiKModel.PicsOld">
-              <MappingFragment StoreEntitySet="PicsOld">
-                <ScalarProperty Name="TxtEnd" ColumnName="TxtEnd" />
-                <ScalarProperty Name="TxtBeg" ColumnName="TxtBeg" />
-                <ScalarProperty Name="Source" ColumnName="Source" />
-                <ScalarProperty Name="Picture" ColumnName="Picture" />
-                <ScalarProperty Name="CraftID" ColumnName="CraftID" />
-                <ScalarProperty Name="PictID" ColumnName="PictID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Arts">
             <EntityTypeMapping TypeName="AiKModel.Arts">
               <MappingFragment StoreEntitySet="Arts">
@@ -1280,6 +1174,14 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Construct" ColumnName="Construct" />
                 <ScalarProperty Name="CraftId" ColumnName="CraftId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Serials">
+            <EntityTypeMapping TypeName="AiKModel.Serials">
+              <MappingFragment StoreEntitySet="Serials">
+                <ScalarProperty Name="PicId" ColumnName="PicId" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

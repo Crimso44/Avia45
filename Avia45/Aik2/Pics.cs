@@ -20,6 +20,7 @@ namespace Aik2
             this.Links = new HashSet<Links>();
             this.Links1 = new HashSet<Links>();
             this.WordLinks = new HashSet<WordLinks>();
+            this.Serials = new HashSet<Serials>();
         }
     
         public int PicId { get; set; }
@@ -43,5 +44,7 @@ namespace Aik2
         public virtual ICollection<WordLinks> WordLinks { get; set; }
         public virtual Arts Arts { get; set; }
         public virtual Crafts Crafts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Serials> Serials { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -56,7 +57,7 @@ namespace Aik2
 
             var editBool = SourceGrid.Cells.Editors.Factory.Create(typeof(bool));
 
-            gridPic.ColumnsCount = 15;
+            gridPic.ColumnsCount = 16;
 
             gridPic.RowsCount = 1;
             gridPic.FixedRows = 1;
@@ -86,14 +87,16 @@ namespace Aik2
             _editorsPic.Add(_editCraft678);
             gridPic[0, 10] = new SourceGrid.Cells.ColumnHeader("Grp");
             _editorsPic.Add(editStr100);
-            gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("SText");
+            gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("Serial");
             _editorsPic.Add(null);
-            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("Copyright");
+            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("SText");
+            _editorsPic.Add(null);
+            gridPic[0, 13] = new SourceGrid.Cells.ColumnHeader("Copyright");
             _editorsPic.Add(editBool);
-            gridPic[0, 13] = new SourceGrid.Cells.ColumnHeader("ArtId");
-            gridPic.Columns[13].Visible = false;
-            gridPic[0, 14] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic[0, 14] = new SourceGrid.Cells.ColumnHeader("ArtId");
             gridPic.Columns[14].Visible = false;
+            gridPic[0, 15] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic.Columns[15].Visible = false;
 
             for (var i = 1; i < gridPic.ColumnsCount; i++)
             {
@@ -363,6 +366,8 @@ namespace Aik2
             LinkCellGotFocus(null, new ChangeActivePositionEventArgs(_linkPosition, _linkPosition));
 
             gridLink.Refresh();
+
+            RefreshSerials();
         }
 
 
@@ -400,12 +405,14 @@ namespace Aik2
             gridPic[r, 9].AddController(_gridPicController);
             gridPic[r, 10] = new SourceGrid.Cells.Cell(Pic.Grp, _editorsPic[10]);
             gridPic[r, 10].AddController(_gridPicController);
-            gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[11]);
+            gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.Serial, _editorsPic[11]);
             gridPic[r, 11].AddController(_gridPicController);
-            gridPic[r, 12] = new SourceGrid.Cells.CheckBox("", Pic.Copyright ?? false);
+            gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[12]);
             gridPic[r, 12].AddController(_gridPicController);
-            gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.ArtId);
-            gridPic[r, 14] = new SourceGrid.Cells.Cell(Pic.CraftId);
+            gridPic[r, 13] = new SourceGrid.Cells.CheckBox("", Pic.Copyright ?? false);
+            gridPic[r, 13].AddController(_gridPicController);
+            gridPic[r, 14] = new SourceGrid.Cells.Cell(Pic.ArtId);
+            gridPic[r, 15] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
             if (isShowImage)
             {
@@ -442,9 +449,9 @@ namespace Aik2
                 NType = (int?)gridPic[r, 5].Value,
                 Path = (string)gridPic[r, 6].Value,
                 Grp = (string)gridPic[r, 10].Value,
-                Copyright = (bool?)gridPic[r, 12].Value,
-                ArtId = (int)gridPic[r, 13].Value,
-                CraftId = (int)gridPic[r, 14].Value
+                Copyright = (bool?)gridPic[r, 13].Value,
+                ArtId = (int)gridPic[r, 14].Value,
+                CraftId = (int)gridPic[r, 15].Value
             };
             return pic;
         }
@@ -762,19 +769,18 @@ namespace Aik2
                 lblP.ForeColor = craft.Proj ?? false ? Color.Black : Color.LightGray;
                 lblWingsEngs.Text = $"{craft.Wings} / {craft.Engines}";
 
-                try
+                if (gridPic[_picPosition.Row, Const.Columns.Pic.Path] != null && !string.IsNullOrEmpty((string)gridPic[_picPosition.Row, Const.Columns.Pic.Path].Value))
                 {
-                    var picPath = $"{_imagesPath}Images{craft.Source}\\{(string)gridPic[_picPosition.Row, Const.Columns.Pic.Path].Value}";
-                    using (var bmpTemp = new Bitmap(picPath))
+                    try
                     {
-                        picPicImage.Image = new Bitmap(bmpTemp);
-                    }
-                    //picPicImage.Load(picPath);
-                    picPicImage.Visible = true;
-                }
-                catch
-                {
-
+                        var picPath = $"{_imagesPath}Images{craft.Source}\\{(string)gridPic[_picPosition.Row, Const.Columns.Pic.Path].Value}";
+                        using (var bmpTemp = new Bitmap(picPath))
+                        {
+                            picPicImage.Image = new Bitmap(bmpTemp);
+                        }
+                        //picPicImage.Load(picPath);
+                        picPicImage.Visible = true;
+                    } catch { }
                 }
             }
         }
@@ -1193,6 +1199,15 @@ namespace Aik2
             }
         }
 
+        private void mnuAltS_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 2)
+            {
+                cbSerial.Focus();
+            }
+        }
+
+
         private void mnuPicsFillPath_Click(object sender, EventArgs e)
         {
             if (_selectedPic != null)
@@ -1436,5 +1451,99 @@ namespace Aik2
             LoadPics(true);
         }
 
+        private void LoadSerials()
+        {
+            var serials = _ctx.Serials.OrderBy(x => x.Serial).Select(x => x.Serial).Distinct().ToArray();
+            cbSerial.Items.Clear();
+            cbSerial.Items.AddRange(serials);
+        }
+
+        private void cbSerial_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (!string.IsNullOrEmpty(cbSerial.Text) && _selectedPic != null)
+                {
+                    var ser = new Serials()
+                    {
+                        Serial = cbSerial.Text.Trim().ToUpper(),
+                        PicId = _selectedPic.PicId
+                    };
+                    _ctx.Serials.Add(ser);
+                    try
+                    {
+                        _ctx.SaveChanges();
+                    }
+                    catch 
+                    {
+                        _ctx.Serials.Remove(ser);
+                    }
+                    LoadSerials();
+                    RefreshSerials();
+                }
+                cbSerial.Text = "";
+
+                e.Handled = true;
+            }
+        }
+
+
+        private void lbSerials_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (lbSerials.SelectedItem != null)
+                {
+                    var ser = lbSerials.SelectedItem.ToString();
+                    if (ser.IndexOf(' ') > 0)
+                    {
+                        ser = ser.Substring(0, ser.IndexOf(' '));
+                    }
+                    var toDelete = _ctx.Serials.FirstOrDefault(x => x.Serial == ser && x.PicId == _selectedPic.PicId);
+                    if (toDelete != null)
+                    {
+                        _ctx.Serials.Remove(toDelete);
+                        _ctx.SaveChanges();
+                        LoadSerials();
+                        RefreshSerials();
+                    }
+                }
+            }
+        }
+
+
+        private void RefreshSerials()
+        {
+            lbSerials.Items.Clear();
+            if (_selectedPic != null)
+            {
+                var serials = _ctx.Serials.Where(x => x.PicId == _selectedPic.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToArray();
+                var slist = new List<string>();
+                foreach(var serial in serials)
+                {
+                    var s = serial;
+                    var sx = (from ser in _ctx.Serials
+                              join pic in _ctx.Pics on ser.PicId equals pic.PicId
+                              where ser.Serial == serial
+                              group ser by new { ser.Serial, pic.CraftId }
+                              into grp
+                              select new {grp.Key.Serial, grp.Key.CraftId, cnt = grp.Count()}).ToList();
+                    if (sx.Count == 1 && sx[0].cnt > 1)
+                    {
+                        s = $"{s} ({sx[0].cnt})";
+                    }
+                    else if (sx.Count > 1)
+                    {
+                        var cnt1 = sx.Where(x => x.CraftId == _selectedCraft?.CraftId).Sum(x => x.cnt);
+                        var cnt2 = sx.Where(x => x.CraftId != _selectedCraft?.CraftId).Sum(x => x.cnt);
+                        s = $"{s} ({cnt1}+{cnt2})";
+                    }
+                    slist.Add(s);
+                }
+                lbSerials.Items.Clear();
+                lbSerials.Items.AddRange(slist.ToArray());
+            }
+
+        }
     }
 }

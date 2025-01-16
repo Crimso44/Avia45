@@ -89,6 +89,9 @@
             this.picLinkImage = new System.Windows.Forms.PictureBox();
             this.splitter4 = new System.Windows.Forms.Splitter();
             this.pPicText = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.lbSerials = new System.Windows.Forms.ListBox();
+            this.cbSerial = new System.Windows.Forms.ComboBox();
             this.splitter6 = new System.Windows.Forms.Splitter();
             this.edPicText = new System.Windows.Forms.RichTextBox();
             this.pLinkTable = new System.Windows.Forms.Panel();
@@ -116,6 +119,7 @@
             this.mnuAlt1 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt2 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAltS = new System.Windows.Forms.ToolStripMenuItem();
             this.calcWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.craftsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -134,6 +138,7 @@
             this.load34ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.load5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.make6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.make6NewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.make7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.makeLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.allLinksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -147,7 +152,6 @@
             this.lWorking = new System.Windows.Forms.Label();
             this.lInfo = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
-            this.make6NewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPageArts.SuspendLayout();
             this.pArtTable.SuspendLayout();
@@ -171,6 +175,7 @@
             this.pLinkImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLinkImage)).BeginInit();
             this.pPicText.SuspendLayout();
+            this.panel6.SuspendLayout();
             this.pLinkTable.SuspendLayout();
             this.panel5.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -912,6 +917,7 @@
             // 
             this.pPicText.Controls.Add(this.splitter6);
             this.pPicText.Controls.Add(this.edPicText);
+            this.pPicText.Controls.Add(this.panel6);
             this.pPicText.Controls.Add(this.pLinkTable);
             this.pPicText.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pPicText.Location = new System.Drawing.Point(4, 377);
@@ -921,10 +927,43 @@
             this.pPicText.TabIndex = 1;
             this.pPicText.Resize += new System.EventHandler(this.pPicText_Resize);
             // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.lbSerials);
+            this.panel6.Controls.Add(this.cbSerial);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel6.Location = new System.Drawing.Point(586, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(98, 58);
+            this.panel6.TabIndex = 3;
+            // 
+            // lbSerials
+            // 
+            this.lbSerials.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbSerials.FormattingEnabled = true;
+            this.lbSerials.ItemHeight = 15;
+            this.lbSerials.Location = new System.Drawing.Point(0, 23);
+            this.lbSerials.Name = "lbSerials";
+            this.lbSerials.Size = new System.Drawing.Size(98, 35);
+            this.lbSerials.TabIndex = 1;
+            this.lbSerials.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbSerials_KeyDown);
+            // 
+            // cbSerial
+            // 
+            this.cbSerial.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cbSerial.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cbSerial.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSerial.FormattingEnabled = true;
+            this.cbSerial.Location = new System.Drawing.Point(0, 0);
+            this.cbSerial.Name = "cbSerial";
+            this.cbSerial.Size = new System.Drawing.Size(98, 23);
+            this.cbSerial.TabIndex = 0;
+            this.cbSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSerial_KeyDown);
+            // 
             // splitter6
             // 
             this.splitter6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter6.Location = new System.Drawing.Point(680, 0);
+            this.splitter6.Location = new System.Drawing.Point(582, 0);
             this.splitter6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitter6.Name = "splitter6";
             this.splitter6.Size = new System.Drawing.Size(4, 58);
@@ -938,7 +977,7 @@
             this.edPicText.Location = new System.Drawing.Point(0, 0);
             this.edPicText.Margin = new System.Windows.Forms.Padding(1);
             this.edPicText.Name = "edPicText";
-            this.edPicText.Size = new System.Drawing.Size(684, 58);
+            this.edPicText.Size = new System.Drawing.Size(586, 58);
             this.edPicText.TabIndex = 0;
             this.edPicText.Text = "";
             this.edPicText.TextChanged += new System.EventHandler(this.edPicText_TextChanged);
@@ -1210,16 +1249,17 @@
             this.focusToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuAlt1,
             this.mnuAlt2,
-            this.mnuAlt3});
+            this.mnuAlt3,
+            this.mnuAltS});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
-            this.focusToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.focusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.focusToolStripMenuItem.Text = "Focus";
             // 
             // mnuAlt1
             // 
             this.mnuAlt1.Name = "mnuAlt1";
             this.mnuAlt1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.mnuAlt1.Size = new System.Drawing.Size(168, 22);
+            this.mnuAlt1.Size = new System.Drawing.Size(180, 22);
             this.mnuAlt1.Text = "Focus pics";
             this.mnuAlt1.Click += new System.EventHandler(this.mnuAlt1_Click);
             // 
@@ -1227,7 +1267,7 @@
             // 
             this.mnuAlt2.Name = "mnuAlt2";
             this.mnuAlt2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.mnuAlt2.Size = new System.Drawing.Size(168, 22);
+            this.mnuAlt2.Size = new System.Drawing.Size(180, 22);
             this.mnuAlt2.Text = "Focus text";
             this.mnuAlt2.Click += new System.EventHandler(this.mnuAlt2_Click);
             // 
@@ -1235,14 +1275,22 @@
             // 
             this.mnuAlt3.Name = "mnuAlt3";
             this.mnuAlt3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.mnuAlt3.Size = new System.Drawing.Size(168, 22);
+            this.mnuAlt3.Size = new System.Drawing.Size(180, 22);
             this.mnuAlt3.Text = "Focus links";
             this.mnuAlt3.Click += new System.EventHandler(this.mnuAlt3_Click);
+            // 
+            // mnuAltS
+            // 
+            this.mnuAltS.Name = "mnuAltS";
+            this.mnuAltS.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
+            this.mnuAltS.Size = new System.Drawing.Size(180, 22);
+            this.mnuAltS.Text = "Focus serial";
+            this.mnuAltS.Click += new System.EventHandler(this.mnuAltS_Click);
             // 
             // calcWordsToolStripMenuItem
             // 
             this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
-            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.calcWordsToolStripMenuItem.Text = "Calc words";
             this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
             // 
@@ -1250,7 +1298,7 @@
             // 
             this.reloadToolStripMenuItem1.Name = "reloadToolStripMenuItem1";
             this.reloadToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
+            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.reloadToolStripMenuItem1.Text = "Reload";
             this.reloadToolStripMenuItem1.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
             // 
@@ -1367,35 +1415,43 @@
             // load1ToolStripMenuItem
             // 
             this.load1ToolStripMenuItem.Name = "load1ToolStripMenuItem";
-            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load1ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.load1ToolStripMenuItem.Text = "Load 1";
             this.load1ToolStripMenuItem.Click += new System.EventHandler(this.load1ToolStripMenuItem_Click);
             // 
             // load34ToolStripMenuItem
             // 
             this.load34ToolStripMenuItem.Name = "load34ToolStripMenuItem";
-            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load34ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.load34ToolStripMenuItem.Text = "Load 3-4";
             this.load34ToolStripMenuItem.Click += new System.EventHandler(this.load34ToolStripMenuItem_Click);
             // 
             // load5ToolStripMenuItem
             // 
             this.load5ToolStripMenuItem.Name = "load5ToolStripMenuItem";
-            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.load5ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.load5ToolStripMenuItem.Text = "Load 5";
             this.load5ToolStripMenuItem.Click += new System.EventHandler(this.load5ToolStripMenuItem_Click);
             // 
             // make6ToolStripMenuItem
             // 
             this.make6ToolStripMenuItem.Name = "make6ToolStripMenuItem";
-            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.make6ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.make6ToolStripMenuItem.Text = "Make 6";
+            this.make6ToolStripMenuItem.Visible = false;
             this.make6ToolStripMenuItem.Click += new System.EventHandler(this.make6ToolStripMenuItem_Click);
+            // 
+            // make6NewToolStripMenuItem
+            // 
+            this.make6NewToolStripMenuItem.Name = "make6NewToolStripMenuItem";
+            this.make6NewToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.make6NewToolStripMenuItem.Text = "Make 6 New";
+            this.make6NewToolStripMenuItem.Click += new System.EventHandler(this.make6NewToolStripMenuItem_Click);
             // 
             // make7ToolStripMenuItem
             // 
             this.make7ToolStripMenuItem.Name = "make7ToolStripMenuItem";
-            this.make7ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.make7ToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.make7ToolStripMenuItem.Text = "Make 7";
             this.make7ToolStripMenuItem.Click += new System.EventHandler(this.make7ToolStripMenuItem_Click);
             // 
@@ -1406,7 +1462,7 @@
             this.links6ToolStripMenuItem,
             this.links7ToolStripMenuItem});
             this.makeLinksToolStripMenuItem.Name = "makeLinksToolStripMenuItem";
-            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.makeLinksToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.makeLinksToolStripMenuItem.Text = "Make Links";
             // 
             // allLinksToolStripMenuItem
@@ -1436,7 +1492,7 @@
             this.load6ToolStripMenuItem,
             this.load7ToolStripMenuItem});
             this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
-            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.restoreToolStripMenuItem.Text = "Restore";
             // 
             // load6ToolStripMenuItem
@@ -1511,13 +1567,6 @@
             this.panel7.Size = new System.Drawing.Size(933, 466);
             this.panel7.TabIndex = 0;
             // 
-            // make6NewToolStripMenuItem
-            // 
-            this.make6NewToolStripMenuItem.Name = "make6NewToolStripMenuItem";
-            this.make6NewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.make6NewToolStripMenuItem.Text = "Make 6 New";
-            this.make6NewToolStripMenuItem.Click += new System.EventHandler(this.make6NewToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1562,6 +1611,7 @@
             this.pLinkImage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picLinkImage)).EndInit();
             this.pPicText.ResumeLayout(false);
+            this.panel6.ResumeLayout(false);
             this.pLinkTable.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
@@ -1696,6 +1746,10 @@
         private System.Windows.Forms.Button bNextCraft;
         private System.Windows.Forms.Button bPrevCraft;
         private System.Windows.Forms.ToolStripMenuItem make6NewToolStripMenuItem;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.ComboBox cbSerial;
+        private System.Windows.Forms.ListBox lbSerials;
+        private System.Windows.Forms.ToolStripMenuItem mnuAltS;
     }
 }
 

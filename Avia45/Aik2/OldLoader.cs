@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Aik2
 {
@@ -9,7 +6,7 @@ namespace Aik2
     {
         public void LoadOld(AiKEntities ctx, string _imagesPath, Label lInfo)
         {
-            if (!(MessageBox.Show("Load 3-4?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)) return;
+            /*if (!(MessageBox.Show("Load 3-4?", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)) return;
 
             ctx.Database.ExecuteSqlCommand("Delete from Pics where CraftId in (Select CraftId from Crafts where Source in ('3', '4'))");
             ctx.Database.ExecuteSqlCommand("Delete from Crafts where Source in ('3', '4')");
@@ -80,7 +77,7 @@ namespace Aik2
             }
 
             lInfo.Text = "";
-            MessageBox.Show("OK");
+            MessageBox.Show("OK");*/
         }
     }
 }

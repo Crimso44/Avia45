@@ -625,7 +625,7 @@ namespace Aik2
                 var craft = _crafts.FirstOrDefault(x => x.CraftId == Craft.SeeAlso);
                 if (craft != null) craftName = craft.FullName;
             }
-            gridCraft[r, 16] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[16] : null);
+            gridCraft[r, 16] = new SourceGrid.Cells.Cell(craftName, Craft.Source == "6" ? _editorsCraft[16] : Craft.Source == "7" ? _editCraft7 : null);
             gridCraft[r, 16].AddController(_gridCraftController);
             gridCraft[r, 17] = new SourceGrid.Cells.Cell(Craft.FullName, isReadOnly ? null : _editorsCraft[17]);
             gridCraft[r, 18] = new SourceGrid.Cells.Cell(Craft.Wiki, isReadOnly ? null : _editorsCraft[18]);
@@ -785,8 +785,9 @@ namespace Aik2
                 switch (sender.Position.Column)
                 {
                     case Const.Columns.Craft.SeeAlso:
+                        var craftList = (string)_form.gridCraft[row, Const.Columns.Craft.Source].Value == "6" ? _form._crafts6 : _form._crafts7;
                         _form.gridCraft[row, Const.Columns.Craft.SeeAlsoId].Value = string.IsNullOrEmpty(val) ? null :
-                            _form._crafts6.SingleOrDefault(x => x.FullName == val)?.CraftId;
+                            craftList.SingleOrDefault(x => x.FullName == val)?.CraftId;
                         break;
                     case Const.Columns.Craft.Same:
                         _form.gridCraft[row, Const.Columns.Craft.SameId].Value = string.IsNullOrEmpty(val) ? null :
@@ -940,6 +941,15 @@ namespace Aik2
                 row = _craftDtos.IndexOf(craftDto) + 1;
             }
             var pos = gridCraft.Selection.ActivePosition;
+            if (pos == Position.Empty)
+            {
+                var reg = gridCraft.Selection.GetSelectionRegion();
+                var positions = reg.GetCellsPositions();
+                if (positions.Any())
+                {
+                    pos = positions.First();
+                }
+            }
             var newPos = new Position(row, pos == Position.Empty ? 1 : pos.Column);
             gridCraft.Selection.Focus(newPos, true);
             _selectedCraft = craftDto;

@@ -2,7 +2,6 @@
 using AutoMapper;
 using Newtonsoft.Json;
 using SourceGrid;
-using SourceGrid.Selection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,8 +10,6 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -50,6 +47,8 @@ namespace Aik2
             LoadArts();
             LoadCrafts();
             LoadPics(true);
+
+            LoadSerials();
 
             tabControl1.SelectedIndex = 1;
         }
@@ -779,5 +778,6 @@ namespace Aik2
             var wm = new WebMaker();
             wm.PrepareWeb6New(_ctx, _imagesPath, lInfo);
         }
+
     }
 }

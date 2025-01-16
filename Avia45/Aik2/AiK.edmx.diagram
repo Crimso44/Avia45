@@ -21,9 +21,6 @@
         <EntityTypeShape EntityType="AiKModel.vwReport" Width="1.5" PointX="7" PointY="6.25" />
         <EntityTypeShape EntityType="AiKModel.vwArts" Width="1.5" PointX="9.75" PointY="0.5" />
         <EntityTypeShape EntityType="AiKModel.vwReportMags" Width="1.5" PointX="5.75" PointY="9.75" />
-        <EntityTypeShape EntityType="AiKModel.CraftsOld" Width="1.5" PointX="9.375" PointY="6.75" />
-        <EntityTypeShape EntityType="AiKModel.ParamsOld" Width="1.5" PointX="11.375" PointY="4.75" />
-        <EntityTypeShape EntityType="AiKModel.PicsOld" Width="1.5" PointX="11.375" PointY="7.75" />
         <EntityTypeShape EntityType="AiKModel.Arts" Width="1.5" PointX="5.25" PointY="0.5" />
         <EntityTypeShape EntityType="AiKModel.Crafts" Width="1.5" PointX="0.625" PointY="0.5" />
         <AssociationConnector Association="AiKModel.FK_Pics_Arts" />
@@ -32,6 +29,8 @@
         <AssociationConnector Association="AiKModel.FK_Crafts_Crafts2" />
         <AssociationConnector Association="AiKModel.FK_Pics_Crafts" />
         <AssociationConnector Association="AiKModel.FK_WordLinks_Crafts" />
+        <EntityTypeShape EntityType="AiKModel.Serials" Width="1.5" PointX="5.25" PointY="13" />
+        <AssociationConnector Association="AiKModel.FK_Serials_Pics" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

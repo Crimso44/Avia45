@@ -27,5 +27,6 @@ namespace Aik2
         public string SText { get; set; }
         public string XType { get; set; }
         public Nullable<bool> Copyright { get; set; }
+        public string Serial { get; set; }
     }
 }

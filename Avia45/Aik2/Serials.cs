@@ -12,13 +12,11 @@ namespace Aik2
     using System;
     using System.Collections.Generic;
     
-    public partial class PicsOld
+    public partial class Serials
     {
-        public int PictID { get; set; }
-        public int CraftID { get; set; }
-        public string Picture { get; set; }
-        public int Source { get; set; }
-        public Nullable<int> TxtBeg { get; set; }
-        public Nullable<int> TxtEnd { get; set; }
+        public string Serial { get; set; }
+        public int PicId { get; set; }
+    
+        public virtual Pics Pics { get; set; }
     }
 }

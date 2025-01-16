@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using static Aik2.Const.Columns;
 using static Aik2.Util;
 
 namespace Aik2
@@ -969,13 +968,6 @@ namespace Aik2
                 //.Replace("%SeeAlso%", AlsoId > 0 ? GetSpanRuEn("Смотри также: ", "See also: ") : "")
                 .ToString();
 
-            var templ2 = File.ReadAllText(sPath + "NewDesign\\Templates\\airplane-modal.html");
-            while (templ2.IndexOf("  ") >= 0) templ2 = templ2.Replace("  ", " ");
-            templ2 = new StringBuilder(templ2)
-                .Replace("%Construct%", craft1.Construct)
-                .Replace("%Name%", craft1.Name)
-                .ToString();
-
             var ss = "";
             var craftsSame = _ctx.Crafts.Where(x => x.Same == craft1.CraftId).OrderBy(x => x.IYear).ThenBy(x => x.Construct).ThenBy(x => x.Name).ToList();
             if (craftsSame.Any())
@@ -1182,15 +1174,7 @@ namespace Aik2
             sMid = sEnd.Substring(0, i);
             sEnd = sEnd.Substring(i + 5);
 
-            i = templ2.IndexOf("%mbegin%");
-            var smBeg = templ2.Substring(0, i);
-            var smEnd = templ2.Substring(i + 8);
-            i = smEnd.IndexOf("%mend%");
-            var smMid = smEnd.Substring(0, i);
-            smEnd = smEnd.Substring(i + 6);
-
             var sb = new StringBuilder(sBeg);
-            var smb = new StringBuilder(smBeg);
 
             var picNum = 1;
             var ix = 0;
@@ -1257,7 +1241,6 @@ namespace Aik2
                             .Replace("\n", "<br>")
                             .ToString();
 
-                        var sArtLink = "";
                         var sOther = "";
                         var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path && x.p.PicId != pic.p.PicId).ToList();
                         if (otherPics.Any())
@@ -1276,7 +1259,8 @@ namespace Aik2
                             sOther += "</p>";
                         }
                         var xArtLink = $"../Arts/Art{pic.p.ArtId}.htm";
-                        sArtLink = $"{sArtLink}<a class=\"en_href\" href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
+                        var sArtLink = $"<a class=\"en_href\" href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
+                        var sArtLinkPic = $"<a href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
                         sx = $"-{iType}";
                         if (iType == mains) sx = "";
                         CraftPicLink = $"Craft{pic.p.CraftId}{sx}p.htm#{picNum}";
@@ -1285,22 +1269,21 @@ namespace Aik2
                             (x.pic1 == pic.p.PicId && x.nnn1 > x.nnn2) ||
                             (x.pic2 == pic.p.PicId && x.nnn1 < x.nnn2));
 
+                        var ssesc = $"{sArtLinkPic}<p>{ss}<p>"
+                            .Replace("&", "&amp;")
+                            .Replace("\"", "&quot;")
+                            .Replace("<", "&lt;")
+                            .Replace(">", "&gt;");
                         sx = new StringBuilder(sMid)
                             .Replace("%PicPath%", pic.p.Path.Replace("\\", "/"))
                             .Replace("%ArtLink%", sArtLink)
                             .Replace("%PicText%", ss)
+                            .Replace("%PicTextEscaped%", ssesc)
                             .Replace("%AnotherCrafts%", sOther)
                             .Replace("%CraftPicLink%", CraftPicLink)
                             .Replace("%marked%", marked ? " marked" : "")
                             .ToString();
                         sb.Append(sx);
-                        var smx = new StringBuilder(smMid)
-                            .Replace("%PicPath%", "../../Images6/" + pic.p.Path.Replace("\\", "/"))
-                            .Replace("%ArtLink%", sArtLink)
-                            .Replace("%PicText%", ss)
-                            .Replace("%AnotherCrafts%", sOther)
-                            .ToString();
-                        smb.Append(smx);
 
                         picNum++;
                     }
@@ -1323,7 +1306,6 @@ namespace Aik2
             templ = (sb.ToString() + sEnd)
                 .Replace("%BigPicPath%", bigpic)
                 .Replace("%FirstGrp%", sg);
-            templ2 = smb.ToString() + smEnd;
 
             i = templ.IndexOf("%xbegin%");
             sBeg = templ.Substring(0, i);
@@ -1472,9 +1454,7 @@ namespace Aik2
             if (iType == mains) sx = "";
 
             s = sPath + $"Site\\Crafts\\Craft{craft1.CraftId}{sx}.htm";
-            var s2 = sPath + $"Site\\Crafts\\Craft{craft1.CraftId}{sx}p.htm";
             ss = sPath + $"Upload\\Site\\Crafts\\Craft{craft1.CraftId}{sx}.htm";
-            var ss2 = sPath + $"Upload\\Site\\Crafts\\Craft{craft1.CraftId}{sx}p.htm";
             var is_upl = false;
             if (File.Exists(s))
             {
@@ -1504,34 +1484,6 @@ namespace Aik2
                 File.WriteAllText(s, templ, Encoding.UTF8);
             }
 
-            is_upl = false;
-            if (File.Exists(s2))
-            {
-                var res = true;
-                try
-                {
-                    upl = File.ReadAllText(s2);
-                    res = (templ2 != upl);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message + " " + s);
-                }
-                if (res)
-                {
-                    File.WriteAllText(ss2, templ2, Encoding.UTF8);
-                    is_upl = true;
-                }
-            }
-            else
-            {
-                File.WriteAllText(ss2, templ2, Encoding.UTF8);
-                is_upl = true;
-            }
-            if (is_upl)
-            {
-                File.WriteAllText(s2, templ2, Encoding.UTF8);
-            }
             AddSitemap($"Site\\Crafts\\Craft{craft1.CraftId}{sx}.htm", s, is_upl);
 
         }
@@ -2295,14 +2247,12 @@ namespace Aik2
 
             var sBeg = templ;
             var sEnd = "";
-            var sMid = "";
             var i = templ.IndexOf("%begin%");
             if (i >= 0)
             {
                 sBeg = templ.Substring(0, i);
                 sEnd = templ.Substring(i + 7);
                 i = sEnd.IndexOf("%end%");
-                sMid = sEnd.Substring(0, i);
                 sEnd = sEnd.Substring(i + 5);
             }
 
@@ -3624,24 +3574,12 @@ namespace Aik2
                 templ = File.ReadAllText("D:\\Live\\Avia\\AviaDejaVu\\NewDesign\\Templates\\art.html");
                 while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
 
-                var templ2 = File.ReadAllText(sPath + "NewDesign\\Templates\\art-modal.html");
-                while (templ2.IndexOf("  ") >= 0) templ2 = templ2.Replace("  ", " ");
-
                 i = templ.IndexOf("%begin%");
                 sBeg = templ.Substring(0, i);
                 sEnd = templ.Substring(i + 7);
                 i = sEnd.IndexOf("%end%");
                 sMid = sEnd.Substring(0, i);
                 sEnd = sEnd.Substring(i + 5);
-
-                i = templ2.IndexOf("%mbegin%");
-                var smBeg = templ2.Substring(0, i);
-                var smEnd = templ2.Substring(i + 8);
-                i = smEnd.IndexOf("%mend%");
-                var smMid = smEnd.Substring(0, i);
-                smEnd = smEnd.Substring(i + 6);
-
-                var smb = new StringBuilder(smBeg);
 
                 var picNum = 1;
 
@@ -3671,6 +3609,7 @@ namespace Aik2
                             .OrderBy(x => x.c.Construct).ThenBy(x => x.c.Name).ThenBy(x => x.c.Country).ThenBy(x => x.c.IYear)
                             .ToList();
                         var sCrafts = "";
+                        var sCraftsPic = "";
                         if (crafts.Any())
                         {
                             sCrafts = $"<p class=\"another-planes\">{GetSpanRuEn("Самолёты на фотографии: ", "Aircrafts on the photo: ")}";
@@ -3682,26 +3621,24 @@ namespace Aik2
                                     otherPic.c.IYear.ToString();
                                 var xCraftLink = $"../Crafts/Craft{otherPic.c.CraftId}.htm";
                                 var craftLink = $"<a class=\"en_href\" href=\"{xCraftLink}\">{craftName}</a>";
+                                var craftLinkPic = $"<a href=\"{xCraftLink}\">{craftName}</a>";
                                 sCrafts += $"{craftLink}";
+                                sCraftsPic += $"{craftLinkPic}";
                             }
                             sCrafts += "</p>";
                         }
 
-                        var ArtPicLink = $"Art{pic.p.ArtId}p.htm#{picNum}";
-
+                        var ssesc = $"{sCraftsPic}<p>{ss}<p>"
+                            .Replace("&", "&amp;")
+                            .Replace("\"", "&quot;")
+                            .Replace("<", "&lt;")
+                            .Replace(">", "&gt;");
                         var sx = new StringBuilder(sMid)
                             .Replace("%PicPath%", pic.p.Path.Replace("\\", "/"))
                             .Replace("%AnotherCrafts%", sCrafts)
-                            .Replace("%ArtPicLink%", ArtPicLink)
                             .Replace("%PicText%", ss)
+                            .Replace("%PicTextEscaped%", ssesc)
                             .ToString();
-
-                        var smx = new StringBuilder(smMid)
-                            .Replace("%PicPath%", "../../Images6/" + pic.p.Path.Replace("\\", "/"))
-                            .Replace("%PicText%", ss)
-                            .Replace("%AnotherCrafts%", sCrafts)
-                            .ToString();
-                        smb.Append(smx);
 
                         sBeg += sx;
                         picNum++;
@@ -3713,7 +3650,6 @@ namespace Aik2
                 }
 
                 templ = sBeg + sEnd;
-                templ2 = smb.ToString() + smEnd;
 
                 i = templ.IndexOf("%xbegin%");
                 sBeg = templ.Substring(0, i);
@@ -3786,21 +3722,118 @@ namespace Aik2
 
                 templ = sb.ToString() + sEnd;
 
+                var prevArt = "";
+                var nextArt = "";
+                Arts prevArtDb = null;
+                Arts nextArtDb = null;
+                if (!string.IsNullOrEmpty(ibq1Aa.Serie)) 
+                {
+                    prevArtDb = (
+                        from a in _ctx.Arts
+                        where
+                            a.Mag == ibq1Aa.Mag &&
+                            a.Serie == ibq1Aa.Serie &&
+                            (a.IYear < ibq1Aa.IYear ||
+                             a.IYear == ibq1Aa.IYear && (
+                                a.IMonth.CompareTo(ibq1Aa.IMonth) < 0 ||
+                                a.IMonth == ibq1Aa.IMonth && (
+                                    a.Author.CompareTo(ibq1Aa.Author) < 0 ||
+                                    (a.Author == ibq1Aa.Author && a.Name.CompareTo(ibq1Aa.Name) < 0))))
+                        orderby a.IYear descending, a.IMonth descending, a.Author descending, a.Name descending
+                        select a
+                        ).FirstOrDefault();
+                    nextArtDb = (
+                        from a in _ctx.Arts
+                        where
+                            a.Mag == ibq1Aa.Mag &&
+                            a.Serie == ibq1Aa.Serie &&
+                            (a.IYear > ibq1Aa.IYear ||
+                             a.IYear == ibq1Aa.IYear && (
+                                a.IMonth.CompareTo(ibq1Aa.IMonth) > 0 ||
+                                a.IMonth == ibq1Aa.IMonth && (
+                                    a.Author.CompareTo(ibq1Aa.Author) > 0 ||
+                                    (a.Author == ibq1Aa.Author && a.Name.CompareTo(ibq1Aa.Name) > 0))))
+                        orderby a.IYear, a.IMonth, a.Author, a.Name 
+                        select a
+                        ).FirstOrDefault();
+                }
+                else if (ibq1Aa.NN > 0)
+                {
+                    prevArtDb = (
+                        from a in _ctx.Arts
+                        where
+                            a.Mag == ibq1Aa.Mag &&
+                            a.Author == ibq1Aa.Author &&
+                            a.Name == ibq1Aa.Name &&
+                            a.NN < ibq1Aa.NN 
+                        orderby a.NN descending
+                        select a
+                        ).FirstOrDefault();
+                    nextArtDb = (
+                        from a in _ctx.Arts
+                        where
+                            a.Mag == ibq1Aa.Mag &&
+                            a.Author == ibq1Aa.Author &&
+                            a.Name == ibq1Aa.Name &&
+                            a.NN > ibq1Aa.NN
+                        orderby a.NN 
+                        select a
+                        ).FirstOrDefault();
+                }
+                else if (ibq1Aa.Author != "-")
+                {
+                    prevArtDb = (
+                        from a in _ctx.Arts
+                        where
+                            a.Mag == ibq1Aa.Mag &&
+                            a.Author == ibq1Aa.Author &&
+                            a.Name == ibq1Aa.Name &&
+                            (a.IYear < ibq1Aa.IYear ||
+                             a.IYear == ibq1Aa.IYear && (
+                                a.IMonth.CompareTo(ibq1Aa.IMonth) < 0 ||
+                                a.IMonth == ibq1Aa.IMonth && (
+                                    a.Author.CompareTo(ibq1Aa.Author) < 0 ||
+                                    (a.Author == ibq1Aa.Author && a.Name.CompareTo(ibq1Aa.Name) < 0))))
+                        orderby a.IYear descending, a.IMonth descending, a.Author descending, a.Name descending
+                        select a
+                        ).FirstOrDefault();
+                    nextArtDb = (
+                        from a in _ctx.Arts
+                        where
+                            a.Mag == ibq1Aa.Mag &&
+                            a.Author == ibq1Aa.Author &&
+                            a.Name == ibq1Aa.Name &&
+                            (a.IYear > ibq1Aa.IYear ||
+                             a.IYear == ibq1Aa.IYear && (
+                                a.IMonth.CompareTo(ibq1Aa.IMonth) > 0 ||
+                                a.IMonth == ibq1Aa.IMonth && (
+                                    a.Author.CompareTo(ibq1Aa.Author) > 0 ||
+                                    (a.Author == ibq1Aa.Author && a.Name.CompareTo(ibq1Aa.Name) > 0))))
+                        orderby a.IYear, a.IMonth, a.Author, a.Name
+                        select a
+                        ).FirstOrDefault();
+                }
+                if (prevArtDb != null)
+                {
+                    var prevArtX = Mapper.Map<ArtDto>(prevArtDb);
+                    prevArt = $"<div>{GetSpanRuEn("Предыдущая статья в серии", "Previous article in serie")}: <a href='Art{prevArtX.ArtId}.htm'>{GetArtName(prevArtX)} - {GetArtName2(prevArtX)}</a></div>";
+                }
+                if (nextArtDb != null)
+                {
+                    var nextArtX = Mapper.Map<ArtDto>(nextArtDb);
+                    nextArt = $"<div>{GetSpanRuEn("Следующая статья в серии", "Next article in serie")}: <a href='Art{nextArtX.ArtId}.htm'>{GetArtName(nextArtX)} - {GetArtName2(nextArtX)}</a></div>";
+                }
+
                 var ArtPicsLink = $"Art{ibq1Aa.ArtId}p.htm";
                 templ = templ
                     .Replace("%Art%", GetArtName(ibq1Aa))
                     .Replace("%ArtName%", GetArtName2(ibq1Aa))
-                    .Replace("%ArtPicsLink%", ArtPicsLink);
-
-                templ2 = new StringBuilder(templ2)
-                    .Replace("%Art%", GetArtName(ibq1Aa))
-                    .Replace("%ArtName%", GetArtName2(ibq1Aa))
-                    .ToString();
+                    .Replace("%ArtPicsLink%", ArtPicsLink)
+                    .Replace("%PrevArt%", prevArt)
+                    .Replace("%NextArt%", nextArt);
 
                 s = sPath + $"Site\\Arts\\Art{ibq1Aa.ArtId}.htm";
-                var s2 = sPath + $"Site\\Arts\\Art{ibq1Aa.ArtId}p.htm";
                 ss = sPath + $"Upload\\Site\\Arts\\Art{ibq1Aa.ArtId}.htm";
-                var ss2 = sPath + $"Upload\\Site\\Arts\\Art{ibq1Aa.ArtId}p.htm";
                 var is_upl = false;
                 if (File.Exists(s))
                 {
@@ -3820,27 +3853,6 @@ namespace Aik2
                 {
                     File.WriteAllText(s, templ, Encoding.UTF8);
                 }
-
-                is_upl = false;
-                if (File.Exists(s2))
-                {
-                    upl = File.ReadAllText(s2);
-                    if (templ2 != upl)
-                    {
-                        File.WriteAllText(ss2, templ2, Encoding.UTF8);
-                        is_upl = true;
-                    }
-                }
-                else
-                {
-                    File.WriteAllText(ss2, templ2, Encoding.UTF8);
-                    is_upl = true;
-                }
-                if (is_upl)
-                {
-                    File.WriteAllText(s2, templ2, Encoding.UTF8);
-                }
-
                 AddSitemap($"Site\\Arts\\Art{ibq1Aa.ArtId}.htm", s, is_upl);
 
                 lInfo.Text = $"Art {ibq1Aa.IYear} {ibq1Aa.IMonth?.Trim()} {ibq1Aa.Mag.Trim()}";
@@ -4047,7 +4059,8 @@ namespace Aik2
 
             var bigpic = ""; var bigpictype = "";
 
-            templ = File.ReadAllText(sPath + "Site2\\Craft.htm");
+            //templ = File.ReadAllText(sPath + "Site2\\Craft.htm");
+            templ = File.ReadAllText(sPath + "NewDesign\\Templates\\airplane-tfm.html");
             while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
             templ = new StringBuilder(templ)
                 .Replace("%Country%", craft1.Country)
@@ -4075,7 +4088,7 @@ namespace Aik2
             var sMid = sEnd.Substring(0, i);
             sEnd = sEnd.Substring(i + 9);
             ss = craft1.CText?.Trim() ?? "";
-            var sxx = ""; var tabcnt = 0; var syy = "";
+            var sxx = ""; var sxy = ""; var tabcnt = 0; var syy = "";
             string sx;
             CraftData crft = null;
             ArtData art = null;
@@ -4102,20 +4115,13 @@ namespace Aik2
                             lLog.Add($"EOF: {craft1.Construct} {craft1.Name}");
                         } else {
                             j = IBQuery3[0];
-                            for (k = 1; k < IBQuery3.Count; k++) {
-                                /*if ((j == 4600) || (IBQuery3[k] == 4600)) {
-                                    if (j == 4600 && IBQuery3[k] != 4600) 
-                                        j = IBQuery3[k];
-                                } else if (CheckFlight(j) && CheckFlight(IBQuery3[k])) {
-                                    // Flights
-                                    j = 5748;
-                                } else*/ {
-                                    j = 0;
-                                    sx = "???";
-                                    MessageBox.Show($"Too much: {craft1.Construct} {craft1.Name}");
-                                    lLog.Add($"Too much: {craft1.Construct} {craft1.Name}");
-                                    break;
-                                };
+                            for (k = 1; k < IBQuery3.Count; k++)
+                            {
+                                j = 0;
+                                sx = "???";
+                                MessageBox.Show($"Too much: {craft1.Construct} {craft1.Name}");
+                                lLog.Add($"Too much: {craft1.Construct} {craft1.Name}");
+                                break;
                             };
                         };
                     };
@@ -4182,7 +4188,14 @@ namespace Aik2
                             };
                         };
                         ss = ss.Substring(i + 2);
-                        syy += $"<li><a href='#tabs-{tabcnt}'>{sx}</a></li>\n";
+
+                        sxy +=
+                            $"<li class=\"ltabs-{tabcnt} text-selector{(tabcnt == 0 ? " selected" : "")}\" onclick=\"ShowText(&#39;tabs-{tabcnt}&#39;)\">" +
+                            sx + "</li>\n";
+                        sxx +=
+                            $"<div class=\"tabs-{tabcnt} text{(tabcnt == 0 ? "" : " hidden")}\">\n" +
+                            "<p>" + sx + "</p>\n";
+
                         i = ss.IndexOf("*/");
                         if (i < 0)
                         {
@@ -4198,11 +4211,11 @@ namespace Aik2
                             MessageBox.Show($"{craft1.Construct} {craft1.Name}\n{st}");
                             lLog.Add($"{craft1.Construct} {craft1.Name}\n{st}");
                         };
-                        sxx +=
-                            $"<div id='tabs-{tabcnt}'><span class='hide_me'><h3><br>{sx}</h3><br></span>";
                         if ((sx.IndexOf("M.Goodall, A.Tagg") >= 0) || (sx.IndexOf("L.Opdyke") >= 0))
                             st = $"<div class='cpc'>Deleted by request of (c)Schiffer Publishing</div><div class='cpcc' style='display:none'>{st}</div>";
-                        sxx += st + "\n</div>\n";
+                        sxx += "<p class=\"main-text\">" + st + "</p>\n" +
+                            $"<a href=\"#\" class=\"show-more\">Показать полностью</a>" +
+                            "</div>\n";
 
                         if (sx == craft1.Name) MessageBox.Show($"CraftName {sx}");
                         if (CheckFlight(art?.ArtId ?? 0) )
@@ -4307,8 +4320,14 @@ namespace Aik2
                     i = ss.IndexOf("/*");
                     crft = null;
                 } while (i >= 0);
+                sxy = "<ul>" + sxy + "</ul>";
+                if (tabcnt > 1)
+                {
+                    sxy = "<p> " + GetSpanRuEn("Описание:", "Description:") + "</p>\n " + sxy;
+                }
+                sBeg += sMid.Replace("%Text%", sxx);
 
-                ss = new StringBuilder(ss)
+                /*ss = new StringBuilder(ss)
                     .Replace("<br>", "")
                     .Replace("&nbsp;", "")
                     .ToString()
@@ -4316,12 +4335,13 @@ namespace Aik2
                 if (!string.IsNullOrEmpty(ss)) {
                     MessageBox.Show($"{craft1.Construct} {craft1.Name}\n{ss}");
                     lLog.Add($"{craft1.Construct} {craft1.Name}\n{ss}");
-                };
+                };*/
 
-                ss = $"<ul>\n{syy}</ul>\n{sxx}";
-                sBeg += sMid.Replace("%Text%", ss);
+                //ss = $"<ul>\n{syy}</ul>\n{sxx}";
+                //sBeg += sMid.Replace("%Text%", ss);
             };
-            templ = sBeg + sEnd;
+            sBeg = sBeg.Replace("%Description%", sxy);
+            templ = sBeg + sEnd.Replace("%Description%", sxy);
 
             i = templ.IndexOf("%begin%");
             sBeg = templ.Substring(0, i - 1);
@@ -4330,8 +4350,15 @@ namespace Aik2
             sMid = sEnd.Substring(0, i - 1);
             sEnd = sEnd.Substring(i + 5);
 
+            var sb = new StringBuilder(sBeg);
+
+            var picNum = 1;
+            var wasGrp = false;
+            var firstGrpName = "";
+            var prevnnn = 0;
             if (pics.Any())
             {
+                var firstGrp = true;
                 foreach (var pic in pics)
                 {
 
@@ -4339,44 +4366,208 @@ namespace Aik2
 
                     if (bigpic == "") {
                         bigpic = pic.p.Path.Replace("\\", "/");
-                        bigpictype = pic.p.Type;
+                        bigpictype = (pic.p.Type ?? "").Trim();
                     } else if ((bigpictype == "s") && (pic.p.Type != "s")) {
                         bigpic = pic.p.Path.Replace("\\", "/");
-                        bigpictype = pic.p.Type;
+                        bigpictype = (pic.p.Type ?? "").Trim();
                     };
 
                     ss = pic.p.Type;
 
-                    sx = sMid;
                     var spic = pic.p.Path.Replace("\\", "/");
-                    var spicX = spic;
+                    var spicX = $"class=\"en_fancy\" href=\"../../Images7/{spic}\"";
                     if ((spic.IndexOf("/GT-0/") >= 0) || (spic.IndexOf("/Opd-0/") >= 0))
-                        spicX = $"copyright.jpg\" class='cp_i' cpi='../../Images7/{spic}'";
+                        spicX = $"class=\"en_fancy cp_i\" href=\"../../Images7/copyright.jpg\" cpi=\"../../Images7/{spic}\""; 
+
+                    sx = (pic.p.Grp ?? "").Trim();
+                    if (firstGrp || !string.IsNullOrEmpty(sx) || 
+                        (prevnnn < 10 && pic.p.NType == 10) ||
+                        (prevnnn < 50 && (pic.p.NType == 50 || pic.p.NType == 60)) ||
+                        ((prevnnn == 50 || prevnnn == 60) && pic.p.NType > 60) ||
+                        (prevnnn == 10 && pic.p.NType > 10) || 
+                        (prevnnn < 100 && pic.p.NType >= 100))
+                    {
+                        if (string.IsNullOrEmpty(sx) && prevnnn < 10 && pic.p.NType == 10)
+                        {
+                            sx = "Боковые проекции";
+                        }
+                        if ((string.IsNullOrEmpty(sx) || sx == "-") && prevnnn < 50 && (pic.p.NType == 50 || pic.p.NType == 60))
+                        {
+                            sx = "Обломки";
+                        }
+                        if (string.IsNullOrEmpty(sx) && prevnnn == 10 && pic.p.NType > 10)
+                        {
+                            sx = "-";
+                        }
+                        if (string.IsNullOrEmpty(sx) && (prevnnn == 50 || prevnnn == 60) && pic.p.NType > 60)
+                        {
+                            sx = "-";
+                        }
+                        if ((string.IsNullOrEmpty(sx) || sx == "-") && prevnnn < 100 && pic.p.NType >= 100)
+                        {
+                            sx = "Схемы, чертежи";
+                        }
+                        if (firstGrp)
+                        {
+                            firstGrp = false;
+                            firstGrpName = sx;
+                            sb.Append("%FirstGrp%");
+                        }
+                        else
+                        {
+                            wasGrp = true;
+                            sb.Append($"</ul>\n");
+                            sb.Append($"<button class=\"accordion\">{(sx == "-" ? "<img src=\"../assets/empty-group.svg\">" : sx)}</button>\n");
+                        }
+                        sb.Append($"<ul class=\"plane-versions active\">\n");
+                    }
+                    prevnnn = pic.p.NType ?? 0;
+
+
                     ss = new StringBuilder(pic.p.Text)
                         .Replace("\n\r ", "<br>&nbsp;&nbsp;")
                         .Replace("\n ", "<br>&nbsp;&nbsp;")
                         .Replace("\n\r", "<br>")
                         .Replace("\n", "<br>")
                         .ToString();
-                    sx = new StringBuilder(sx)
+
+                    var sOther = "";
+                    var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path && x.p.PicId != pic.p.PicId).ToList();
+                    if (otherPics.Any())
+                    {
+                        sOther = $"<p class=\"another-planes\">Другие самолёты на фотографии: ";
+                        foreach (var otherPic in otherPics)
+                        {
+                            var craftName = otherPic.c.Construct + " " +
+                                otherPic.c.Name + " - " +
+                                otherPic.c.Country + " - " +
+                                otherPic.c.IYear.ToString();
+                            var xCraftLink = $"Craft{otherPic.c.CraftId}.htm";
+                            var craftLink = $"<a class=\"cp\" href=\"{xCraftLink}\">{craftName}</a>";
+                            sOther += $"{craftLink}";
+                        }
+                        sOther += "</p>";
+                    }
+                    var xArtLink = $"../Arts/Art{pic.p.ArtId}.htm";
+                    var sArtLink = $"<a class=\"cp\" href=\"{xArtLink}\">{GetArtName2(pic.a)}</a>";
+                    var sArtLinkPic = $"<a href=\"{xArtLink}\">{GetArtName2(pic.a)}</a>";
+
+                    var marked = links.Any(x =>
+                        (x.pic1 == pic.p.PicId && x.nnn1 > x.nnn2) ||
+                        (x.pic2 == pic.p.PicId && x.nnn1 < x.nnn2));
+
+                    var ssesc = $"{sArtLinkPic}<p>{ss}<p>"
+                        .Replace("&", "&amp;")
+                        .Replace("\"", "&quot;")
+                        .Replace("<", "&lt;")
+                        .Replace(">", "&gt;");
+                    sx = new StringBuilder(sMid)
                         .Replace("%PicPath%", spic)
                         .Replace("%PicPathX%", spicX)
-                        .Replace("%ArtLink%", $"../Arts/Art{pic.a.ArtId}.htm")
+                        .Replace("%ArtLink%", sArtLink)
                         .Replace("%Art%", GetArtName(pic.a, true, true))
                         .Replace("%PicText%", ss)
+                        .Replace("%PicTextEscaped%", ssesc)
+                        .Replace("%AnotherCrafts%", sOther)
+                        .Replace("%marked%", marked ? " marked" : "")
                         .ToString();
+                    sb.Append(sx);
 
-                    sBeg += sx;
-
+                    picNum++;
                 };
-            } else {
-                sBeg += "<tr><td>Нет фотографий</td></tr>";
+                if (wasGrp)
+                {
+                    sb.Append($"</ul>\n");
+                }
+            }
+            else {
+                sb.Append("<tr><td>Нет фотографий</td></tr>");
                 bigpic = "";
             };
 
+            lBicPics.InsertPairSortedById(new Pair<int> { Name = bigpic, Id = craft1.CraftId });
+
             if ((bigpic.IndexOf("/GT-0/") >= 0) || (bigpic.IndexOf("/Opd-0/") >= 0))
                 bigpic = $"copyright.jpg\" class='cp_ii' cpi='../../Images7/{bigpic}'";
-            templ = (sBeg + sEnd).Replace("%BigPicPath%", bigpic);
+            var sg = wasGrp ? $"<button class=\"accordion\">{(firstGrpName == "-" || firstGrpName == "" ? "<img src=\"../assets/empty-group.svg\">" : firstGrpName)}</button>\n" : "";
+            templ = (sb.ToString() + sEnd)
+                .Replace("%BigPicPath%", bigpic)
+                .Replace("%FirstGrp%", sg);
+
+            i = templ.IndexOf("%xbegin%");
+            sBeg = templ.Substring(0, i);
+            sEnd = templ.Substring(i + 8);
+            i = sEnd.IndexOf("%xend%");
+            sMid = sEnd.Substring(0, i);
+            sEnd = sEnd.Substring(i + 6);
+            i = sMid.IndexOf("%xmid1%");
+            var sMid2 = sMid.Substring(i + 7);
+            sMid = sMid.Substring(0, i);
+            i = sMid2.IndexOf("%xmid2%");
+            var sMid3 = sMid2.Substring(i + 7);
+            sMid2 = sMid2.Substring(0, i);
+            i = sMid3.IndexOf("%xmid3%");
+            var sMid4 = sMid3.Substring(i + 7);
+            sMid3 = sMid3.Substring(0, i);
+
+            var sxb = new StringBuilder(sBeg);
+            if (lAlso.Count > 0)
+            {
+                sxb.Append(sMid);
+                foreach (var lAls in lAlso)
+                {
+                    if (craft1.CraftId == lAls.Id)
+                        sx = sMid3;
+                    else
+                        sx = sMid2;
+                    sx = new StringBuilder(sx)
+                        .Replace("%SameName%", lAls.Name)
+                        .Replace("%SameLink%", $"Craft{lAls.Id}.htm")
+                        .ToString();
+                    sxb.Append(sx);
+                }
+                sb.Append(sMid4);
+            }
+
+            templ = sxb.ToString() + sEnd;
+
+            i = templ.IndexOf("%zbegin%");
+            sBeg = templ.Substring(0, i);
+            sEnd = templ.Substring(i + 8);
+            i = sEnd.IndexOf("%zend%");
+            sMid = sEnd.Substring(0, i);
+            sEnd = sEnd.Substring(i + 6);
+            i = sMid.IndexOf("%zmid1%");
+            sMid2 = sMid.Substring(i + 7);
+            sMid = sMid.Substring(0, i);
+            i = sMid2.IndexOf("%zmid2%");
+            sMid3 = sMid2.Substring(i + 7);
+            sMid2 = sMid2.Substring(0, i);
+            i = sMid3.IndexOf("%zmid3%");
+            sMid4 = sMid3.Substring(i + 7);
+            sMid3 = sMid3.Substring(0, i);
+
+            sb = new StringBuilder(sBeg);
+            if (lAlso.Count > 0)
+            {
+                sb.Append(sMid);
+                foreach (var lAls in lAlso)
+                {
+                    if (craft1.CraftId == lAls.Id)
+                        sx = sMid3;
+                    else
+                        sx = sMid2;
+                    sx = new StringBuilder(sx)
+                        .Replace("%SameName%", lAls.Name)
+                        .Replace("%SameLink%", $"Craft{lAls.Id}.htm")
+                        .ToString();
+                    sb.Append(sx);
+                }
+                sb.Append(sMid4);
+            }
+
+            templ = sb.ToString() + sEnd;
+
 
             s = $"{sPath}Site2\\Crafts\\Craft{craft1.CraftId}.htm";
             ss = $"{sPath}Upload2\\Site2\\Crafts\\Craft{craft1.CraftId}.htm";
@@ -4429,6 +4620,9 @@ namespace Aik2
             Directory.CreateDirectory(sPath + "Upload2\\Site2\\Arts");
             Directory.CreateDirectory(sPath + "Upload2\\Site2\\Crafts");
 
+            lAlso = new List<Pair<int>>();
+            lAlsoYears = new List<string>();
+
             var sPathi = sPath + "..\\Images7";
             var ssPath = sPathi + "m";
             var dirs = Directory.GetDirectories(sPathi, "*.");
@@ -4439,6 +4633,121 @@ namespace Aik2
                 if (is_stop) { return; }
             }
 
+            lBicPics = new List<Pair<int>>();
+
+            var IBQuery1 = _ctx.Crafts.Where(x => !x.Same.HasValue && x.Source == "7")
+                .OrderBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name)
+                .Select(Mapper.Map<CraftDto>).ToList();
+
+
+            lSources = new List<string>();
+            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt"))
+            {
+                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
+                lSources = new List<string>(logFile);
+            }
+            lSourceNames = new List<string>();
+            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt"))
+            {
+                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
+                lSourceNames = new List<string>(logFile);
+            }
+            lSourceIds = new List<string>();
+            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt"))
+            {
+                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
+                lSourceIds = new List<string>(logFile);
+            }
+
+            var lLog = new List<string>();
+
+            PrevId = IBQuery1.Last().CraftId;
+            PrevName = GetCraftName(IBQuery1.Last(), true);
+
+            links = (
+                from lnk in _ctx.Links
+                join p1 in _ctx.Pics on lnk.Pict1 equals p1.PicId
+                join p2 in _ctx.Pics on lnk.Pict2 equals p2.PicId
+                where lnk.Type1 == "x"
+                select new LinkData { pic1 = p1.PicId, pic2 = p2.PicId, nnn1 = p1.NNN, nnn2 = p2.NNN }
+                ).ToList();
+
+            picDbls = (
+                from p in _ctx.Pics
+                join c in _ctx.Crafts on p.CraftId equals c.CraftId
+                where _ctx.Pics.Where(p =>
+                    !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false))
+                    .GroupBy(x => x.Path).Select(x => new { x.Key, cnt = x.Count() }).ToList()
+                    .Where(x => x.cnt > 1).Select(x => x.Key).Contains(p.Path)
+                orderby c.Construct, c.Name, c.Country, c.IYear
+                select new { p, c })
+                .ToList()
+                .Select(x => new PicArt()
+                {
+                    p = Mapper.Map<PicDto>(x.p),
+                    c = Mapper.Map<CraftDto>(x.c)
+                }).ToList();
+
+            var IBQuery2 = (
+                from p in _ctx.Pics
+                join a in _ctx.Arts on p.ArtId equals a.ArtId
+                orderby p.CraftId, p.NType, p.NNN
+                select new { p, a });
+
+            for (var ibq1 = 0; ibq1 < IBQuery1.Count; ibq1++)
+            {
+                var ibq1c = IBQuery1[ibq1];
+
+                lAlso.Clear();
+                lAlsoYears.Clear();
+
+                if (ibq1c.SeeAlso.HasValue) {
+                    var ibq = ibq1c;
+                    while (ibq.SeeAlso.HasValue) {
+
+                        ibq = IBQuery1.First(x => x.CraftId == ibq.SeeAlso);
+                        AlsoId = ibq.CraftId;
+                        AlsoName = GetCraftName(ibq, true);
+                        if (lAlso.Any(x => x.Id == AlsoId)) break;
+                        var ind = lAlsoYears.InsertStringSorted(ibq.IYear.ToString() + ibq.Construct + ibq.Name);
+                        lAlso.Insert(ind, new Pair<int>() { Name = AlsoName, Id = AlsoId });
+                    }
+                }
+
+                if (ibq1 == IBQuery1.Count - 1)
+                {
+                    NextId = FirstId;
+                    NextName = FirstName;
+                }
+                else
+                {
+                    NextId = IBQuery1[ibq1 + 1].CraftId;
+                    NextName = GetCraftName(IBQuery1[ibq1 + 1], true);
+                }
+
+                pics = IBQuery2.Where(x => x.p.CraftId == ibq1c.CraftId).ToList()
+                    .Select(x => new PicArt()
+                    {
+                        p = Mapper.Map<PicDto>(x.p),
+                        a = Mapper.Map<ArtDto>(x.a)
+                    }).ToList();
+                LoadPic7(ibq1c, pics);
+
+                PrevId = ibq1c.CraftId;
+                PrevName = GetCraftName(ibq1c, true);
+
+                lInfo.Text = $"Craft {ibq1c.IYear} {ibq1c.Construct}";
+                Application.DoEvents();
+                if (is_stop) { return; };
+
+            }
+
+            SaveToFile(lSources, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
+            SaveToFile(lSourceNames, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
+            SaveToFile(lSourceIds, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
+            SaveToFile(lLog, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\Log.txt");
+
+
 
             elements = new List<Pair<int>>[13];
             chunks = new List<TChunk>[13];
@@ -4446,6 +4755,9 @@ namespace Aik2
                 elements[i] = new List<Pair<int>>();
                 chunks[i] = new List<TChunk>();
             }
+
+
+
 
             lInfo.Text = "Crafts...";
             Application.DoEvents();
@@ -4541,73 +4853,6 @@ namespace Aik2
             crftList = IBQuery1Crft.OrderBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.a.Mag).ThenBy(x => x.a.Author).ThenBy(x => x.a.Name).ThenBy(x => x.a.NN).ToList();
             CreatePage7(crftList, "Arts.htm", "Arts6.htm", false, 0, 6, "IYear", 0);
 
-            var IBQuery1 = _ctx.Crafts.Where(x => !x.Same.HasValue && x.Source == "7")
-                .OrderBy(x => x.Country).ThenBy(x => x.Construct).ThenBy(x => x.IYear).ThenBy(x => x.Name)
-                .Select(Mapper.Map<CraftDto>).ToList();
-
-
-            lSources = new List<string>();
-            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt")) {
-                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
-                lSources = new List<string>(logFile);
-            }
-            lSourceNames = new List<string>();
-            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt")) {
-                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
-                lSourceNames = new List<string>(logFile);
-            }
-            lSourceIds = new List<string>();
-            if (File.Exists("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt")) {
-                var logFile = File.ReadAllLines("D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
-                lSourceIds = new List<string>(logFile);
-            }
-
-            var lLog = new List<string>();
-
-            var IBQuery2 = (
-                from p in _ctx.Pics
-                join a in _ctx.Arts on p.ArtId equals a.ArtId
-                orderby p.CraftId, p.NType, p.NNN
-                select new { p, a });
-
-            for (var ibq1 = 0; ibq1 < IBQuery1.Count; ibq1++)
-            {
-                var ibq1c = IBQuery1[ibq1];
-
-
-                if (ibq1 == IBQuery1.Count - 1)
-                {
-                    NextId = FirstId;
-                    NextName = FirstName;
-                }
-                else
-                {
-                    NextId = IBQuery1[ibq1 + 1].CraftId;
-                    NextName = GetCraftName(IBQuery1[ibq1 + 1], true);
-                }
-
-                pics = IBQuery2.Where(x => x.p.CraftId == ibq1c.CraftId).ToList()
-                    .Select(x => new PicArt()
-                    {
-                        p = Mapper.Map<PicDto>(x.p),
-                        a = Mapper.Map<ArtDto>(x.a)
-                    }).ToList();
-                LoadPic7(ibq1c, pics);
-
-                PrevId = ibq1c.CraftId;
-                PrevName = GetCraftName(ibq1c, true);
-
-                lInfo.Text = $"Craft {ibq1c.IYear} {ibq1c.Construct}";
-                Application.DoEvents();
-                if (is_stop) { return; };
-
-            }
-
-            SaveToFile(lSources, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\Sources.txt");
-            SaveToFile(lSourceNames, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceNames.txt");
-            SaveToFile(lSourceIds, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\SourceIds.txt");
-            SaveToFile(lLog, "D:\\Live\\Avia\\AviaDejaVu\\Site2\\Log.txt");
-
 
             var ibq1A = artQry
                 .OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.NN)
@@ -4642,7 +4887,7 @@ namespace Aik2
                 if (maxArt < ibq1Aa.ArtId)
                 {
                     maxArt = ibq1Aa.ArtId;
-                    lastArt = lArts[0].Id;
+                    lastArt = ibq1Aa.ArtId; // lArts[0].Id;
                 }
 
                 templ = File.ReadAllText(sPath + "Site2\\Art.htm");
@@ -5153,6 +5398,15 @@ namespace Aik2
                 var craft = crafts[craftInd];
                 if (is_craft)
                 {
+                    var bigpic = "";
+                    var iEl = lBicPics.BinaryIndexOfPairById(craft.c.CraftId);
+                    if (iEl >= 0)
+                    {
+                        var el = lBicPics[iEl];
+                        bigpic = el.Name;
+                    }
+                    else MessageBox.Show($"BigPic {craft.c.CraftId}");
+
                     sb.Append(new StringBuilder(sMid)
                         .Replace("%Country%", CheckNull(craft.c.Country))
                         .Replace("%Construct%", CheckNull(craft.c.Construct))
@@ -5162,10 +5416,13 @@ namespace Aik2
                         .Replace("%UAV%", craft.c.Uav ?? false ? "<span title='Беспилотный'>Б</span>" : "")
                         .Replace("%Glider%", craft.c.Glider ?? false ? "<span title='Планер'>П</span>" : "")
                         .Replace("%Single%", craft.c.Single ?? false ? "<span title='Единственный экземпляр'>1</span>" : "")
+                        .Replace("%LL%", craft.c.LL ?? false ? "<span title='Летающая лодка'>Л</span>" : "")
+                        .Replace("%Proj%", craft.c.Proj ?? false ? "<span title='Проект'>X</span>" : "")
                         .Replace("%Type%", CheckNull(craft.c.Type))
                         .Replace("%Photos%", CheckNull(craft.cCnt.ToString()))
                         .Replace("%Textlen%", CheckNull((craft.c.CText?.Length ?? 0).ToString()))
                         .Replace("%CraftLink%", $"../Crafts/Craft{craft.c.CraftId}.htm")
+                        .Replace("%preview%", $"../../Images7m/" + bigpic)
                         .ToString());
 
                 }

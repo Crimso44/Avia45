@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aik2.Dto
+﻿namespace Aik2.Dto
 {
     public class PicDto
     {
@@ -18,6 +12,7 @@ namespace Aik2.Dto
         public int? NType { get; set; }
         public string Path { get; set; }
         public string Grp { get; set; }
+        public string Serial { get; set; }
         public string SText { get; set; }
         public bool? Copyright { get; set; }
         public string XType { get; set; }
