@@ -2257,6 +2257,7 @@ namespace Aik2
             }
 
             var d = 0;
+            if (xx == 10) d = 9;
 
             var sb = new StringBuilder(sBeg);
             var sl = new List<string>();

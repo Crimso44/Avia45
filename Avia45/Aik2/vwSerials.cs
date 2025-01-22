@@ -12,12 +12,9 @@ namespace Aik2
     using System;
     using System.Collections.Generic;
     
-    public partial class Serials
+    public partial class vwSerials
     {
-        public string Serial { get; set; }
-        public int PicId { get; set; }
         public int SerialID { get; set; }
-    
-        public virtual Pics Pics { get; set; }
+        public string Serial { get; set; }
     }
 }

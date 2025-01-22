@@ -29,7 +29,8 @@
         <AssociationConnector Association="AiKModel.FK_Crafts_Crafts2" />
         <AssociationConnector Association="AiKModel.FK_Pics_Crafts" />
         <AssociationConnector Association="AiKModel.FK_WordLinks_Crafts" />
-        <EntityTypeShape EntityType="AiKModel.Serials" Width="1.5" PointX="5.25" PointY="13" />
+        <EntityTypeShape EntityType="AiKModel.vwSerials" Width="1.5" PointX="7.375" PointY="13" />
+        <EntityTypeShape EntityType="AiKModel.Serials" Width="1.5" PointX="5.375" PointY="12.875" />
         <AssociationConnector Association="AiKModel.FK_Serials_Pics" />
       </Diagram>
     </edmx:Diagrams>

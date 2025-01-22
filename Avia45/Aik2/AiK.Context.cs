@@ -39,6 +39,7 @@ namespace Aik2
         public virtual DbSet<vwReportMags> vwReportMags { get; set; }
         public virtual DbSet<Arts> Arts { get; set; }
         public virtual DbSet<Crafts> Crafts { get; set; }
+        public virtual DbSet<vwSerials> vwSerials { get; set; }
         public virtual DbSet<Serials> Serials { get; set; }
     }
 }

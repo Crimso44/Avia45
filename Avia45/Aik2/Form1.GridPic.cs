@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -1453,7 +1452,7 @@ namespace Aik2
 
         private void LoadSerials()
         {
-            var serials = _ctx.Serials.OrderBy(x => x.Serial).Select(x => x.Serial).Distinct().ToArray();
+            var serials = _ctx.vwSerials.OrderBy(x => x.Serial).Select(x => x.Serial).ToArray();
             cbSerial.Items.Clear();
             cbSerial.Items.AddRange(serials);
         }
@@ -1464,9 +1463,15 @@ namespace Aik2
             {
                 if (!string.IsNullOrEmpty(cbSerial.Text) && _selectedPic != null)
                 {
+                    var sText = cbSerial.Text.Trim().ToUpper();
+                    var i = sText.IndexOf(' ');
+                    if (i > 0)
+                    {
+                        sText = sText.Substring(0, i);
+                    }
                     var ser = new Serials()
                     {
-                        Serial = cbSerial.Text.Trim().ToUpper(),
+                        Serial = sText,
                         PicId = _selectedPic.PicId
                     };
                     _ctx.Serials.Add(ser);

@@ -89,11 +89,11 @@
             this.picLinkImage = new System.Windows.Forms.PictureBox();
             this.splitter4 = new System.Windows.Forms.Splitter();
             this.pPicText = new System.Windows.Forms.Panel();
+            this.splitter6 = new System.Windows.Forms.Splitter();
+            this.edPicText = new System.Windows.Forms.RichTextBox();
             this.panel6 = new System.Windows.Forms.Panel();
             this.lbSerials = new System.Windows.Forms.ListBox();
             this.cbSerial = new System.Windows.Forms.ComboBox();
-            this.splitter6 = new System.Windows.Forms.Splitter();
-            this.edPicText = new System.Windows.Forms.RichTextBox();
             this.pLinkTable = new System.Windows.Forms.Panel();
             this.gridLink = new SourceGrid.Grid();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -927,43 +927,10 @@
             this.pPicText.TabIndex = 1;
             this.pPicText.Resize += new System.EventHandler(this.pPicText_Resize);
             // 
-            // panel6
-            // 
-            this.panel6.Controls.Add(this.lbSerials);
-            this.panel6.Controls.Add(this.cbSerial);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel6.Location = new System.Drawing.Point(586, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(98, 58);
-            this.panel6.TabIndex = 3;
-            // 
-            // lbSerials
-            // 
-            this.lbSerials.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbSerials.FormattingEnabled = true;
-            this.lbSerials.ItemHeight = 15;
-            this.lbSerials.Location = new System.Drawing.Point(0, 23);
-            this.lbSerials.Name = "lbSerials";
-            this.lbSerials.Size = new System.Drawing.Size(98, 35);
-            this.lbSerials.TabIndex = 1;
-            this.lbSerials.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbSerials_KeyDown);
-            // 
-            // cbSerial
-            // 
-            this.cbSerial.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.cbSerial.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cbSerial.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSerial.FormattingEnabled = true;
-            this.cbSerial.Location = new System.Drawing.Point(0, 0);
-            this.cbSerial.Name = "cbSerial";
-            this.cbSerial.Size = new System.Drawing.Size(98, 23);
-            this.cbSerial.TabIndex = 0;
-            this.cbSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSerial_KeyDown);
-            // 
             // splitter6
             // 
             this.splitter6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter6.Location = new System.Drawing.Point(582, 0);
+            this.splitter6.Location = new System.Drawing.Point(532, 0);
             this.splitter6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitter6.Name = "splitter6";
             this.splitter6.Size = new System.Drawing.Size(4, 58);
@@ -977,12 +944,46 @@
             this.edPicText.Location = new System.Drawing.Point(0, 0);
             this.edPicText.Margin = new System.Windows.Forms.Padding(1);
             this.edPicText.Name = "edPicText";
-            this.edPicText.Size = new System.Drawing.Size(586, 58);
+            this.edPicText.Size = new System.Drawing.Size(536, 58);
             this.edPicText.TabIndex = 0;
             this.edPicText.Text = "";
             this.edPicText.TextChanged += new System.EventHandler(this.edPicText_TextChanged);
             this.edPicText.DoubleClick += new System.EventHandler(this.edPicText_DoubleClick);
             this.edPicText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.edPicText_KeyDown);
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.lbSerials);
+            this.panel6.Controls.Add(this.cbSerial);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel6.Location = new System.Drawing.Point(536, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(148, 58);
+            this.panel6.TabIndex = 3;
+            // 
+            // lbSerials
+            // 
+            this.lbSerials.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbSerials.FormattingEnabled = true;
+            this.lbSerials.ItemHeight = 15;
+            this.lbSerials.Location = new System.Drawing.Point(0, 23);
+            this.lbSerials.Name = "lbSerials";
+            this.lbSerials.Size = new System.Drawing.Size(148, 35);
+            this.lbSerials.TabIndex = 1;
+            this.lbSerials.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbSerials_KeyDown);
+            // 
+            // cbSerial
+            // 
+            this.cbSerial.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cbSerial.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cbSerial.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSerial.DropDownWidth = 300;
+            this.cbSerial.FormattingEnabled = true;
+            this.cbSerial.Location = new System.Drawing.Point(0, 0);
+            this.cbSerial.Name = "cbSerial";
+            this.cbSerial.Size = new System.Drawing.Size(148, 23);
+            this.cbSerial.TabIndex = 0;
+            this.cbSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSerial_KeyDown);
             // 
             // pLinkTable
             // 
@@ -1252,14 +1253,14 @@
             this.mnuAlt3,
             this.mnuAltS});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
-            this.focusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.focusToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.focusToolStripMenuItem.Text = "Focus";
             // 
             // mnuAlt1
             // 
             this.mnuAlt1.Name = "mnuAlt1";
             this.mnuAlt1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.mnuAlt1.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt1.Size = new System.Drawing.Size(171, 22);
             this.mnuAlt1.Text = "Focus pics";
             this.mnuAlt1.Click += new System.EventHandler(this.mnuAlt1_Click);
             // 
@@ -1267,7 +1268,7 @@
             // 
             this.mnuAlt2.Name = "mnuAlt2";
             this.mnuAlt2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.mnuAlt2.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt2.Size = new System.Drawing.Size(171, 22);
             this.mnuAlt2.Text = "Focus text";
             this.mnuAlt2.Click += new System.EventHandler(this.mnuAlt2_Click);
             // 
@@ -1275,7 +1276,7 @@
             // 
             this.mnuAlt3.Name = "mnuAlt3";
             this.mnuAlt3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.mnuAlt3.Size = new System.Drawing.Size(180, 22);
+            this.mnuAlt3.Size = new System.Drawing.Size(171, 22);
             this.mnuAlt3.Text = "Focus links";
             this.mnuAlt3.Click += new System.EventHandler(this.mnuAlt3_Click);
             // 
@@ -1283,14 +1284,14 @@
             // 
             this.mnuAltS.Name = "mnuAltS";
             this.mnuAltS.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
-            this.mnuAltS.Size = new System.Drawing.Size(180, 22);
+            this.mnuAltS.Size = new System.Drawing.Size(171, 22);
             this.mnuAltS.Text = "Focus serial";
             this.mnuAltS.Click += new System.EventHandler(this.mnuAltS_Click);
             // 
             // calcWordsToolStripMenuItem
             // 
             this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
-            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.calcWordsToolStripMenuItem.Text = "Calc words";
             this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
             // 
@@ -1298,7 +1299,7 @@
             // 
             this.reloadToolStripMenuItem1.Name = "reloadToolStripMenuItem1";
             this.reloadToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
             this.reloadToolStripMenuItem1.Text = "Reload";
             this.reloadToolStripMenuItem1.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
             // 

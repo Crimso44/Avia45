@@ -109,11 +109,11 @@ warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defin
         </EntityType>
         <EntityType Name="Serials">
           <Key>
-            <PropertyRef Name="Serial" />
-            <PropertyRef Name="PicId" />
+            <PropertyRef Name="SerialID" />
           </Key>
           <Property Name="Serial" Type="nvarchar" MaxLength="16" Nullable="false" />
           <Property Name="PicId" Type="int" Nullable="false" />
+          <Property Name="SerialID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="WordLinks">
           <Key>
@@ -234,6 +234,15 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="IYear" Type="int" Nullable="false" />
           <Property Name="IMonth" Type="nvarchar" MaxLength="5" />
           <Property Name="Source" Type="nchar" MaxLength="1" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwSerials">
+          <Key>
+            <PropertyRef Name="SerialID" />
+          </Key>
+          <Property Name="SerialID" Type="int" Nullable="false" />
+          <Property Name="Serial" Type="nvarchar" MaxLength="218" />
         </EntityType>
         <Association Name="FK_Crafts_Crafts">
           <End Role="Crafts" Type="Self.Crafts" Multiplicity="0..1" />
@@ -472,6 +481,12 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
     [vwReportMags].[Source] AS [Source]
     FROM [dbo].[vwReportMags] AS [vwReportMags]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="vwSerials" EntityType="Self.vwSerials" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwSerials].[SerialID] AS [SerialID], 
+    [vwSerials].[Serial] AS [Serial]
+    FROM [dbo].[vwSerials] AS [vwSerials]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Crafts_Crafts" Association="Self.FK_Crafts_Crafts">
             <End Role="Crafts" EntitySet="Crafts" />
             <End Role="Crafts1" EntitySet="Crafts" />
@@ -694,6 +709,7 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
             <End Role="Crafts" EntitySet="Crafts" />
             <End Role="WordLinks" EntitySet="WordLinks" />
           </AssociationSet>
+          <EntitySet Name="vwSerials" EntityType="AiKModel.vwSerials" />
           <EntitySet Name="Serials" EntityType="AiKModel.Serials" />
           <AssociationSet Name="FK_Serials_Pics" Association="AiKModel.FK_Serials_Pics">
             <End Role="Pics" EntitySet="Pics" />
@@ -931,13 +947,20 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="vwSerials">
+          <Key>
+            <PropertyRef Name="SerialID" />
+          </Key>
+          <Property Name="SerialID" Type="Int32" Nullable="false" />
+          <Property Name="Serial" Type="String" MaxLength="218" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="Serials">
           <Key>
-            <PropertyRef Name="Serial" />
-            <PropertyRef Name="PicId" />
+            <PropertyRef Name="SerialID" />
           </Key>
           <Property Name="Serial" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" />
           <Property Name="PicId" Type="Int32" Nullable="false" />
+          <Property Name="SerialID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Serials_Pics" FromRole="Serials" ToRole="Pics" />
         </EntityType>
         <Association Name="FK_Serials_Pics">
@@ -1177,9 +1200,18 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="vwSerials">
+            <EntityTypeMapping TypeName="AiKModel.vwSerials">
+              <MappingFragment StoreEntitySet="vwSerials">
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="SerialID" ColumnName="SerialID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Serials">
             <EntityTypeMapping TypeName="AiKModel.Serials">
               <MappingFragment StoreEntitySet="Serials">
+                <ScalarProperty Name="SerialID" ColumnName="SerialID" />
                 <ScalarProperty Name="PicId" ColumnName="PicId" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
               </MappingFragment>
