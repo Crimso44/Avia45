@@ -970,6 +970,7 @@
             this.lbSerials.Name = "lbSerials";
             this.lbSerials.Size = new System.Drawing.Size(148, 35);
             this.lbSerials.TabIndex = 1;
+            this.lbSerials.DoubleClick += new System.EventHandler(this.lbSerials_DoubleClick);
             this.lbSerials.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbSerials_KeyDown);
             // 
             // cbSerial

@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -34,6 +35,7 @@ namespace Aik2
         private List<LinkDto> _links;
         private int? _lockedPicId = null;
         private bool _isPicReadonly = false;
+        private string serialFilter = "";
 
         public void InitPicGrid()
         {
@@ -220,6 +222,15 @@ namespace Aik2
                         if (found) isOk = true;
                         else break;
                     }
+                    return isOk;
+                }).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(serialFilter))
+            {
+                Pics = Pics.Where(x =>
+                {
+                    var isOk = _ctx.Serials.Any(y => y.PicId == x.PicId && y.Serial == serialFilter);
                     return isOk;
                 }).ToList();
             }
@@ -1452,7 +1463,7 @@ namespace Aik2
 
         private void LoadSerials()
         {
-            var serials = _ctx.vwSerials.OrderBy(x => x.Serial).Select(x => x.Serial).ToArray();
+            var serials = _ctx.vwSerials.OrderBy(x => x.SerialCraft).Select(x => x.SerialCraft).ToArray();
             cbSerial.Items.Clear();
             cbSerial.Items.AddRange(serials);
         }
@@ -1550,5 +1561,23 @@ namespace Aik2
             }
 
         }
+
+        private void lbSerials_DoubleClick(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(serialFilter))
+            {
+                var s = lbSerials.SelectedItem.ToString();
+                var i = s.IndexOf(" ");
+                if (i <= 0) return;
+                s = s.Substring(0, i);
+                serialFilter = s;
+            }
+            else
+            {
+                serialFilter = "";
+            }
+            LoadPics(false);
+        }
+
     }
 }

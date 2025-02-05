@@ -1180,6 +1180,7 @@ namespace Aik2
             var ix = 0;
             var wasGrp = false;
             var firstGrpName = "";
+            var filterChip = "";
             if (pics.Any())
             {
                 var firstGrp = true;
@@ -1269,6 +1270,39 @@ namespace Aik2
                             (x.pic1 == pic.p.PicId && x.nnn1 > x.nnn2) ||
                             (x.pic2 == pic.p.PicId && x.nnn1 < x.nnn2));
 
+                        var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
+                        var serial = "";
+                        var serialData = "";
+                        if (serials.Any())
+                        {
+                            serial = $"<h7>{GetSpanRuEn("Регистрационный номер", "Registry number")}: ";
+                            for (var xi = 0; xi < serials.Count; xi++)
+                            {
+                                if (xi > 0)
+                                {
+                                    serial += ", ";
+                                }
+
+                                var srl = serials[xi];
+                                var xcnt = _ctx.vwSerials
+                                    .Where(x => x.Serial == srl && x.CraftId == pic.p.CraftId).Select(x => x.cnt)
+                                    .FirstOrDefault();
+                                var some = "";
+                                if (xcnt > 1)
+                                {
+                                    some = " some";
+                                    serialData += $"{srl} ";
+                                    srl += $" &nbsp; [{xcnt}]";
+
+                                    filterChip = "<div id='filter-chip' class='chip serial' style='display:none'><span id='filter-text'></span><img src=\"../assets/close.svg\" alt=\"close\"></div>";
+                                }
+
+                                serial += $"<span class='serial{some}'>{srl}</span>";
+                            }
+                            serial += "</h7>";
+                            if (serialData != "") serialData = $" data='{serialData.Trim()}'";
+                        }
+
                         var ssesc = $"{sArtLinkPic}<p>{ss}<p>"
                             .Replace("&", "&amp;")
                             .Replace("\"", "&quot;")
@@ -1282,6 +1316,8 @@ namespace Aik2
                             .Replace("%AnotherCrafts%", sOther)
                             .Replace("%CraftPicLink%", CraftPicLink)
                             .Replace("%marked%", marked ? " marked" : "")
+                            .Replace("%Serial%", serial)
+                            .Replace("%SerialData%", serialData)
                             .ToString();
                         sb.Append(sx);
 
@@ -1298,6 +1334,8 @@ namespace Aik2
             {
                 sb.Append("<p>" + GetSpanRuEn("Нет фотографий", "No photos") + "</p>");
             }
+
+            sb.Replace("%FilterChip%", filterChip);
 
             lBicPics.InsertPairSortedById(new Pair<int> { Name = bigpic, Id = craft1.CraftId });
             lMagPics.InsertPairSortedById(new Pair<int> { Name = magpic, Id = craft1.CraftId });
@@ -3176,6 +3214,7 @@ namespace Aik2
             Directory.CreateDirectory(sPath + "Upload\\Site");
             Directory.CreateDirectory(sPath + "Upload\\Site\\Arts");
             Directory.CreateDirectory(sPath + "Upload\\Site\\Crafts");
+            Directory.CreateDirectory(sPath + "Upload\\Site\\Serials");
 
 
             var sPathi = sPath + "..\\Images6";
@@ -3187,6 +3226,76 @@ namespace Aik2
                 LoadDir(sPathi + "\\" + srx, ssPath + "\\" + srx);
                 if (is_stop) { return; }
             }
+
+
+
+            lInfo.Text = "Serials...";
+            Application.DoEvents();
+            if (is_stop) { return; };
+
+
+            var serLetters = _ctx.Database
+                .SqlQuery<string>("select serial from dbo.GetSerialStatistics(500)").ToList();
+            templ = string.Join(";", serLetters);
+            s = sPath + $"Site\\Serials\\Index.dat";
+            ss = sPath + $"Upload\\Site\\Serials\\Index.dat";
+            var is_upl = false;
+            if (File.Exists(s))
+            {
+                upl = File.ReadAllText(s);
+                if (templ != upl)
+                {
+                    File.WriteAllText(ss, templ, Encoding.UTF8);
+                    is_upl = true;
+                }
+            }
+            else
+            {
+                File.WriteAllText(ss, templ, Encoding.UTF8);
+                is_upl = true;
+            }
+            if (is_upl)
+            {
+                File.WriteAllText(s, templ, Encoding.UTF8);
+            }
+            foreach (var serLetter in serLetters)
+            {
+                var listLetters = serLetter.Split(',');
+                var contentBld = new StringBuilder();
+                foreach (var letter in listLetters)
+                {
+                    var sers = _ctx.vwSerials.Where(x => x.Serial.StartsWith(letter)).OrderBy(x => x.Serial).Select(x => new { x.Serial, x.CraftId }).ToList();
+                    foreach (var ser in sers)
+                    {
+                        contentBld.Append($"{ser.Serial},{ser.CraftId};");
+                    }
+                }
+
+                templ = contentBld.ToString();
+                var fileName = $"Serials{listLetters[0]}.dat";
+                s = sPath + $"Site\\Serials\\{fileName}";
+                ss = sPath + $"Upload\\Site\\Serials\\{fileName}";
+                is_upl = false;
+                if (File.Exists(s))
+                {
+                    upl = File.ReadAllText(s);
+                    if (templ != upl)
+                    {
+                        File.WriteAllText(ss, templ, Encoding.UTF8);
+                        is_upl = true;
+                    }
+                }
+                else
+                {
+                    File.WriteAllText(ss, templ, Encoding.UTF8);
+                    is_upl = true;
+                }
+                if (is_upl)
+                {
+                    File.WriteAllText(s, templ, Encoding.UTF8);
+                }
+            }
+
 
 
             lRuCountries.Clear();
@@ -3835,7 +3944,7 @@ namespace Aik2
 
                 s = sPath + $"Site\\Arts\\Art{ibq1Aa.ArtId}.htm";
                 ss = sPath + $"Upload\\Site\\Arts\\Art{ibq1Aa.ArtId}.htm";
-                var is_upl = false;
+                is_upl = false;
                 if (File.Exists(s))
                 {
                     upl = File.ReadAllText(s);

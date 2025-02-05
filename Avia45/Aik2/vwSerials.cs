@@ -16,5 +16,8 @@ namespace Aik2
     {
         public int SerialID { get; set; }
         public string Serial { get; set; }
+        public string SerialCraft { get; set; }
+        public Nullable<int> cnt { get; set; }
+        public int CraftId { get; set; }
     }
 }

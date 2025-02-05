@@ -240,9 +240,14 @@ warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key de
         <EntityType Name="vwSerials">
           <Key>
             <PropertyRef Name="SerialID" />
+            
+            <PropertyRef Name="CraftId" />
           </Key>
           <Property Name="SerialID" Type="int" Nullable="false" />
-          <Property Name="Serial" Type="nvarchar" MaxLength="218" />
+          <Property Name="Serial" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="SerialCraft" Type="nvarchar" MaxLength="218" />
+          <Property Name="CraftId" Type="int" Nullable="false" />
+          <Property Name="cnt" Type="int" />
         </EntityType>
         <Association Name="FK_Crafts_Crafts">
           <End Role="Crafts" Type="Self.Crafts" Multiplicity="0..1" />
@@ -376,6 +381,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key de
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        
         <EntityContainer Name="AiKModelStoreContainer">
           <EntitySet Name="Arts" EntityType="Self.Arts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Countries" EntityType="Self.Countries" Schema="dbo" store:Type="Tables" />
@@ -484,7 +490,10 @@ warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key de
           <EntitySet Name="vwSerials" EntityType="Self.vwSerials" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [vwSerials].[SerialID] AS [SerialID], 
-    [vwSerials].[Serial] AS [Serial]
+    [vwSerials].[Serial] AS [Serial], 
+    [vwSerials].[SerialCraft] AS [SerialCraft], 
+    [vwSerials].[CraftId] AS [CraftId], 
+    [vwSerials].[cnt] AS [cnt]
     FROM [dbo].[vwSerials] AS [vwSerials]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_Crafts_Crafts" Association="Self.FK_Crafts_Crafts">
@@ -950,9 +959,13 @@ warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key de
         <EntityType Name="vwSerials">
           <Key>
             <PropertyRef Name="SerialID" />
+            <PropertyRef Name="CraftId" />
           </Key>
           <Property Name="SerialID" Type="Int32" Nullable="false" />
-          <Property Name="Serial" Type="String" MaxLength="218" FixedLength="false" Unicode="true" />
+          <Property Name="Serial" Type="String" MaxLength="16" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SerialCraft" Type="String" MaxLength="218" FixedLength="false" Unicode="true" />
+          <Property Name="cnt" Type="Int32" />
+          <Property Name="CraftId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Serials">
           <Key>
@@ -1203,6 +1216,9 @@ warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key de
           <EntitySetMapping Name="vwSerials">
             <EntityTypeMapping TypeName="AiKModel.vwSerials">
               <MappingFragment StoreEntitySet="vwSerials">
+                <ScalarProperty Name="CraftId" ColumnName="CraftId" />
+                <ScalarProperty Name="cnt" ColumnName="cnt" />
+                <ScalarProperty Name="SerialCraft" ColumnName="SerialCraft" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
                 <ScalarProperty Name="SerialID" ColumnName="SerialID" />
               </MappingFragment>
