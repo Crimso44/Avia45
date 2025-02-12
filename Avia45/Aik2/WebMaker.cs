@@ -3700,6 +3700,7 @@ namespace Aik2
                         c = Mapper.Map<CraftDto>(x.c)
                     }).ToList();
 
+                var filterChip = "";
                 if (ibq2AP.Any())
                 {
                     foreach (var pic in ibq2AP)
@@ -3738,6 +3739,46 @@ namespace Aik2
                             sCrafts += "</p>";
                         }
 
+                        var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
+                        var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path).ToList();
+                        if (otherPics.Count > 1)
+                        {
+                            var picIds = otherPics.Select(x => x.p.PicId).Distinct().ToArray();
+                            serials = _ctx.Serials.Where(x => picIds.Contains(x.PicId)).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
+                        }
+
+                        var serial = "";
+                        var serialData = "";
+                        if (serials.Any())
+                        {
+                            serial = $"<h7>{GetSpanRuEn("Регистрационный номер", "Registry number")}: ";
+                            for (var xi = 0; xi < serials.Count; xi++)
+                            {
+                                if (xi > 0)
+                                {
+                                    serial += ", ";
+                                }
+
+                                var srl = serials[xi];
+                                var xcnt = _ctx.vwSerialsArt
+                                    .Where(x => x.Serial == srl && x.ArtId == pic.p.ArtId).Select(x => x.cnt)
+                                    .FirstOrDefault();
+                                var some = "";
+                                if (xcnt > 1)
+                                {
+                                    some = " some";
+                                    serialData += $"{srl} ";
+                                    srl += $" &nbsp; [{xcnt}]";
+
+                                    filterChip = "<div id='filter-chip' class='chip serial' style='display:none'><span id='filter-text'></span><img src=\"../assets/close.svg\" alt=\"close\"></div>";
+                                }
+
+                                serial += $"<span class='serial{some}'>{srl}</span>";
+                            }
+                            serial += "</h7>";
+                            if (serialData != "") serialData = $" data='{serialData.Trim()}'";
+                        }
+
                         var ssesc = $"{sCraftsPic}<p>{ss}<p>"
                             .Replace("&", "&amp;")
                             .Replace("\"", "&quot;")
@@ -3748,6 +3789,8 @@ namespace Aik2
                             .Replace("%AnotherCrafts%", sCrafts)
                             .Replace("%PicText%", ss)
                             .Replace("%PicTextEscaped%", ssesc)
+                            .Replace("%Serial%", serial)
+                            .Replace("%SerialData%", serialData)
                             .ToString();
 
                         sBeg += sx;
@@ -3758,6 +3801,8 @@ namespace Aik2
                 {
                     sBeg += "<tr><td>" + GetSpanRuEn("Нет фотографий", "No photos") + "</td></tr>";
                 }
+
+                sBeg = sBeg.Replace("%FilterChip%", filterChip);
 
                 templ = sBeg + sEnd;
 

@@ -32,6 +32,7 @@
         <EntityTypeShape EntityType="AiKModel.vwSerials" Width="1.5" PointX="7.375" PointY="13" />
         <EntityTypeShape EntityType="AiKModel.Serials" Width="1.5" PointX="5.375" PointY="12.875" />
         <AssociationConnector Association="AiKModel.FK_Serials_Pics" />
+        <EntityTypeShape EntityType="AiKModel.vwSerialsArt" Width="1.5" PointX="9.25" PointY="13" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

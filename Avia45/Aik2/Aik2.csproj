@@ -164,6 +164,9 @@
     <Compile Include="vwSerials.cs">
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
+    <Compile Include="vwSerialsArt.cs">
+      <DependentUpon>AiK.tt</DependentUpon>
+    </Compile>
     <Compile Include="WebLoader.cs" />
     <Compile Include="WebMaker.cs" />
     <Compile Include="WordLinks.cs">
