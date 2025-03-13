@@ -1564,7 +1564,7 @@ namespace Aik2
 
         private void lbSerials_DoubleClick(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(serialFilter))
+            if (string.IsNullOrEmpty(serialFilter) && lbSerials.SelectedItem != null)
             {
                 var s = lbSerials.SelectedItem.ToString();
                 var i = s.IndexOf(" ");

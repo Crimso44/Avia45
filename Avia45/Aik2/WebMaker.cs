@@ -934,12 +934,9 @@ namespace Aik2
 
         }
 
-        private void LoadPicNew(int iType, CraftDto craft1)
+        private void LoadPicNew(bool simple, CraftDto craft1)
         {
             var bigpic = ""; var magpic = ""; var bigpictype = "";
-            var sx = $"-{iType}";
-            if (iType == mains) sx = "";
-            var CraftPicLink = $"Craft{craft1.CraftId}{sx}p.htm";
             templ = File.ReadAllText(sPath + "NewDesign\\Templates\\airplane.html");
             while (templ.IndexOf("  ") >= 0) templ = templ.Replace("  ", " ");
             templ = new StringBuilder(templ)
@@ -961,7 +958,6 @@ namespace Aik2
                 .Replace("%PrevLink%", $"Craft{PrevId}.htm")
                 .Replace("%NextName%", NextName)
                 .Replace("%NextLink%", $"Craft{NextId}.htm")
-                .Replace("%CraftPicsLink%", CraftPicLink)
                 //.Replace("%AlsoLink%", AlsoId > 0 ? $"Craft{AlsoId}.htm" : "")
                 //.Replace("%AlsoName%", AlsoName)
                 //.Replace("%ID%", craft1.CraftId.ToString())
@@ -1181,6 +1177,8 @@ namespace Aik2
             var wasGrp = false;
             var firstGrpName = "";
             var filterChip = "";
+            var firstPicType = "";
+            var prevType = 0;
             if (pics.Any())
             {
                 var firstGrp = true;
@@ -1205,124 +1203,127 @@ namespace Aik2
                     }
 
                     ss = pic.p.Type?.Trim() ?? "";
-                    if ((iType == 0) ||
-                        ((iType == 1) && (ss == "s")) ||
-                        ((iType == 2) && (ss == "fc")) ||
-                        ((iType == 3) && (ss == "f")) ||
-                        ((iType == 4) && (ss == "c")) ||
-                        ((iType == 5) && ((ss == "fd") || (ss == "fr"))) ||
-                        ((iType == 6) && (ss != "s") && (ss != "fc") && (ss != "f") && (ss != "c") && (ss != "fd") && (ss != "fr")))
+                    var iType = simple ? 0
+                            : ss == "s" ? 1
+                            : ss == "fc" ? 2
+                            : ss == "f" ? 3
+                            : ss == "c" ? 4
+                            : (ss == "fd") || (ss == "fr") ? 5
+                            : 6;
+                    var picType = simple ? "" : $" t{iType}{(iType == mains ? "" : " notactive")}";
+
+                    sx = (pic.p.Grp ?? "").Trim();
+                    if (firstGrp || !string.IsNullOrEmpty(sx) || prevType != iType)
                     {
-
-                        sx = (pic.p.Grp ?? "").Trim();
-                        if (firstGrp || !string.IsNullOrEmpty(sx))
+                        if (string.IsNullOrEmpty(sx)) sx = "-";
+                        if (prevType != iType && sx == "-")
                         {
-                            if (firstGrp)
-                            {
-                                firstGrp = false;
-                                firstGrpName = sx;
-                                sb.Append("%FirstGrp%");
-                            }
-                            else
-                            {
-                                wasGrp = true;
-                                sb.Append($"</ul>\n");
-                                sb.Append($"<button class=\"accordion\">{(sx == "-" ? "<img src=\"../assets/empty-group.svg\">" : sx)}</button>\n");
-                            }
-                            sb.Append($"<ul class=\"plane-versions active\">\n");
+                            sx = GetGrpPageName(iType);
                         }
 
-                        ix++;
-
-                        ss = pic.p.Text ?? "";
-                        ss = new StringBuilder(ss)
-                            .Replace("\n\r ", "<br>&nbsp;&nbsp;")
-                            .Replace("\n ", "<br>&nbsp;&nbsp;")
-                            .Replace("\n\r", "<br>")
-                            .Replace("\n", "<br>")
-                            .ToString();
-
-                        var sOther = "";
-                        var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path && x.p.PicId != pic.p.PicId).ToList();
-                        if (otherPics.Any())
+                        if (firstGrp)
                         {
-                            sOther = $"<p class=\"another-planes\">{GetSpanRuEn("Другие самолёты на фотографии: ", "Another planes on the photo: ")}";
-                            foreach (var otherPic in otherPics)
-                            {
-                                var craftName = otherPic.c.Construct + " " +
-                                    otherPic.c.Name + " - " +
-                                    GetSpanCountry(otherPic.c.Country) + " - " +
-                                    otherPic.c.IYear.ToString();
-                                var xCraftLink = $"Craft{otherPic.c.CraftId}.htm";
-                                var craftLink = $"<a class=\"en_href\" href=\"{xCraftLink}\">{craftName}</a>";
-                                sOther += $"{craftLink}";
-                            }
-                            sOther += "</p>";
+                            firstGrp = false;
+                            firstGrpName = sx;
+                            firstPicType = picType;
+                            sb.Append("%FirstGrp%");
                         }
-                        var xArtLink = $"../Arts/Art{pic.p.ArtId}.htm";
-                        var sArtLink = $"<a class=\"en_href\" href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
-                        var sArtLinkPic = $"<a href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
-                        sx = $"-{iType}";
-                        if (iType == mains) sx = "";
-                        CraftPicLink = $"Craft{pic.p.CraftId}{sx}p.htm#{picNum}";
-
-                        var marked = links.Any(x =>
-                            (x.pic1 == pic.p.PicId && x.nnn1 > x.nnn2) ||
-                            (x.pic2 == pic.p.PicId && x.nnn1 < x.nnn2));
-
-                        var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
-                        var serial = "";
-                        var serialData = "";
-                        if (serials.Any())
+                        else
                         {
-                            serial = $"<h7>{GetSpanRuEn("Регистрационный номер", "Registry number")}: ";
-                            for (var xi = 0; xi < serials.Count; xi++)
-                            {
-                                if (xi > 0)
-                                {
-                                    serial += ", ";
-                                }
-
-                                var srl = serials[xi];
-                                var xcnt = _ctx.vwSerials
-                                    .Where(x => x.Serial == srl && x.CraftId == pic.p.CraftId).Select(x => x.cnt)
-                                    .FirstOrDefault();
-                                var some = "";
-                                if (xcnt > 1)
-                                {
-                                    some = " some";
-                                    serialData += $"{srl} ";
-                                    srl += $" &nbsp; [{xcnt}]";
-
-                                    filterChip = "<div id='filter-chip' class='chip serial' style='display:none'><span id='filter-text'></span><img src=\"../assets/close.svg\" alt=\"close\"></div>";
-                                }
-
-                                serial += $"<span class='serial{some}'>{srl}</span>";
-                            }
-                            serial += "</h7>";
-                            if (serialData != "") serialData = $" data='{serialData.Trim()}'";
+                            wasGrp = true;
+                            sb.Append($"</ul>\n");
+                            sb.Append($"<button class=\"accordion{picType}\">{(sx == "-" ? "<img src=\"../assets/empty-group.svg\">" : sx)}</button>\n");
                         }
-
-                        var ssesc = $"{sArtLinkPic}<p>{ss}<p>"
-                            .Replace("&", "&amp;")
-                            .Replace("\"", "&quot;")
-                            .Replace("<", "&lt;")
-                            .Replace(">", "&gt;");
-                        sx = new StringBuilder(sMid)
-                            .Replace("%PicPath%", pic.p.Path.Replace("\\", "/"))
-                            .Replace("%ArtLink%", sArtLink)
-                            .Replace("%PicText%", ss)
-                            .Replace("%PicTextEscaped%", ssesc)
-                            .Replace("%AnotherCrafts%", sOther)
-                            .Replace("%CraftPicLink%", CraftPicLink)
-                            .Replace("%marked%", marked ? " marked" : "")
-                            .Replace("%Serial%", serial)
-                            .Replace("%SerialData%", serialData)
-                            .ToString();
-                        sb.Append(sx);
-
-                        picNum++;
+                        sb.Append($"<ul class=\"plane-versions active{picType}\">\n");
                     }
+                    prevType = iType;
+
+                    ix++;
+
+                    ss = pic.p.Text ?? "";
+                    ss = new StringBuilder(ss)
+                        .Replace("\n\r ", "<br>&nbsp;&nbsp;")
+                        .Replace("\n ", "<br>&nbsp;&nbsp;")
+                        .Replace("\n\r", "<br>")
+                        .Replace("\n", "<br>")
+                        .ToString();
+
+                    var sOther = "";
+                    var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path && x.p.PicId != pic.p.PicId).ToList();
+                    if (otherPics.Any())
+                    {
+                        sOther = $"<p class=\"another-planes\">{GetSpanRuEn("Другие самолёты на фотографии: ", "Another planes on the photo: ")}";
+                        foreach (var otherPic in otherPics)
+                        {
+                            var craftName = otherPic.c.Construct + " " +
+                                otherPic.c.Name + " - " +
+                                GetSpanCountry(otherPic.c.Country) + " - " +
+                                otherPic.c.IYear.ToString();
+                            var xCraftLink = $"Craft{otherPic.c.CraftId}.htm";
+                            var craftLink = $"<a class=\"en_href\" href=\"{xCraftLink}\">{craftName}</a>";
+                            sOther += $"{craftLink}";
+                        }
+                        sOther += "</p>";
+                    }
+                    var xArtLink = $"../Arts/Art{pic.p.ArtId}.htm";
+                    var sArtLink = $"<a class=\"en_href\" href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
+                    var sArtLinkPic = $"<a href=\"{xArtLink}\">{GetArtName(pic.a, true)}</a>";
+
+                    var marked = links.Any(x =>
+                        (x.pic1 == pic.p.PicId && x.nnn1 > x.nnn2) ||
+                        (x.pic2 == pic.p.PicId && x.nnn1 < x.nnn2));
+
+                    var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
+                    var serial = "";
+                    var serialData = "";
+                    if (serials.Any())
+                    {
+                        serial = $"<h7>{GetSpanRuEn("Регистрационный номер", "Registry number")}: ";
+                        for (var xi = 0; xi < serials.Count; xi++)
+                        {
+                            if (xi > 0)
+                            {
+                                serial += ", ";
+                            }
+
+                            var srl = serials[xi];
+                            var xcnt = _ctx.vwSerials
+                                .Where(x => x.Serial == srl && x.CraftId == pic.p.CraftId).Select(x => x.cnt)
+                                .FirstOrDefault();
+                            var some = "";
+                            if (xcnt > 1)
+                            {
+                                some = " some";
+                                serialData += $"{srl} ";
+                                srl += $" &nbsp; [{xcnt}]";
+
+                                filterChip = "<div id='filter-chip' class='chip serial' style='display:none'><span id='filter-text'></span><img src=\"../assets/close.svg\" alt=\"close\"></div>";
+                            }
+
+                            serial += $"<span class='serial{some}'>{srl}</span>";
+                        }
+                        serial += "</h7>";
+                        if (serialData != "") serialData = $" data='{serialData.Trim()}'";
+                    }
+
+                    var ssesc = $"{sArtLinkPic}<p>{ss}<p>"
+                        .Replace("&", "&amp;")
+                        .Replace("\"", "&quot;")
+                        .Replace("<", "&lt;")
+                        .Replace(">", "&gt;");
+                    sx = new StringBuilder(sMid)
+                        .Replace("%PicPath%", pic.p.Path.Replace("\\", "/"))
+                        .Replace("%ArtLink%", sArtLink)
+                        .Replace("%PicText%", ss)
+                        .Replace("%PicTextEscaped%", ssesc)
+                        .Replace("%AnotherCrafts%", sOther)
+                        .Replace("%marked%", marked ? " marked" : "")
+                        .Replace("%Serial%", serial)
+                        .Replace("%SerialData%", serialData)
+                        .ToString();
+                    sb.Append(sx);
+
+                    picNum++;
 
                 }
                 if (wasGrp)
@@ -1340,7 +1341,7 @@ namespace Aik2
             lBicPics.InsertPairSortedById(new Pair<int> { Name = bigpic, Id = craft1.CraftId });
             lMagPics.InsertPairSortedById(new Pair<int> { Name = magpic, Id = craft1.CraftId });
 
-            var sg = wasGrp ? $"<button class=\"accordion\">{(firstGrpName == "-" || firstGrpName == "" ? "<img src=\"../assets/empty-group.svg\">" : firstGrpName)}</button>\n" : "";
+            var sg = wasGrp ? $"<button class=\"accordion{firstPicType}\">{(firstGrpName == "-" ? "<img src=\"../assets/empty-group.svg\">" : firstGrpName)}</button>\n" : "";
             templ = (sb.ToString() + sEnd)
                 .Replace("%BigPicPath%", bigpic)
                 .Replace("%FirstGrp%", sg);
@@ -1419,7 +1420,7 @@ namespace Aik2
 
             templ = sb.ToString() + sEnd;
 
-            if (iType == 0)
+            if (simple)
             {
                 if (cnt == 0)
                     sx = "";
@@ -1433,53 +1434,20 @@ namespace Aik2
             {
                 sx = "<p>" + GetSpanRuEn("Тип фотографий", "Type of photos") + "</p>\n" +
                     "<ul>\n";
-                for (i = 1; i <= 6; i++)
+                for (i = 0; i <= 6; i++)
                 {
-                    if (cnts[i] != 0)
+                    if (i == 0 || cnts[i] != 0)
                     {
-                        if (i == iType)
+                        if (i == mains)
                         {
-                            sx += "<li class=\"selected\">\n";
+                            sx += $"<li class=\"selected bt{i}\">\n";
                         }
                         else
                         {
-                            s = $"-{i}";
-                            if (i == mains) s = "";
-                            sx +=
-                                "<li>\n" +
-                                $"<a class=\"en_href\" href=\"Craft{craft1.CraftId}{s}.htm\">\n";
+                            sx += $"<li class=\"bt{i}\">\n";
                         }
-                        switch (i)
-                        {
-                            case 1: sx += GetSpanRuEn("Боковые проекции", "Sideviews"); break;
-                            case 2: sx += GetSpanRuEn("Цветные фото", "Color photos"); break;
-                            case 3: sx += GetSpanRuEn("Ч/б фото", "B/w photos"); break;
-                            case 4: sx += GetSpanRuEn("Кабина", "Cockpit"); break;
-                            case 5: sx += GetSpanRuEn("Обломки", "Wrecks"); break;
-                            case 6:
-                                ss = ""; var sw = "";
-                                if (plans[1]) ss += "модели, ";
-                                if (plans[2]) ss += "рисунки, ";
-                                if (plans[1] || plans[2]) sw += "models, ";
-                                if (plans[3])
-                                {
-                                    ss += "схемы, ";
-                                    sw += "plans, ";
-                                }
-                                if (plans[4])
-                                {
-                                    ss += "чертежи, ";
-                                    sw += "drawings, ";
-                                }
-                                ss = ss.Substring(0, ss.Length - 2);
-                                sw = sw.Substring(0, sw.Length - 2);
-                                ss = ss.Substring(0, 1).ToUpper() + ss.Substring(1);
-                                sw = sw.Substring(0, 1).ToUpper() + sw.Substring(1);
-                                sx += GetSpanRuEn(ss, sw);
-                                break;
-                        }
-                        sx += $" ({cnts[i]})";
-                        if (i != iType) sx += "</a>";
+                        sx += GetGrpPageName(i);
+                        sx += $" ({(i == 0 ? cnts.Sum() : cnts[i])})";
                         sx += "</li>\n";
                     }
                 }
@@ -1488,11 +1456,8 @@ namespace Aik2
             templ = templ.Replace("%Types%", sx);
 
 
-            sx = $"-{iType}";
-            if (iType == mains) sx = "";
-
-            s = sPath + $"Site\\Crafts\\Craft{craft1.CraftId}{sx}.htm";
-            ss = sPath + $"Upload\\Site\\Crafts\\Craft{craft1.CraftId}{sx}.htm";
+            s = sPath + $"Site\\Crafts\\Craft{craft1.CraftId}.htm";
+            ss = sPath + $"Upload\\Site\\Crafts\\Craft{craft1.CraftId}.htm";
             var is_upl = false;
             if (File.Exists(s))
             {
@@ -1522,8 +1487,75 @@ namespace Aik2
                 File.WriteAllText(s, templ, Encoding.UTF8);
             }
 
-            AddSitemap($"Site\\Crafts\\Craft{craft1.CraftId}{sx}.htm", s, is_upl);
+            AddSitemap($"Site\\Crafts\\Craft{craft1.CraftId}.htm", s, is_upl);
 
+            for (i=1; i<=6; i++)
+            {
+                s = sPath + $"Site\\Crafts\\Craft{craft1.CraftId}-{i}.htm";
+                ss = sPath + $"Upload\\Site\\Crafts\\Craft{craft1.CraftId}-{i}.htm";
+                is_upl = false;
+                if (File.Exists(s))
+                {
+                    templ = 
+                        $"<!DOCTYPE html>\r\n<html lang=\"ru\">\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>Redirect</title>\r\n    <!-- Метатег для автоматического перенаправления -->\r\n    <meta http-equiv=\"refresh\" content=\"0; url=Craft{craft1.CraftId}.htm\" />\r\n</head>\r\n<body>\r\n    <!-- Сообщение для пользователей с отключенной поддержкой JavaScript -->\r\n    Если вы не были автоматически перенаправлены, нажмите <a href=\"Craft{craft1.CraftId}.htm\">здесь</a>.\r\n</body>\r\n</html>";
+                    var res = true;
+                    try
+                    {
+                        upl = File.ReadAllText(s);
+                        res = (templ != upl);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message + " " + s);
+                    }
+                    if (res)
+                    {
+                        File.WriteAllText(ss, templ, Encoding.UTF8);
+                        is_upl = true;
+                    }
+                }
+                if (is_upl)
+                {
+                    File.WriteAllText(s, templ, Encoding.UTF8);
+                }
+
+            }
+
+        }
+
+
+        private string GetGrpPageName(int i)
+        {
+            switch (i)
+            {
+                case 0: return GetSpanRuEn("Все фото", "All photos"); 
+                case 1: return GetSpanRuEn("Боковые проекции", "Sideviews"); 
+                case 2: return GetSpanRuEn("Цветные фото", "Color photos"); 
+                case 3: return GetSpanRuEn("Ч/б фото", "B/w photos"); 
+                case 4: return GetSpanRuEn("Кабина", "Cockpit"); 
+                case 5: return GetSpanRuEn("Обломки", "Wrecks"); 
+                case 6:
+                    ss = ""; var sw = "";
+                    if (plans[1]) ss += "модели, ";
+                    if (plans[2]) ss += "рисунки, ";
+                    if (plans[1] || plans[2]) sw += "models, ";
+                    if (plans[3])
+                    {
+                        ss += "схемы, ";
+                        sw += "plans, ";
+                    }
+                    if (plans[4])
+                    {
+                        ss += "чертежи, ";
+                        sw += "drawings, ";
+                    }
+                    ss = ss.Substring(0, ss.Length - 2);
+                    sw = sw.Substring(0, sw.Length - 2);
+                    ss = ss.Substring(0, 1).ToUpper() + ss.Substring(1);
+                    sw = sw.Substring(0, 1).ToUpper() + sw.Substring(1);
+                    return GetSpanRuEn(ss, sw);
+            }
+            return "???";
         }
 
         private void AddSitemap(string s, string sPath, bool is_upl) {
@@ -3235,7 +3267,7 @@ namespace Aik2
 
 
             var serLetters = _ctx.Database
-                .SqlQuery<string>("select serial from dbo.GetSerialStatistics(500)").ToList();
+                .SqlQuery<string>("select serial from dbo.GetSerialStatistics(1000)").ToList();
             templ = string.Join(";", serLetters);
             s = sPath + $"Site\\Serials\\Index.dat";
             ss = sPath + $"Upload\\Site\\Serials\\Index.dat";
@@ -3465,7 +3497,7 @@ namespace Aik2
                 if (cnt < 100)
                 {
                     mains = 0;
-                    LoadPicNew(0, ibq1c);
+                    LoadPicNew(true, ibq1c);
                 }
                 else
                 {
@@ -3491,10 +3523,7 @@ namespace Aik2
                         }
                     }
 
-                    for (i = 1; i <= 6; i++)
-                    {
-                        if (cnts[i] > 0) LoadPicNew(i, ibq1c);
-                    }
+                    LoadPicNew(false, ibq1c);
                 }
 
                 PrevId = ibq1c.CraftId;
