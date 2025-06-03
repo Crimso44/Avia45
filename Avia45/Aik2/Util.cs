@@ -55,6 +55,7 @@ namespace Aik2
             if (type == "fc") return 20;
             if (type == "f") return 30;
             if (type == "c") return 40;
+            if (type == "r") return 45;
             if (type == "fd") return 50;
             if (type == "fr") return 60;
             if (type == "m") return 70;

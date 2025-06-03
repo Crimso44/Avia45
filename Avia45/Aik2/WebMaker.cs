@@ -24,8 +24,8 @@ namespace Aik2
         private List<string> lSources;
         private List<string> lSourceIds;
         private List<string> lSourceNames;
-        private int[] cnts = new int[7];
-        private string[] picids = new string[7];
+        private int[] cnts = new int[8];
+        private string[] picids = new string[8];
         private bool[] plans = new bool[5];
         private List<Pair<int>> lBicPics;
         private List<Pair<int>> lMagPics;
@@ -1208,8 +1208,9 @@ namespace Aik2
                             : ss == "fc" ? 2
                             : ss == "f" ? 3
                             : ss == "c" ? 4
-                            : (ss == "fd") || (ss == "fr") ? 5
-                            : 6;
+                            : ss == "r" ? 5
+                            : (ss == "fd") || (ss == "fr") ? 6
+                            : 7;
                     var picType = simple ? "" : $" t{iType}{(iType == mains ? "" : " notactive")}";
 
                     sx = (pic.p.Grp ?? "").Trim();
@@ -1434,7 +1435,7 @@ namespace Aik2
             {
                 sx = "<p>" + GetSpanRuEn("Тип фотографий", "Type of photos") + "</p>\n" +
                     "<ul>\n";
-                for (i = 0; i <= 6; i++)
+                for (i = 0; i <= 7; i++)
                 {
                     if (i == 0 || cnts[i] != 0)
                     {
@@ -1532,9 +1533,10 @@ namespace Aik2
                 case 1: return GetSpanRuEn("Боковые проекции", "Sideviews"); 
                 case 2: return GetSpanRuEn("Цветные фото", "Color photos"); 
                 case 3: return GetSpanRuEn("Ч/б фото", "B/w photos"); 
-                case 4: return GetSpanRuEn("Кабина", "Cockpit"); 
-                case 5: return GetSpanRuEn("Обломки", "Wrecks"); 
-                case 6:
+                case 4: return GetSpanRuEn("Кабина", "Cockpit");
+                case 5: return GetSpanRuEn("Реставрация", "Restoration");
+                case 6: return GetSpanRuEn("Обломки", "Wrecks"); 
+                case 7:
                     ss = ""; var sw = "";
                     if (plans[1]) ss += "модели, ";
                     if (plans[2]) ss += "рисунки, ";
@@ -2362,16 +2364,16 @@ namespace Aik2
                 var sTextLen = (craft.c.Same.HasValue ? craft.cc?.CText?.Length ?? 0 : craft.c.CText?.Length ?? 0).ToString();
 
                 var stype = 
-                    $"{(craft.c.Vert ?? false ? $"<br/>{GetSpanRuEn("Вертолет", "Helicopter")}" : "")}"+
-                    $"{(craft.c.Uav ?? false ? $"<br/>{GetSpanRuEn("Беспилотный", "Unmanned")}" : "")}" +
-                    $"{(craft.c.Glider ?? false ? $"<br/>{GetSpanRuEn("Планер", "Glider")}" : "")}" +
-                    $"{(craft.c.Single ?? false ? $"<br/>{GetSpanRuEn("Единственный", "One&nbsp;of&nbsp;a&nbsp;kind")}" : "")}" +
-                    $"{(craft.c.LL ?? false ? $"<br/>{GetSpanRuEn("Летающая&nbsp;лодка", "Flying&nbsp;boat")}" : "")}" +
-                    $"{(craft.c.Proj ?? false ? $"<br/>{GetSpanRuEn("Проект", "Project")}" : "")}";
+                    $"{(craft.c.Vert ?? false ? ":Вертолет^Helicopter" : "")}" +
+                    $"{(craft.c.Uav ?? false ? ":Беспилотный^Unmanned" : "")}" +
+                    $"{(craft.c.Glider ?? false ? ":Планер^Glider" : "")}" +
+                    $"{(craft.c.Single ?? false ? ":Единственный^One&nbsp;of&nbsp;a&nbsp;kind" : "")}" +
+                    $"{(craft.c.LL ?? false ? ":Летающая&nbsp;лодка^Flying&nbsp;boat" : "")}" +
+                    $"{(craft.c.Proj ?? false ? ":Проект^Project" : "")}";
                 var sShortType = $"{(craft.c.Vert ?? false ? "В" : "")}{(craft.c.Uav ?? false ? "Б" : "")}{(craft.c.Glider ?? false ? "П" : "")}{(craft.c.Single ?? false ? "1" : "")}{(craft.c.LL ?? false ? "Л" : "")}{(craft.c.Proj ?? false ? "Х" : "")}";
                 if (stype != "")
                 {
-                    stype = stype.Substring(5);
+                    stype = stype.Substring(1);
                 }
                 // %Country% %CountryEn% %Construct% %Name% %Year% 
                 // %Vert%UAV%Glider%LL%Single%Proj% 
@@ -2739,12 +2741,15 @@ namespace Aik2
                             case "c":
                                 i = 4;
                                 break;
-                            case "fd":
-                            case "fr":
+                            case "r":
                                 i = 5;
                                 break;
-                            default:
+                            case "fd":
+                            case "fr":
                                 i = 6;
+                                break;
+                            default:
+                                i = 7;
                                 switch (s) {
                                     case "m":
                                         plans[1] = true;
@@ -3267,7 +3272,7 @@ namespace Aik2
 
 
             var serLetters = _ctx.Database
-                .SqlQuery<string>("select serial from dbo.GetSerialStatistics(1000)").ToList();
+                .SqlQuery<string>("select serial from dbo.GetSerialStatistics(3000)").ToList();
             templ = string.Join(";", serLetters);
             s = sPath + $"Site\\Serials\\Index.dat";
             ss = sPath + $"Upload\\Site\\Serials\\Index.dat";
@@ -3422,7 +3427,7 @@ namespace Aik2
                     }
                 }
 
-                for (ii = 1; ii < 7; ii++)
+                for (ii = 0; ii < 8; ii++)
                 {
                     cnts[ii] = 0;
                     picids[ii] = "";
@@ -3454,12 +3459,15 @@ namespace Aik2
                             case "c":
                                 i = 4;
                                 break;
-                            case "fd":
-                            case "fr":
+                            case "r":
                                 i = 5;
                                 break;
-                            default:
+                            case "fd":
+                            case "fr":
                                 i = 6;
+                                break;
+                            default:
+                                i = 7;
                                 switch (s)
                                 {
                                     case "m":
@@ -3490,7 +3498,7 @@ namespace Aik2
                 }
 
                 cnt = 0;
-                for (i = 1; i <= 6; i++)
+                for (i = 1; i <= 7; i++)
                 {
                     cnt += cnts[i];
                 }
@@ -3517,6 +3525,10 @@ namespace Aik2
                                     if (cnts[5] == 0)
                                     {
                                         mains = 6;
+                                        if (cnts[6] == 0)
+                                        {
+                                            mains = 7;
+                                        }
                                     }
                                 }
                             }
