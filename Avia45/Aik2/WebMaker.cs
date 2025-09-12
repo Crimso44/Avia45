@@ -210,7 +210,7 @@ namespace Aik2
                 GetYearArt(true);
             } else if (sx == "История Авиации") {
                 sMag = "IA";
-                GetYearArt(false);
+                GetYearArt(true);
             } else if (sx == "In Action") {
                 sMag = "IN";
                 GetYearArt(true);
@@ -2180,6 +2180,7 @@ namespace Aik2
                     .Replace("%NN%", (craft.a.NN ?? 0) == 0 ? "" : craft.a.NN.ToString())
                     .Replace("%Photos%", craft.aCnt.ToString())
                     .Replace("%ArtLink%", $"../Arts/Art{craft.a.ArtId}.htm")
+                    .Replace("%PicPath%", craft.a.pic?.Replace("\\", "/"))
                     .ToString());
 
                 craftInd++;

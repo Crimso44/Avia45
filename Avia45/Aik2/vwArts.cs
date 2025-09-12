@@ -24,5 +24,6 @@ namespace Aik2
         public string Serie { get; set; }
         public string Source { get; set; }
         public Nullable<int> cnt { get; set; }
+        public string pic { get; set; }
     }
 }

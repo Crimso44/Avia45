@@ -1243,6 +1243,10 @@ namespace Aik2
                     {
                         path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}-{art.IYear}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
                     }
+                    else if (art.Mag.Trim() == "IA")
+                    {
+                        path = $"{art.Mag.Trim()}\\{art.Mag.Trim()}-{art.IYear}\\{_selectedPic.XPage?.Trim()}-{_selectedPic.NN?.Trim()}.jpg";
+                    }
                     else
                     {
                         int.TryParse(art.IMonth?.Trim() ?? "", out int artMonth);

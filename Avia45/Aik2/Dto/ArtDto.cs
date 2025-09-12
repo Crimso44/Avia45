@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Aik2.Dto
+﻿namespace Aik2.Dto
 {
     public class ArtDto
     {
@@ -18,6 +12,7 @@ namespace Aik2.Dto
         public string Serie { get; set; }
         public string Source { get; set; }
         public int? cnt { get; set; }
+        public string pic { get; set; }
 
         public string FullName { get
             {
