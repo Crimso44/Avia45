@@ -81,10 +81,11 @@ namespace Aik2
                 public const int Craft = 9;
                 public const int Grp = 10;
                 public const int Serial = 11;
-                public const int SText = 12;
-                public const int Copyright = 13;
-                public const int ArtId = 14;
-                public const int CraftId = 15;
+                public const int Serial2 = 12;
+                public const int SText = 13;
+                public const int Copyright = 14;
+                public const int ArtId = 15;
+                public const int CraftId = 16;
             }
 
             public static class Link

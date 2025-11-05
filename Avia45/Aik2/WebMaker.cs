@@ -234,15 +234,17 @@ namespace Aik2
             } else if (sx == "Aeroplane Monthly") {
                 sMag = "MY";
                 GetYearArt(false);
-            }
-            else if (sx == "M.Simons The World's Vintage Sailplanes")
-            {
+            } else if (sx == "Air-Britain Archive") {
+                sMag = "AB";
+                GetYearArt(false);
+            } else if (sx == "Air-Britain Aeromilitaria") {
+                sMag = "MI";
+                GetYearArt(false);
+            } else if (sx == "M.Simons The World's Vintage Sailplanes") {
                 sMag = "GL";
                 sYear = "";
                 sMonth = "";
-            }
-            else if (sx == "M.Hardy. Gliders & Sailplanes of the")
-            {
+            } else if (sx == "M.Hardy. Gliders & Sailplanes of the") {
                 sMag = "GL";
                 sYear = "1982";
                 sMonth = "";
@@ -346,6 +348,10 @@ namespace Aik2
                     Result = "Изд-во Osprey"; break;
                 case "SC":
                     Result = "Изд-во Schiffer"; break;
+                case "AB":
+                    Result = "Air-Britain Archive" + GetYear(a); break;
+                case "MI":
+                    Result = "Air-Britain Aeromilitaria" + GetYear(a); break;
                 default:
                     Result = s + GetYear(a); break;
             }
@@ -407,6 +413,10 @@ namespace Aik2
                     Result = "Изд-во Osprey"; break;
                 case "SC":
                     Result = "Изд-во Schiffer"; break;
+                case "AB":
+                    Result = "Air-Britain Archive"; break;
+                case "MI":
+                    Result = "Air-Britain Aeromilitaria"; break;
                 default:
                     if (s.IndexOf("{") >= 0) {
                         var i = s.IndexOf("{");
@@ -1274,7 +1284,7 @@ namespace Aik2
                         (x.pic1 == pic.p.PicId && x.nnn1 > x.nnn2) ||
                         (x.pic2 == pic.p.PicId && x.nnn1 < x.nnn2));
 
-                    var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
+                    var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.IsSecondary ? 1 : 0).ThenBy(x => x.Serial).Select(x => new { x.Serial, x.IsSecondary }).ToList();
                     var serial = "";
                     var serialData = "";
                     if (serials.Any())
@@ -1287,7 +1297,7 @@ namespace Aik2
                                 serial += ", ";
                             }
 
-                            var srl = serials[xi];
+                            var srl = serials[xi].Serial;
                             var xcnt = _ctx.vwSerials
                                 .Where(x => x.Serial == srl && x.CraftId == pic.p.CraftId).Select(x => x.cnt)
                                 .FirstOrDefault();
@@ -1301,7 +1311,7 @@ namespace Aik2
                                 filterChip = "<div id='filter-chip' class='chip serial' style='display:none'><span id='filter-text'></span><img src=\"../assets/close.svg\" alt=\"close\"></div>";
                             }
 
-                            serial += $"<span class='serial{some}'>{srl}</span>";
+                            serial += $"<span class='serial{some}{(serials[xi].IsSecondary ? " secondary" : "")}'>{srl}</span>";
                         }
                         serial += "</h7>";
                         if (serialData != "") serialData = $" data='{serialData.Trim()}'";
@@ -1567,7 +1577,7 @@ namespace Aik2
                 d = File.GetLastWriteTime(sPath);
             var ss = d.ToString("yyyy-MM-dd");
             sitemap.Add(
-                          "<url><loc>http://aviadejavu.ru/" + s.Replace("\\", "/") + "</loc>" +
+                          "<url><loc>https://aviadejavu.ru/" + s.Replace("\\", "/") + "</loc>" +
                           "<lastmod>" + ss + "</lastmod>" +
                           "</url>");
         }
@@ -3208,7 +3218,7 @@ namespace Aik2
 
 
             sitemap.Add("</urlset>");
-            File.WriteAllLines(sPath + "Upload\\Sitemap.xml", sitemap.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(sPath + "Upload\\sitemap.xml", sitemap.ToArray(), Encoding.UTF8);
 
             MessageBox.Show("OK!");
         }
@@ -4182,7 +4192,7 @@ namespace Aik2
 
 
             sitemap.Add("</urlset>");
-            File.WriteAllLines(sPath + "Upload\\Sitemap.xml", sitemap.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(sPath + "Upload\\sitemap.xml", sitemap.ToArray(), Encoding.UTF8);
 
             MessageBox.Show("OK!");
         }

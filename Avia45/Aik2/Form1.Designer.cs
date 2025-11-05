@@ -94,6 +94,9 @@
             this.panel6 = new System.Windows.Forms.Panel();
             this.lbSerials = new System.Windows.Forms.ListBox();
             this.cbSerial = new System.Windows.Forms.ComboBox();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.lbSerials2 = new System.Windows.Forms.ListBox();
+            this.cbSerial2 = new System.Windows.Forms.ComboBox();
             this.pLinkTable = new System.Windows.Forms.Panel();
             this.gridLink = new SourceGrid.Grid();
             this.panel5 = new System.Windows.Forms.Panel();
@@ -120,6 +123,7 @@
             this.mnuAlt2 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAlt3 = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAltS = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAltZ = new System.Windows.Forms.ToolStripMenuItem();
             this.calcWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.craftsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -176,6 +180,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picLinkImage)).BeginInit();
             this.pPicText.SuspendLayout();
             this.panel6.SuspendLayout();
+            this.panel8.SuspendLayout();
             this.pLinkTable.SuspendLayout();
             this.panel5.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -918,6 +923,7 @@
             this.pPicText.Controls.Add(this.splitter6);
             this.pPicText.Controls.Add(this.edPicText);
             this.pPicText.Controls.Add(this.panel6);
+            this.pPicText.Controls.Add(this.panel8);
             this.pPicText.Controls.Add(this.pLinkTable);
             this.pPicText.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pPicText.Location = new System.Drawing.Point(4, 377);
@@ -930,7 +936,7 @@
             // splitter6
             // 
             this.splitter6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitter6.Location = new System.Drawing.Point(532, 0);
+            this.splitter6.Location = new System.Drawing.Point(384, 0);
             this.splitter6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.splitter6.Name = "splitter6";
             this.splitter6.Size = new System.Drawing.Size(4, 58);
@@ -944,7 +950,7 @@
             this.edPicText.Location = new System.Drawing.Point(0, 0);
             this.edPicText.Margin = new System.Windows.Forms.Padding(1);
             this.edPicText.Name = "edPicText";
-            this.edPicText.Size = new System.Drawing.Size(536, 58);
+            this.edPicText.Size = new System.Drawing.Size(388, 58);
             this.edPicText.TabIndex = 0;
             this.edPicText.Text = "";
             this.edPicText.TextChanged += new System.EventHandler(this.edPicText_TextChanged);
@@ -956,7 +962,7 @@
             this.panel6.Controls.Add(this.lbSerials);
             this.panel6.Controls.Add(this.cbSerial);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel6.Location = new System.Drawing.Point(536, 0);
+            this.panel6.Location = new System.Drawing.Point(388, 0);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(148, 58);
             this.panel6.TabIndex = 3;
@@ -985,6 +991,41 @@
             this.cbSerial.Size = new System.Drawing.Size(148, 23);
             this.cbSerial.TabIndex = 0;
             this.cbSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSerial_KeyDown);
+            // 
+            // panel8
+            // 
+            this.panel8.Controls.Add(this.lbSerials2);
+            this.panel8.Controls.Add(this.cbSerial2);
+            this.panel8.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel8.Location = new System.Drawing.Point(536, 0);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(148, 58);
+            this.panel8.TabIndex = 4;
+            // 
+            // lbSerials2
+            // 
+            this.lbSerials2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbSerials2.FormattingEnabled = true;
+            this.lbSerials2.ItemHeight = 15;
+            this.lbSerials2.Location = new System.Drawing.Point(0, 23);
+            this.lbSerials2.Name = "lbSerials2";
+            this.lbSerials2.Size = new System.Drawing.Size(148, 35);
+            this.lbSerials2.TabIndex = 1;
+            this.lbSerials2.DoubleClick += new System.EventHandler(this.lbSerials_DoubleClick);
+            this.lbSerials2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbSerials_KeyDown);
+            // 
+            // cbSerial2
+            // 
+            this.cbSerial2.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cbSerial2.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cbSerial2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSerial2.DropDownWidth = 300;
+            this.cbSerial2.FormattingEnabled = true;
+            this.cbSerial2.Location = new System.Drawing.Point(0, 0);
+            this.cbSerial2.Name = "cbSerial2";
+            this.cbSerial2.Size = new System.Drawing.Size(148, 23);
+            this.cbSerial2.TabIndex = 0;
+            this.cbSerial2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSerial_KeyDown);
             // 
             // pLinkTable
             // 
@@ -1252,7 +1293,8 @@
             this.mnuAlt1,
             this.mnuAlt2,
             this.mnuAlt3,
-            this.mnuAltS});
+            this.mnuAltS,
+            this.mnuAltZ});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
             this.focusToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.focusToolStripMenuItem.Text = "Focus";
@@ -1261,7 +1303,7 @@
             // 
             this.mnuAlt1.Name = "mnuAlt1";
             this.mnuAlt1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.mnuAlt1.Size = new System.Drawing.Size(171, 22);
+            this.mnuAlt1.Size = new System.Drawing.Size(192, 22);
             this.mnuAlt1.Text = "Focus pics";
             this.mnuAlt1.Click += new System.EventHandler(this.mnuAlt1_Click);
             // 
@@ -1269,7 +1311,7 @@
             // 
             this.mnuAlt2.Name = "mnuAlt2";
             this.mnuAlt2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.mnuAlt2.Size = new System.Drawing.Size(171, 22);
+            this.mnuAlt2.Size = new System.Drawing.Size(192, 22);
             this.mnuAlt2.Text = "Focus text";
             this.mnuAlt2.Click += new System.EventHandler(this.mnuAlt2_Click);
             // 
@@ -1277,7 +1319,7 @@
             // 
             this.mnuAlt3.Name = "mnuAlt3";
             this.mnuAlt3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.mnuAlt3.Size = new System.Drawing.Size(171, 22);
+            this.mnuAlt3.Size = new System.Drawing.Size(192, 22);
             this.mnuAlt3.Text = "Focus links";
             this.mnuAlt3.Click += new System.EventHandler(this.mnuAlt3_Click);
             // 
@@ -1285,9 +1327,17 @@
             // 
             this.mnuAltS.Name = "mnuAltS";
             this.mnuAltS.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
-            this.mnuAltS.Size = new System.Drawing.Size(171, 22);
+            this.mnuAltS.Size = new System.Drawing.Size(192, 22);
             this.mnuAltS.Text = "Focus serial";
             this.mnuAltS.Click += new System.EventHandler(this.mnuAltS_Click);
+            // 
+            // mnuAltZ
+            // 
+            this.mnuAltZ.Name = "mnuAltZ";
+            this.mnuAltZ.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Z)));
+            this.mnuAltZ.Size = new System.Drawing.Size(192, 22);
+            this.mnuAltZ.Text = "Focus serial sec";
+            this.mnuAltZ.Click += new System.EventHandler(this.mnuAltZ_Click);
             // 
             // calcWordsToolStripMenuItem
             // 
@@ -1614,6 +1664,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picLinkImage)).EndInit();
             this.pPicText.ResumeLayout(false);
             this.panel6.ResumeLayout(false);
+            this.panel8.ResumeLayout(false);
             this.pLinkTable.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
@@ -1752,6 +1803,10 @@
         private System.Windows.Forms.ComboBox cbSerial;
         private System.Windows.Forms.ListBox lbSerials;
         private System.Windows.Forms.ToolStripMenuItem mnuAltS;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.ListBox lbSerials2;
+        private System.Windows.Forms.ComboBox cbSerial2;
+        private System.Windows.Forms.ToolStripMenuItem mnuAltZ;
     }
 }
 

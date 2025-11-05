@@ -28,5 +28,6 @@ namespace Aik2
         public string XType { get; set; }
         public Nullable<bool> Copyright { get; set; }
         public string Serial { get; set; }
+        public string Serial2 { get; set; }
     }
 }

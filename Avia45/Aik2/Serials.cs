@@ -17,6 +17,7 @@ namespace Aik2
         public string Serial { get; set; }
         public int PicId { get; set; }
         public int SerialID { get; set; }
+        public bool IsSecondary { get; set; }
     
         public virtual Pics Pics { get; set; }
     }

@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Windows.Forms;
 using static Aik2.Util;
 
@@ -58,7 +57,7 @@ namespace Aik2
 
             var editBool = SourceGrid.Cells.Editors.Factory.Create(typeof(bool));
 
-            gridPic.ColumnsCount = 16;
+            gridPic.ColumnsCount = 17;
 
             gridPic.RowsCount = 1;
             gridPic.FixedRows = 1;
@@ -90,14 +89,16 @@ namespace Aik2
             _editorsPic.Add(editStr100);
             gridPic[0, 11] = new SourceGrid.Cells.ColumnHeader("Serial");
             _editorsPic.Add(null);
-            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("SText");
+            gridPic[0, 12] = new SourceGrid.Cells.ColumnHeader("Serial2");
             _editorsPic.Add(null);
-            gridPic[0, 13] = new SourceGrid.Cells.ColumnHeader("Copyright");
+            gridPic[0, 13] = new SourceGrid.Cells.ColumnHeader("SText");
+            _editorsPic.Add(null);
+            gridPic[0, 14] = new SourceGrid.Cells.ColumnHeader("Copyright");
             _editorsPic.Add(editBool);
-            gridPic[0, 14] = new SourceGrid.Cells.ColumnHeader("ArtId");
-            gridPic.Columns[14].Visible = false;
-            gridPic[0, 15] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic[0, 15] = new SourceGrid.Cells.ColumnHeader("ArtId");
             gridPic.Columns[15].Visible = false;
+            gridPic[0, 16] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic.Columns[16].Visible = false;
 
             for (var i = 1; i < gridPic.ColumnsCount; i++)
             {
@@ -417,12 +418,14 @@ namespace Aik2
             gridPic[r, 10].AddController(_gridPicController);
             gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.Serial, _editorsPic[11]);
             gridPic[r, 11].AddController(_gridPicController);
-            gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[12]);
+            gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.Serial2, _editorsPic[12]);
             gridPic[r, 12].AddController(_gridPicController);
-            gridPic[r, 13] = new SourceGrid.Cells.CheckBox("", Pic.Copyright ?? false);
+            gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[13]);
             gridPic[r, 13].AddController(_gridPicController);
-            gridPic[r, 14] = new SourceGrid.Cells.Cell(Pic.ArtId);
-            gridPic[r, 15] = new SourceGrid.Cells.Cell(Pic.CraftId);
+            gridPic[r, 14] = new SourceGrid.Cells.CheckBox("", Pic.Copyright ?? false);
+            gridPic[r, 14].AddController(_gridPicController);
+            gridPic[r, 15] = new SourceGrid.Cells.Cell(Pic.ArtId);
+            gridPic[r, 16] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
             if (isShowImage)
             {
@@ -459,9 +462,9 @@ namespace Aik2
                 NType = (int?)gridPic[r, 5].Value,
                 Path = (string)gridPic[r, 6].Value,
                 Grp = (string)gridPic[r, 10].Value,
-                Copyright = (bool?)gridPic[r, 13].Value,
-                ArtId = (int)gridPic[r, 14].Value,
-                CraftId = (int)gridPic[r, 15].Value
+                Copyright = (bool?)gridPic[r, 14].Value,
+                ArtId = (int)gridPic[r, 15].Value,
+                CraftId = (int)gridPic[r, 16].Value
             };
             return pic;
         }
@@ -509,55 +512,61 @@ namespace Aik2
                 base.OnValueChanged(sender, e);
 
                 if (_form._picChanging) return;
-                _form._picChanging = true;
-
-                _form.StoreEditedPicText();
-                var row = sender.Position.Row;
-                SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
-                var val = (string)cell.DisplayText;
-
-                switch (sender.Position.Column)
+                try
                 {
-                    case Const.Columns.Pic.Craft:
-                        _form.gridPic[row, Const.Columns.Pic.CraftId].Value = string.IsNullOrEmpty(val) ? null :
-                            _form._crafts678.SingleOrDefault(x => x.FullName == val)?.CraftId;
-                        break;
-                    case Const.Columns.Pic.Art:
-                        _form.gridPic[row, Const.Columns.Pic.ArtId].Value = string.IsNullOrEmpty(val) ? null :
-                            _form._arts.SingleOrDefault(x => x.Name == val)?.Id;
-                        break;
-                    case Const.Columns.Pic.Type:
-                        _form.gridPic[row, Const.Columns.Pic.NType].Value = Util.GetNType(val);
-                        break;
-                    case Const.Columns.Pic.Path:
-                        _form.ShowPicImage();
-                        break;
-                }
+                    _form._picChanging = true;
 
-                var isForce = false;
-                var picDto = _form.GetPicFromTable(row);
-                if (picDto.PicId == 0)
+                    _form.StoreEditedPicText();
+                    var row = sender.Position.Row;
+                    SourceGrid.Cells.Cell cell = (SourceGrid.Cells.Cell)sender.Cell;
+                    var val = (string)cell.DisplayText;
+
+                    switch (sender.Position.Column)
+                    {
+                        case Const.Columns.Pic.Craft:
+                            _form.gridPic[row, Const.Columns.Pic.CraftId].Value = string.IsNullOrEmpty(val) ? null :
+                                _form._crafts678.SingleOrDefault(x => x.FullName == val)?.CraftId;
+                            break;
+                        case Const.Columns.Pic.Art:
+                            _form.gridPic[row, Const.Columns.Pic.ArtId].Value = string.IsNullOrEmpty(val) ? null :
+                                _form._arts.SingleOrDefault(x => x.Name == val)?.Id;
+                            break;
+                        case Const.Columns.Pic.Type:
+                            _form.gridPic[row, Const.Columns.Pic.NType].Value = Util.GetNType(val);
+                            break;
+                        case Const.Columns.Pic.Path:
+                            _form.ShowPicImage();
+                            break;
+                    }
+
+                    var isForce = false;
+                    var picDto = _form.GetPicFromTable(row);
+                    if (picDto.PicId == 0)
+                    {
+                        var entity = Mapper.Map<Pics>(picDto);
+                        _form._ctx.Pics.Add(entity);
+                        _form._ctx.SaveChanges();
+                        picDto.PicId = entity.PicId;
+                        _form.gridPic[row, Const.Columns.Pic.PicId].Value = entity.PicId;
+                        isForce = true;
+                    }
+                    else
+                    {
+                        var entity = _form._ctx.Pics.Single(x => x.PicId == picDto.PicId);
+                        Mapper.Map(picDto, entity);
+                        _form._ctx.SaveChanges();
+                    }
+
+                    _form._selectedPic = picDto;
+                    _form._pics[row - 1] = picDto;
+
+                    _form.CheckPicSort(sender.Position, isForce);
+
+                }
+                finally
                 {
-                    var entity = Mapper.Map<Pics>(picDto);
-                    _form._ctx.Pics.Add(entity);
-                    _form._ctx.SaveChanges();
-                    picDto.PicId = entity.PicId;
-                    _form.gridPic[row, Const.Columns.Pic.PicId].Value = entity.PicId;
-                    isForce = true;
+                    _form._picChanging = false;
                 }
-                else
-                {
-                    var entity = _form._ctx.Pics.Single(x => x.PicId == picDto.PicId);
-                    Mapper.Map(picDto, entity);
-                    _form._ctx.SaveChanges();
-                }
-
-                _form._selectedPic = picDto;
-                _form._pics[row - 1] = picDto;
-
-                _form.CheckPicSort(sender.Position, isForce);
-
-                _form._picChanging = false;
             }
         }
 
@@ -1217,6 +1226,14 @@ namespace Aik2
             }
         }
 
+        private void mnuAltZ_Click(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 2)
+            {
+                cbSerial2.Focus();
+            }
+        }
+
 
         private void mnuPicsFillPath_Click(object sender, EventArgs e)
         {
@@ -1470,15 +1487,18 @@ namespace Aik2
             var serials = _ctx.vwSerials.OrderBy(x => x.SerialCraft).Select(x => x.SerialCraft).ToArray();
             cbSerial.Items.Clear();
             cbSerial.Items.AddRange(serials);
+            cbSerial2.Items.Clear();
+            cbSerial2.Items.AddRange(serials);
         }
 
         private void cbSerial_KeyDown(object sender, KeyEventArgs e)
         {
+            var cb = (ComboBox)sender;
             if (e.KeyCode == Keys.Enter)
             {
-                if (!string.IsNullOrEmpty(cbSerial.Text) && _selectedPic != null)
+                if (!string.IsNullOrEmpty(cb.Text) && _selectedPic != null)
                 {
-                    var sText = cbSerial.Text.Trim().ToUpper();
+                    var sText = cb.Text.Trim().ToUpper();
                     var i = sText.IndexOf(' ');
                     if (i > 0)
                     {
@@ -1487,7 +1507,8 @@ namespace Aik2
                     var ser = new Serials()
                     {
                         Serial = sText,
-                        PicId = _selectedPic.PicId
+                        PicId = _selectedPic.PicId,
+                        IsSecondary = sender == cbSerial ? false : true,
                     };
                     _ctx.Serials.Add(ser);
                     try
@@ -1501,7 +1522,7 @@ namespace Aik2
                     LoadSerials();
                     RefreshSerials();
                 }
-                cbSerial.Text = "";
+                cb.Text = "";
 
                 e.Handled = true;
             }
@@ -1510,11 +1531,12 @@ namespace Aik2
 
         private void lbSerials_KeyDown(object sender, KeyEventArgs e)
         {
+            var lb = (ListBox)sender;
             if (e.KeyCode == Keys.Delete)
             {
-                if (lbSerials.SelectedItem != null)
+                if (lb.SelectedItem != null)
                 {
-                    var ser = lbSerials.SelectedItem.ToString();
+                    var ser = lb.SelectedItem.ToString();
                     if (ser.IndexOf(' ') > 0)
                     {
                         ser = ser.Substring(0, ser.IndexOf(' '));
@@ -1537,14 +1559,15 @@ namespace Aik2
             lbSerials.Items.Clear();
             if (_selectedPic != null)
             {
-                var serials = _ctx.Serials.Where(x => x.PicId == _selectedPic.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToArray();
+                var serials = _ctx.Serials.Where(x => x.PicId == _selectedPic.PicId).OrderBy(x => x.Serial).Select(x => new { x.Serial, x.IsSecondary }).ToArray();
                 var slist = new List<string>();
-                foreach(var serial in serials)
+                var slist2 = new List<string>();
+                foreach (var serial in serials)
                 {
-                    var s = serial;
+                    var s = serial.Serial;
                     var sx = (from ser in _ctx.Serials
                               join pic in _ctx.Pics on ser.PicId equals pic.PicId
-                              where ser.Serial == serial
+                              where ser.Serial == serial.Serial
                               group ser by new { ser.Serial, pic.CraftId }
                               into grp
                               select new {grp.Key.Serial, grp.Key.CraftId, cnt = grp.Count()}).ToList();
@@ -1558,19 +1581,29 @@ namespace Aik2
                         var cnt2 = sx.Where(x => x.CraftId != _selectedCraft?.CraftId).Sum(x => x.cnt);
                         s = $"{s} ({cnt1}+{cnt2})";
                     }
-                    slist.Add(s);
+                    if (serial.IsSecondary)
+                    {
+                        slist2.Add(s);
+                    }
+                    else
+                    {
+                        slist.Add(s);
+                    }
                 }
                 lbSerials.Items.Clear();
                 lbSerials.Items.AddRange(slist.ToArray());
+                lbSerials2.Items.Clear();
+                lbSerials2.Items.AddRange(slist2.ToArray());
             }
 
         }
 
         private void lbSerials_DoubleClick(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(serialFilter) && lbSerials.SelectedItem != null)
+            var lb = (ListBox)sender;
+            if (string.IsNullOrEmpty(serialFilter) && lb.SelectedItem != null)
             {
-                var s = lbSerials.SelectedItem.ToString();
+                var s = lb.SelectedItem.ToString();
                 var i = s.IndexOf(" ");
                 if (i <= 0) return;
                 s = s.Substring(0, i);

@@ -13,6 +13,7 @@
         public string Path { get; set; }
         public string Grp { get; set; }
         public string Serial { get; set; }
+        public string Serial2 { get; set; }
         public string SText { get; set; }
         public bool? Copyright { get; set; }
         public string XType { get; set; }

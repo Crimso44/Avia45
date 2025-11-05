@@ -114,6 +114,7 @@ warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defin
           <Property Name="Serial" Type="nvarchar" MaxLength="16" Nullable="false" />
           <Property Name="PicId" Type="int" Nullable="false" />
           <Property Name="SerialID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsSecondary" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="WordLinks">
           <Key>
@@ -207,6 +208,7 @@ warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defin
           <Property Name="SText" Type="nvarchar(max)" />
           <Property Name="XType" Type="nvarchar" MaxLength="20" />
           <Property Name="Serial" Type="nvarchar(max)" />
+          <Property Name="Serial2" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -479,7 +481,8 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
     [vwPics].[Copyright] AS [Copyright], 
     [vwPics].[SText] AS [SText], 
     [vwPics].[XType] AS [XType], 
-    [vwPics].[Serial] AS [Serial]
+    [vwPics].[Serial] AS [Serial], 
+    [vwPics].[Serial2] AS [Serial2]
     FROM [dbo].[vwPics] AS [vwPics]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwReport" EntityType="Self.vwReport" store:Type="Views" store:Schema="dbo">
@@ -799,6 +802,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <Property Name="XType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Copyright" Type="Boolean" />
           <Property Name="Serial" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Serial2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -999,6 +1003,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <Property Name="PicId" Type="Int32" Nullable="false" />
           <Property Name="SerialID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Serials_Pics" FromRole="Serials" ToRole="Pics" />
+          <Property Name="IsSecondary" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_Serials_Pics">
           <End Type="AiKModel.Pics" Role="Pics" Multiplicity="1" />
@@ -1130,6 +1135,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <EntitySetMapping Name="vwPics">
             <EntityTypeMapping TypeName="AiKModel.vwPics">
               <MappingFragment StoreEntitySet="vwPics">
+                <ScalarProperty Name="Serial2" ColumnName="Serial2" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
                 <ScalarProperty Name="Copyright" ColumnName="Copyright" />
                 <ScalarProperty Name="XType" ColumnName="XType" />
@@ -1263,6 +1269,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <EntitySetMapping Name="Serials">
             <EntityTypeMapping TypeName="AiKModel.Serials">
               <MappingFragment StoreEntitySet="Serials">
+                <ScalarProperty Name="IsSecondary" ColumnName="IsSecondary" />
                 <ScalarProperty Name="SerialID" ColumnName="SerialID" />
                 <ScalarProperty Name="PicId" ColumnName="PicId" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
