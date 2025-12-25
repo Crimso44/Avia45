@@ -2415,9 +2415,9 @@ namespace Aik2
             {
                 var cls = i == 7 || i == 8 ? " table-header-link" : "";
                 ss = (i == (xx - d) ? 
-                    $"a href=\"\" class=\"keep-hash selected{cls}\"" : 
+                    $"b class=\"selected{cls}\"" : 
                     $"a class=\"en_href{cls}\" href=\"Crafts{i}.htm\"");
-                var sss = (i == (xx - d) ? "/a" : "/a");
+                var sss = (i == (xx - d) ? "/b" : "/a");
                 sBeg = new StringBuilder(sBeg)
                     .Replace($"%Sort{i}%", ss)
                     .Replace($"%SortX{i}%", sss)
@@ -3202,7 +3202,7 @@ namespace Aik2
             }
 
             templ = new StringBuilder(templ)
-                .Replace("%LastArtLink%", $"Site\\Arts\\Art{lastArt}.htm")
+                .Replace("%LastArtLink%", $"Site/Arts/Art{lastArt}.htm")
                 .Replace("%PicCnt%", uplL[0])
                 .Replace("%CraftCnt%", uplL[1])
                 .Replace("%ArtCnt%", uplL[2])
@@ -3791,12 +3791,12 @@ namespace Aik2
                             sCrafts += "</p>";
                         }
 
-                        var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
+                        var serials = _ctx.Serials.Where(x => x.PicId == pic.p.PicId).OrderBy(x => x.IsSecondary ? 1 : 0).ThenBy(x => x.Serial).Select(x => new { x.Serial, x.IsSecondary }).ToList();
                         var otherPics = picDbls.Where(x => x.p.Path == pic.p.Path).ToList();
                         if (otherPics.Count > 1)
                         {
                             var picIds = otherPics.Select(x => x.p.PicId).Distinct().ToArray();
-                            serials = _ctx.Serials.Where(x => picIds.Contains(x.PicId)).OrderBy(x => x.Serial).Select(x => x.Serial).ToList();
+                            serials = _ctx.Serials.Where(x => picIds.Contains(x.PicId)).OrderBy(x => x.IsSecondary ? 1 : 0).ThenBy(x => x.Serial).Select(x => new { x.Serial, x.IsSecondary }).ToList();
                         }
 
                         var serial = "";
@@ -3811,7 +3811,7 @@ namespace Aik2
                                     serial += ", ";
                                 }
 
-                                var srl = serials[xi];
+                                var srl = serials[xi].Serial;
                                 var xcnt = _ctx.vwSerialsArt
                                     .Where(x => x.Serial == srl && x.ArtId == pic.p.ArtId).Select(x => x.cnt)
                                     .FirstOrDefault();
@@ -3825,7 +3825,7 @@ namespace Aik2
                                     filterChip = "<div id='filter-chip' class='chip serial' style='display:none'><span id='filter-text'></span><img src=\"../assets/close.svg\" alt=\"close\"></div>";
                                 }
 
-                                serial += $"<span class='serial{some}'>{srl}</span>";
+                                serial += $"<span class='serial{some}{(serials[xi].IsSecondary ? " secondary" : "")}'>{srl}</span>";
                             }
                             serial += "</h7>";
                             if (serialData != "") serialData = $" data='{serialData.Trim()}'";
@@ -4100,7 +4100,7 @@ namespace Aik2
 
                     sBeg += new StringBuilder(sMid)
                         .Replace("%HistDate%", ss)
-                        .Replace("%HistName%", $"<a class=\"en_href\" href=\"Site\\Arts\\Art{ii}.htm\">{s}</a>")
+                        .Replace("%HistName%", $"<a class=\"en_href\" href=\"Site/Arts/Art{ii}.htm\">{s}</a>")
                         .ToString();
                 }
                 i++;
@@ -4136,7 +4136,7 @@ namespace Aik2
 
                     sBeg += new StringBuilder(sMid)
                         .Replace("%HistDate%", ss)
-                        .Replace("%HistName%", $"<a class=\"en_href\" href=\"Site\\Arts\\Art{ii}.htm\">{s}</a>")
+                        .Replace("%HistName%", $"<a class=\"en_href\" href=\"Site/Arts/Art{ii}.htm\">{s}</a>")
                         .ToString();
                 }
                 i++;
@@ -4176,7 +4176,7 @@ namespace Aik2
             }
 
             templ = new StringBuilder(templ)
-                .Replace("%LastArtLink%", $"Site\\Arts\\Art{lastArt}.htm")
+                .Replace("%LastArtLink%", $"Site/Arts/Art{lastArt}.htm")
                 .Replace("%PicCnt%", uplL[0])
                 .Replace("%CraftCnt%", uplL[1])
                 .Replace("%ArtCnt%", uplL[2])

@@ -29,5 +29,7 @@ namespace Aik2
         public Nullable<bool> Copyright { get; set; }
         public string Serial { get; set; }
         public string Serial2 { get; set; }
+        public int needCheck { get; set; }
+        public Nullable<bool> Multiplane { get; set; }
     }
 }

@@ -57,7 +57,7 @@ namespace Aik2
 
             var editBool = SourceGrid.Cells.Editors.Factory.Create(typeof(bool));
 
-            gridPic.ColumnsCount = 17;
+            gridPic.ColumnsCount = 18;
 
             gridPic.RowsCount = 1;
             gridPic.FixedRows = 1;
@@ -95,10 +95,12 @@ namespace Aik2
             _editorsPic.Add(null);
             gridPic[0, 14] = new SourceGrid.Cells.ColumnHeader("Copyright");
             _editorsPic.Add(editBool);
-            gridPic[0, 15] = new SourceGrid.Cells.ColumnHeader("ArtId");
-            gridPic.Columns[15].Visible = false;
-            gridPic[0, 16] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic[0, 15] = new SourceGrid.Cells.ColumnHeader("MultiCraft");
+            _editorsPic.Add(editBool);
+            gridPic[0, 16] = new SourceGrid.Cells.ColumnHeader("ArtId");
             gridPic.Columns[16].Visible = false;
+            gridPic[0, 17] = new SourceGrid.Cells.ColumnHeader("CraftId");
+            gridPic.Columns[17].Visible = false;
 
             for (var i = 1; i < gridPic.ColumnsCount; i++)
             {
@@ -418,14 +420,18 @@ namespace Aik2
             gridPic[r, 10].AddController(_gridPicController);
             gridPic[r, 11] = new SourceGrid.Cells.Cell(Pic.Serial, _editorsPic[11]);
             gridPic[r, 11].AddController(_gridPicController);
+            gridPic[r, 11].View = Pic.needCheck == 2 ? _redCraftCellView : Pic.needCheck == 1 ? _greenCraftCellView : _normCraftCellView;
             gridPic[r, 12] = new SourceGrid.Cells.Cell(Pic.Serial2, _editorsPic[12]);
             gridPic[r, 12].AddController(_gridPicController);
+            gridPic[r, 12].View = Pic.needCheck == 2 ? _redCraftCellView : Pic.needCheck == 1 ? _greenCraftCellView : _normCraftCellView;
             gridPic[r, 13] = new SourceGrid.Cells.Cell(Pic.SText, _editorsPic[13]);
             gridPic[r, 13].AddController(_gridPicController);
             gridPic[r, 14] = new SourceGrid.Cells.CheckBox("", Pic.Copyright ?? false);
             gridPic[r, 14].AddController(_gridPicController);
-            gridPic[r, 15] = new SourceGrid.Cells.Cell(Pic.ArtId);
-            gridPic[r, 16] = new SourceGrid.Cells.Cell(Pic.CraftId);
+            gridPic[r, 15] = new SourceGrid.Cells.CheckBox("", Pic.Multiplane ?? false);
+            gridPic[r, 15].AddController(_gridPicController);
+            gridPic[r, 16] = new SourceGrid.Cells.Cell(Pic.ArtId);
+            gridPic[r, 17] = new SourceGrid.Cells.Cell(Pic.CraftId);
 
             if (isShowImage)
             {
@@ -463,8 +469,9 @@ namespace Aik2
                 Path = (string)gridPic[r, 6].Value,
                 Grp = (string)gridPic[r, 10].Value,
                 Copyright = (bool?)gridPic[r, 14].Value,
-                ArtId = (int)gridPic[r, 15].Value,
-                CraftId = (int)gridPic[r, 16].Value
+                Multiplane = (bool?)gridPic[r, 15].Value,
+                ArtId = (int)gridPic[r, 16].Value,
+                CraftId = (int)gridPic[r, 17].Value
             };
             return pic;
         }

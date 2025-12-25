@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="9f1ad69a27b54bc8b61110a775cfbcff" Name="Diagram1" ZoomLevel="74">
+      <Diagram DiagramId="9f1ad69a27b54bc8b61110a775cfbcff" Name="Diagram1" ZoomLevel="71">
         <EntityTypeShape EntityType="AiKModel.Countries" Width="1.5" PointX="7.875" PointY="2.125" IsExpanded="true" />
         <EntityTypeShape EntityType="AiKModel.Links" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
         <EntityTypeShape EntityType="AiKModel.Mags" Width="1.5" PointX="7.875" PointY="0.5" IsExpanded="true" />
@@ -33,6 +33,8 @@
         <EntityTypeShape EntityType="AiKModel.Serials" Width="1.5" PointX="5.375" PointY="12.875" />
         <AssociationConnector Association="AiKModel.FK_Serials_Pics" />
         <EntityTypeShape EntityType="AiKModel.vwSerialsArt" Width="1.5" PointX="9.25" PointY="13" />
+        <EntityTypeShape EntityType="AiKModel.MultiCraftSerials" Width="1.5" PointX="9.375" PointY="6.75" />
+        <AssociationConnector Association="AiKModel.FK_MultiCraftSerials_Crafts" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

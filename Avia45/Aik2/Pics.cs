@@ -35,6 +35,7 @@ namespace Aik2
         public string Text { get; set; }
         public string Grp { get; set; }
         public Nullable<bool> Copyright { get; set; }
+        public Nullable<bool> Multiplane { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Links> Links { get; set; }

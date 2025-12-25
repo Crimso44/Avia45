@@ -42,5 +42,6 @@ namespace Aik2
         public virtual DbSet<vwSerials> vwSerials { get; set; }
         public virtual DbSet<Serials> Serials { get; set; }
         public virtual DbSet<vwSerialsArt> vwSerialsArt { get; set; }
+        public virtual DbSet<MultiCraftSerials> MultiCraftSerials { get; set; }
     }
 }

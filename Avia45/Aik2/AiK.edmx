@@ -75,6 +75,14 @@
           <Property Name="Id" Type="nchar" MaxLength="3" Nullable="false" />
           <Property Name="Template" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="MultiCraftSerials">
+          <Key>
+            <PropertyRef Name="MultiCraftSerialId" />
+          </Key>
+          <Property Name="MultiCraftSerialId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Serial" Type="nvarchar" MaxLength="16" Nullable="false" />
+          <Property Name="CraftId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Pics">
           <Key>
             <PropertyRef Name="PicId" />
@@ -91,6 +99,7 @@
           <Property Name="Text" Type="nvarchar(max)" />
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
           <Property Name="Copyright" Type="bit" />
+          <Property Name="Multiplane" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -193,6 +202,7 @@ warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defin
             <PropertyRef Name="PicId" />
             
             
+            <PropertyRef Name="needCheck" />
           </Key>
           <Property Name="PicId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="ArtId" Type="int" Nullable="false" />
@@ -205,10 +215,12 @@ warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defin
           <Property Name="Path" Type="nvarchar" MaxLength="100" />
           <Property Name="Grp" Type="nvarchar" MaxLength="100" />
           <Property Name="Copyright" Type="bit" />
+          <Property Name="Multiplane" Type="bit" />
           <Property Name="SText" Type="nvarchar(max)" />
           <Property Name="XType" Type="nvarchar" MaxLength="20" />
           <Property Name="Serial" Type="nvarchar(max)" />
           <Property Name="Serial2" Type="nvarchar(max)" />
+          <Property Name="needCheck" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -325,6 +337,18 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MultiCraftSerials_Crafts">
+          <End Role="Crafts" Type="Self.Crafts" Multiplicity="1" />
+          <End Role="MultiCraftSerials" Type="Self.MultiCraftSerials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crafts">
+              <PropertyRef Name="CraftId" />
+            </Principal>
+            <Dependent Role="MultiCraftSerials">
+              <PropertyRef Name="CraftId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Pics_Arts">
           <End Role="Arts" Type="Self.Arts" Multiplicity="1" />
           <End Role="Pics" Type="Self.Pics" Multiplicity="*" />
@@ -403,6 +427,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <EntitySet Name="Crafts" EntityType="Self.Crafts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Links" EntityType="Self.Links" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Mags" EntityType="Self.Mags" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MultiCraftSerials" EntityType="Self.MultiCraftSerials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Pics" EntityType="Self.Pics" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Serials" EntityType="Self.Serials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WordLinks" EntityType="Self.WordLinks" Schema="dbo" store:Type="Tables" />
@@ -479,10 +504,12 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
     [vwPics].[Path] AS [Path], 
     [vwPics].[Grp] AS [Grp], 
     [vwPics].[Copyright] AS [Copyright], 
+    [vwPics].[Multiplane] AS [Multiplane], 
     [vwPics].[SText] AS [SText], 
     [vwPics].[XType] AS [XType], 
     [vwPics].[Serial] AS [Serial], 
-    [vwPics].[Serial2] AS [Serial2]
+    [vwPics].[Serial2] AS [Serial2], 
+    [vwPics].[needCheck] AS [needCheck]
     FROM [dbo].[vwPics] AS [vwPics]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwReport" EntityType="Self.vwReport" store:Type="Views" store:Schema="dbo">
@@ -540,6 +567,10 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <AssociationSet Name="FK_Links_Pics1" Association="Self.FK_Links_Pics1">
             <End Role="Pics" EntitySet="Pics" />
             <End Role="Links" EntitySet="Links" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MultiCraftSerials_Crafts" Association="Self.FK_MultiCraftSerials_Crafts">
+            <End Role="Crafts" EntitySet="Crafts" />
+            <End Role="MultiCraftSerials" EntitySet="MultiCraftSerials" />
           </AssociationSet>
           <AssociationSet Name="FK_Pics_Arts" Association="Self.FK_Pics_Arts">
             <End Role="Arts" EntitySet="Arts" />
@@ -618,6 +649,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <NavigationProperty Name="Arts" Relationship="AiKModel.FK_Pics_Arts" FromRole="Pics" ToRole="Arts" />
           <NavigationProperty Name="Crafts" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Pics" ToRole="Crafts" />
           <NavigationProperty Name="Serials" Relationship="AiKModel.FK_Serials_Pics" FromRole="Pics" ToRole="Serials" />
+          <Property Name="Multiplane" Type="Boolean" />
         </EntityType>
         <EntityType Name="WordLinks">
           <Key>
@@ -750,6 +782,11 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
             <End Role="Serials" EntitySet="Serials" />
           </AssociationSet>
           <EntitySet Name="vwSerialsArt" EntityType="AiKModel.vwSerialsArt" />
+          <EntitySet Name="MultiCraftSerials" EntityType="AiKModel.MultiCraftSerials" />
+          <AssociationSet Name="FK_MultiCraftSerials_Crafts" Association="AiKModel.FK_MultiCraftSerials_Crafts">
+            <End Role="Crafts" EntitySet="Crafts" />
+            <End Role="MultiCraftSerials" EntitySet="MultiCraftSerials" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="vwCrafts">
           <Key>
@@ -787,6 +824,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
         <EntityType Name="vwPics">
           <Key>
             <PropertyRef Name="PicId" />
+            <PropertyRef Name="needCheck" />
           </Key>
           <Property Name="PicId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ArtId" Type="Int32" Nullable="false" />
@@ -803,6 +841,8 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <Property Name="Copyright" Type="Boolean" />
           <Property Name="Serial" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Serial2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="needCheck" Type="Int32" Nullable="false" />
+          <Property Name="Multiplane" Type="Boolean" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -911,6 +951,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <NavigationProperty Name="Crafts4" Relationship="AiKModel.FK_Crafts_Crafts2" FromRole="Crafts1" ToRole="Crafts" />
           <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Pics_Crafts" FromRole="Crafts" ToRole="Pics" />
           <NavigationProperty Name="WordLinks" Relationship="AiKModel.FK_WordLinks_Crafts" FromRole="Crafts" ToRole="WordLinks" />
+          <NavigationProperty Name="MultiCraftSerials" Relationship="AiKModel.FK_MultiCraftSerials_Crafts" FromRole="Crafts" ToRole="MultiCraftSerials" />
         </EntityType>
         <Association Name="FK_Pics_Arts">
           <End Type="AiKModel.Arts" Role="Arts" Multiplicity="1" />
@@ -1028,6 +1069,27 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <Property Name="ArtId" Type="Int32" Nullable="false" />
           <Property Name="cnt" Type="Int32" />
         </EntityType>
+        <EntityType Name="MultiCraftSerials">
+          <Key>
+            <PropertyRef Name="MultiCraftSerialId" />
+          </Key>
+          <Property Name="MultiCraftSerialId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Serial" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="true" />
+          <Property Name="CraftId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Crafts" Relationship="AiKModel.FK_MultiCraftSerials_Crafts" FromRole="MultiCraftSerials" ToRole="Crafts" />
+        </EntityType>
+        <Association Name="FK_MultiCraftSerials_Crafts">
+          <End Type="AiKModel.Crafts" Role="Crafts" Multiplicity="1" />
+          <End Type="AiKModel.MultiCraftSerials" Role="MultiCraftSerials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crafts">
+              <PropertyRef Name="CraftId" />
+            </Principal>
+            <Dependent Role="MultiCraftSerials">
+              <PropertyRef Name="CraftId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1064,6 +1126,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <EntitySetMapping Name="Pics">
             <EntityTypeMapping TypeName="AiKModel.Pics">
               <MappingFragment StoreEntitySet="Pics">
+                <ScalarProperty Name="Multiplane" ColumnName="Multiplane" />
                 <ScalarProperty Name="Copyright" ColumnName="Copyright" />
                 <ScalarProperty Name="PicId" ColumnName="PicId" />
                 <ScalarProperty Name="ArtId" ColumnName="ArtId" />
@@ -1135,6 +1198,8 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <EntitySetMapping Name="vwPics">
             <EntityTypeMapping TypeName="AiKModel.vwPics">
               <MappingFragment StoreEntitySet="vwPics">
+                <ScalarProperty Name="Multiplane" ColumnName="Multiplane" />
+                <ScalarProperty Name="needCheck" ColumnName="needCheck" />
                 <ScalarProperty Name="Serial2" ColumnName="Serial2" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
                 <ScalarProperty Name="Copyright" ColumnName="Copyright" />
@@ -1283,6 +1348,15 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
                 <ScalarProperty Name="ArtId" ColumnName="ArtId" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
                 <ScalarProperty Name="SerialID" ColumnName="SerialID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MultiCraftSerials">
+            <EntityTypeMapping TypeName="AiKModel.MultiCraftSerials">
+              <MappingFragment StoreEntitySet="MultiCraftSerials">
+                <ScalarProperty Name="CraftId" ColumnName="CraftId" />
+                <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="MultiCraftSerialId" ColumnName="MultiCraftSerialId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

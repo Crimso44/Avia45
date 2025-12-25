@@ -18,5 +18,7 @@
         public bool? Copyright { get; set; }
         public string XType { get; set; }
         public string Text { get; set; }
+        public bool? Multiplane { get; set; }
+        public int needCheck { get; set; }
     }
 }

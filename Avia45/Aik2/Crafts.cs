@@ -22,6 +22,7 @@ namespace Aik2
             this.Crafts12 = new HashSet<Crafts>();
             this.Pics = new HashSet<Pics>();
             this.WordLinks = new HashSet<WordLinks>();
+            this.MultiCraftSerials = new HashSet<MultiCraftSerials>();
         }
     
         public int CraftId { get; set; }
@@ -66,5 +67,7 @@ namespace Aik2
         public virtual ICollection<Pics> Pics { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WordLinks> WordLinks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MultiCraftSerials> MultiCraftSerials { get; set; }
     }
 }

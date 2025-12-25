@@ -133,6 +133,9 @@
       <DependentUpon>AiK.tt</DependentUpon>
     </Compile>
     <Compile Include="MakeLinks.cs" />
+    <Compile Include="MultiCraftSerials.cs">
+      <DependentUpon>AiK.tt</DependentUpon>
+    </Compile>
     <Compile Include="OldLoader.cs" />
     <Compile Include="Pics.cs">
       <DependentUpon>AiK.tt</DependentUpon>

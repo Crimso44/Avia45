@@ -985,7 +985,6 @@
             this.cbSerial.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbSerial.Dock = System.Windows.Forms.DockStyle.Top;
             this.cbSerial.DropDownWidth = 300;
-            this.cbSerial.FormattingEnabled = true;
             this.cbSerial.Location = new System.Drawing.Point(0, 0);
             this.cbSerial.Name = "cbSerial";
             this.cbSerial.Size = new System.Drawing.Size(148, 23);
@@ -1020,7 +1019,6 @@
             this.cbSerial2.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbSerial2.Dock = System.Windows.Forms.DockStyle.Top;
             this.cbSerial2.DropDownWidth = 300;
-            this.cbSerial2.FormattingEnabled = true;
             this.cbSerial2.Location = new System.Drawing.Point(0, 0);
             this.cbSerial2.Name = "cbSerial2";
             this.cbSerial2.Size = new System.Drawing.Size(148, 23);

@@ -84,8 +84,9 @@ namespace Aik2
                 public const int Serial2 = 12;
                 public const int SText = 13;
                 public const int Copyright = 14;
-                public const int ArtId = 15;
-                public const int CraftId = 16;
+                public const int Multiplane = 15;
+                public const int ArtId = 16;
+                public const int CraftId = 17;
             }
 
             public static class Link
