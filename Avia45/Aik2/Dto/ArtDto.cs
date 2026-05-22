@@ -9,10 +9,13 @@
         public string Author { get; set; }
         public string Name { get; set; }
         public int? NN { get; set; }
+        public int? NNN { get; set; }
         public string Serie { get; set; }
+        public string SerieSort { get; set; }
         public string Source { get; set; }
         public int? cnt { get; set; }
         public string pic { get; set; }
+        public bool SortByName { get; set; }
 
         public string FullName { get
             {

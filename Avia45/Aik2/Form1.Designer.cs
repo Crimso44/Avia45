@@ -126,6 +126,7 @@
             this.mnuAltZ = new System.Windows.Forms.ToolStripMenuItem();
             this.calcWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadSerialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.craftsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nextCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.priorCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -613,7 +614,7 @@
             this.bCraftWikiLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bCraftWikiLink.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.bCraftWikiLink.ForeColor = System.Drawing.Color.Black;
-            this.bCraftWikiLink.Location = new System.Drawing.Point(37, 3);
+            this.bCraftWikiLink.Location = new System.Drawing.Point(4, 3);
             this.bCraftWikiLink.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.bCraftWikiLink.Name = "bCraftWikiLink";
             this.bCraftWikiLink.Size = new System.Drawing.Size(27, 27);
@@ -628,7 +629,7 @@
             this.bCraftAirwarLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bCraftAirwarLink.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.bCraftAirwarLink.ForeColor = System.Drawing.Color.Black;
-            this.bCraftAirwarLink.Location = new System.Drawing.Point(4, 3);
+            this.bCraftAirwarLink.Location = new System.Drawing.Point(36, 3);
             this.bCraftAirwarLink.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.bCraftAirwarLink.Name = "bCraftAirwarLink";
             this.bCraftAirwarLink.Size = new System.Drawing.Size(27, 27);
@@ -1280,7 +1281,8 @@
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.focusToolStripMenuItem,
             this.calcWordsToolStripMenuItem,
-            this.reloadToolStripMenuItem1});
+            this.reloadToolStripMenuItem1,
+            this.reloadSerialsToolStripMenuItem});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -1294,7 +1296,7 @@
             this.mnuAltS,
             this.mnuAltZ});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
-            this.focusToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.focusToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.focusToolStripMenuItem.Text = "Focus";
             // 
             // mnuAlt1
@@ -1340,7 +1342,7 @@
             // calcWordsToolStripMenuItem
             // 
             this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
-            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
             this.calcWordsToolStripMenuItem.Text = "Calc words";
             this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
             // 
@@ -1348,9 +1350,17 @@
             // 
             this.reloadToolStripMenuItem1.Name = "reloadToolStripMenuItem1";
             this.reloadToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(151, 22);
+            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(185, 22);
             this.reloadToolStripMenuItem1.Text = "Reload";
             this.reloadToolStripMenuItem1.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
+            // 
+            // reloadSerialsToolStripMenuItem
+            // 
+            this.reloadSerialsToolStripMenuItem.Name = "reloadSerialsToolStripMenuItem";
+            this.reloadSerialsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.reloadSerialsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.reloadSerialsToolStripMenuItem.Text = "Reload serials";
+            this.reloadSerialsToolStripMenuItem.Click += new System.EventHandler(this.reloadSerialsToolStripMenuItem_Click);
             // 
             // craftsToolStripMenuItem
             // 
@@ -1805,6 +1815,7 @@
         private System.Windows.Forms.ListBox lbSerials2;
         private System.Windows.Forms.ComboBox cbSerial2;
         private System.Windows.Forms.ToolStripMenuItem mnuAltZ;
+        private System.Windows.Forms.ToolStripMenuItem reloadSerialsToolStripMenuItem;
     }
 }
 

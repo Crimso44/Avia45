@@ -17,6 +17,9 @@
           <Property Name="Name" Type="nvarchar" MaxLength="100" />
           <Property Name="NN" Type="int" />
           <Property Name="Serie" Type="nvarchar" MaxLength="50" />
+          <Property Name="NNN" Type="int" />
+          <Property Name="SerieSort" Type="nvarchar(max)" />
+          <Property Name="SortByName" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Countries">
           <Key>
@@ -101,8 +104,8 @@
           <Property Name="Copyright" Type="bit" />
           <Property Name="Multiplane" Type="bit" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.Report" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="Report">
           <Key>
             <PropertyRef Name="ReportId" />
@@ -142,11 +145,12 @@ warning 6002: The table/view 'AiK2.dbo.Report' does not have a primary key defin
           <Property Name="Word" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Cnt" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.vwArts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.vwArts" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vwArts">
           <Key>
             <PropertyRef Name="ArtId" />
+            <PropertyRef Name="SortByName" />
           </Key>
           <Property Name="ArtId" Type="int" Nullable="false" />
           <Property Name="Mag" Type="nchar" MaxLength="5" />
@@ -156,12 +160,15 @@ warning 6002: The table/view 'AiK2.dbo.vwArts' does not have a primary key defin
           <Property Name="Name" Type="nvarchar" MaxLength="100" />
           <Property Name="NN" Type="int" />
           <Property Name="Serie" Type="nvarchar" MaxLength="50" />
+          <Property Name="NNN" Type="int" />
+          <Property Name="SerieSort" Type="nvarchar(max)" />
+          <Property Name="SortByName" Type="bit" Nullable="false" />
           <Property Name="Source" Type="nchar" MaxLength="1" />
           <Property Name="cnt" Type="int" />
           <Property Name="pic" Type="nvarchar" MaxLength="100" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.vwCrafts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.vwCrafts" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vwCrafts">
           <Key>
             <PropertyRef Name="CraftId" />
@@ -195,8 +202,8 @@ warning 6002: The table/view 'AiK2.dbo.vwCrafts' does not have a primary key def
           <Property Name="s6" Type="int" />
           <Property Name="s7" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.vwPics" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vwPics">
           <Key>
             <PropertyRef Name="PicId" />
@@ -222,8 +229,8 @@ warning 6002: The table/view 'AiK2.dbo.vwPics' does not have a primary key defin
           <Property Name="Serial2" Type="nvarchar(max)" />
           <Property Name="needCheck" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.vwReport" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vwReport">
           <Key>
             <PropertyRef Name="Mag" />
@@ -239,8 +246,8 @@ warning 6002: The table/view 'AiK2.dbo.vwReport' does not have a primary key def
           <Property Name="crafts" Type="int" />
           <Property Name="uniq" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.vwReportMags" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vwReportMags">
           <Key>
             <PropertyRef Name="IYear" />
@@ -250,8 +257,8 @@ warning 6002: The table/view 'AiK2.dbo.vwReportMags' does not have a primary key
           <Property Name="IMonth" Type="nvarchar" MaxLength="5" />
           <Property Name="Source" Type="nchar" MaxLength="1" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.vwSerials" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vwSerials">
           <Key>
             <PropertyRef Name="SerialID" />
@@ -264,8 +271,8 @@ warning 6002: The table/view 'AiK2.dbo.vwSerials' does not have a primary key de
           <Property Name="CraftId" Type="int" Nullable="false" />
           <Property Name="cnt" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "AiK2.dbo.vwSerialsArt" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
         <EntityType Name="vwSerialsArt">
           <Key>
             <PropertyRef Name="SerialID" />
@@ -454,6 +461,9 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
     [vwArts].[Name] AS [Name], 
     [vwArts].[NN] AS [NN], 
     [vwArts].[Serie] AS [Serie], 
+    [vwArts].[NNN] AS [NNN], 
+    [vwArts].[SerieSort] AS [SerieSort], 
+    [vwArts].[SortByName] AS [SortByName], 
     [vwArts].[Source] AS [Source], 
     [vwArts].[cnt] AS [cnt], 
     [vwArts].[pic] AS [pic]
@@ -875,6 +885,7 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
         <EntityType Name="vwArts">
           <Key>
             <PropertyRef Name="ArtId" />
+            <PropertyRef Name="SortByName" />
           </Key>
           <Property Name="ArtId" Type="Int32" Nullable="false" />
           <Property Name="Mag" Type="String" MaxLength="5" FixedLength="true" Unicode="true" />
@@ -887,6 +898,9 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <Property Name="Source" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
           <Property Name="cnt" Type="Int32" />
           <Property Name="pic" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NNN" Type="Int32" />
+          <Property Name="SerieSort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SortByName" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="vwReportMags">
           <Key>
@@ -910,6 +924,9 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <Property Name="NN" Type="Int32" />
           <Property Name="Serie" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Pics" Relationship="AiKModel.FK_Pics_Arts" FromRole="Arts" ToRole="Pics" />
+          <Property Name="NNN" Type="Int32" />
+          <Property Name="SerieSort" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SortByName" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Crafts">
           <Key>
@@ -1248,6 +1265,9 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <EntitySetMapping Name="vwArts">
             <EntityTypeMapping TypeName="AiKModel.vwArts">
               <MappingFragment StoreEntitySet="vwArts">
+                <ScalarProperty Name="SortByName" ColumnName="SortByName" />
+                <ScalarProperty Name="SerieSort" ColumnName="SerieSort" />
+                <ScalarProperty Name="NNN" ColumnName="NNN" />
                 <ScalarProperty Name="pic" ColumnName="pic" />
                 <ScalarProperty Name="cnt" ColumnName="cnt" />
                 <ScalarProperty Name="Source" ColumnName="Source" />
@@ -1275,6 +1295,9 @@ warning 6002: The table/view 'AiK2.dbo.vwSerialsArt' does not have a primary key
           <EntitySetMapping Name="Arts">
             <EntityTypeMapping TypeName="AiKModel.Arts">
               <MappingFragment StoreEntitySet="Arts">
+                <ScalarProperty Name="SortByName" ColumnName="SortByName" />
+                <ScalarProperty Name="SerieSort" ColumnName="SerieSort" />
+                <ScalarProperty Name="NNN" ColumnName="NNN" />
                 <ScalarProperty Name="Serie" ColumnName="Serie" />
                 <ScalarProperty Name="NN" ColumnName="NN" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

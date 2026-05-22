@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using static Aik2.Const.Columns;
 using static Aik2.Util;
 
 namespace Aik2
@@ -44,6 +45,8 @@ namespace Aik2
             var editIntNull = SourceGrid.Cells.Editors.Factory.Create(typeof(int));
             editIntNull.AllowNull = true;
 
+            var editBool = SourceGrid.Cells.Editors.Factory.Create(typeof(bool));
+
             _editArt = new SourceGrid.Cells.Editors.ComboBox(typeof(string));
             _editArt.Control.AutoCompleteSource = AutoCompleteSource.ListItems;
             _editArt.Control.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
@@ -59,11 +62,14 @@ namespace Aik2
             _editorsArt.Add(editStr50);
             _editorsArt.Add(editStr100);
             _editorsArt.Add(editIntNull);
+            _editorsArt.Add(editIntNull);
             _editorsArt.Add(editStr50);
+            _editorsArt.Add(editBool);
+            _editorsArt.Add(null);
             _editorsArt.Add(null);
             _editorsArt.Add(null);
 
-            gridArt.ColumnsCount = 10;
+            gridArt.ColumnsCount = 13;
             gridArt.RowsCount = 1;
             gridArt.FixedRows = 1;
 
@@ -75,9 +81,14 @@ namespace Aik2
             gridArt[0, 4] = new SourceGrid.Cells.ColumnHeader("Author");
             gridArt[0, 5] = new SourceGrid.Cells.ColumnHeader("Name");
             gridArt[0, 6] = new SourceGrid.Cells.ColumnHeader("NN");
-            gridArt[0, 7] = new SourceGrid.Cells.ColumnHeader("Serie");
-            gridArt[0, 8] = new SourceGrid.Cells.ColumnHeader("Pics");
-            gridArt[0, 9] = new SourceGrid.Cells.ColumnHeader("Art");
+            gridArt[0, 7] = new SourceGrid.Cells.ColumnHeader("NNN");
+            gridArt[0, 8] = new SourceGrid.Cells.ColumnHeader("Serie");
+            gridArt[0, 9] = new SourceGrid.Cells.ColumnHeader("SortByName");
+            gridArt[0, 10] = new SourceGrid.Cells.ColumnHeader("Pics");
+            gridArt[0, 11] = new SourceGrid.Cells.ColumnHeader("Art");
+            gridArt[0, 12] = new SourceGrid.Cells.ColumnHeader("SerieSort");
+
+            gridArt.Columns[11].Visible = false;
 
             for (var i = 1; i < gridArt.ColumnsCount; i++)
             {
@@ -103,7 +114,7 @@ namespace Aik2
             else if (chArtSortAuthorArt.Checked)
                 artsQry = artsQry.OrderBy(x => x.Author).ThenBy(x => x.Name).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag);
             else if (chArtSortSerie.Checked)
-                artsQry = artsQry.OrderBy(x => x.Serie).ThenBy(x => x.NN).ThenBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Name);
+                artsQry = artsQry.OrderBy(x => x.Serie).ThenBy(x => x.SerieSort);
             else if (chArtSortYear.Checked)
                 artsQry = artsQry.OrderBy(x => x.IYear).ThenBy(x => x.IMonth).ThenBy(x => x.Mag).ThenBy(x => x.Author).ThenBy(x => x.Name);
             var arts = artsQry.ToList();
@@ -161,10 +172,15 @@ namespace Aik2
             gridArt[r, 5].AddController(_gridArtController);
             gridArt[r, 6] = new SourceGrid.Cells.Cell(art.NN, _editorsArt[6]);
             gridArt[r, 6].AddController(_gridArtController);
-            gridArt[r, 7] = new SourceGrid.Cells.Cell(art.Serie, _editorsArt[7]);
+            gridArt[r, 7] = new SourceGrid.Cells.Cell(art.NNN, _editorsArt[7]);
             gridArt[r, 7].AddController(_gridArtController);
-            gridArt[r, 8] = new SourceGrid.Cells.Cell(art.cnt, _editorsArt[8]);
-            gridArt[r, 9] = new SourceGrid.Cells.Cell(art.FullName, _editorsArt[9]);
+            gridArt[r, 8] = new SourceGrid.Cells.Cell(art.Serie, _editorsArt[8]);
+            gridArt[r, 8].AddController(_gridArtController);
+            gridArt[r, 9] = new SourceGrid.Cells.CheckBox("", art.SortByName);
+            gridArt[r, 9].AddController(_gridArtController);
+            gridArt[r, 10] = new SourceGrid.Cells.Cell(art.cnt, _editorsArt[10]);
+            gridArt[r, 11] = new SourceGrid.Cells.Cell(art.FullName, _editorsArt[11]);
+            gridArt[r, 12] = new SourceGrid.Cells.Cell(art.SerieSort, _editorsArt[12]);
         }
 
         public ArtDto GetArtFromTable(int row)
@@ -178,7 +194,9 @@ namespace Aik2
                 Author = (string)gridArt[row, Const.Columns.Art.Author].Value,
                 Name = (string)gridArt[row, Const.Columns.Art.Name].Value,
                 NN = (int?)gridArt[row, Const.Columns.Art.NN].Value,
-                Serie = (string)gridArt[row, Const.Columns.Art.Serie].Value
+                NNN = (int?)gridArt[row, Const.Columns.Art.NNN].Value,
+                Serie = (string)gridArt[row, Const.Columns.Art.Serie].Value,
+                SortByName = (bool)gridArt[row, Const.Columns.Art.SortByName].Value
             };
             return art;
         }

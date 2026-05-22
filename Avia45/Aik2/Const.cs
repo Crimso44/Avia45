@@ -23,13 +23,16 @@ namespace Aik2
                 public const int Author = 4;
                 public const int Name = 5;
                 public const int NN = 6;
-                public const int Serie = 7;
-                public const int Cnt = 8;
-                public const int FullName = 9;
-    
+                public const int NNN = 7;
+                public const int Serie = 8;
+                public const int SortByName = 9;
+                public const int Cnt = 10;
+                public const int FullName = 11;
+                public const int SerieSort = 12;
+
                 public static int[] SortAuthor = { Art.Author, Art.IYear, Art.IMonth, Art.Mag, Art.Name };
                 public static int[] SortAuthorArt = { Art.Author, Art.Name, Art.IYear, Art.IMonth, Art.Mag };
-                public static int[] SortSerie = { Art.Serie, Art.NN, Art.IYear, Art.IMonth, Art.Name };
+                public static int[] SortSerie = { Art.Serie, Art.SerieSort };
                 public static int[] SortYear = { Art.IYear, Art.IMonth, Art.Mag, Art.Author, Art.Name };
 
             }

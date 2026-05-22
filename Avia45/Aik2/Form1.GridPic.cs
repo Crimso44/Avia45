@@ -1526,7 +1526,7 @@ namespace Aik2
                     {
                         _ctx.Serials.Remove(ser);
                     }
-                    LoadSerials();
+                    //LoadSerials();
                     RefreshSerials();
                 }
                 cb.Text = "";
@@ -1553,7 +1553,7 @@ namespace Aik2
                     {
                         _ctx.Serials.Remove(toDelete);
                         _ctx.SaveChanges();
-                        LoadSerials();
+                        //LoadSerials();
                         RefreshSerials();
                     }
                 }
@@ -1623,5 +1623,9 @@ namespace Aik2
             LoadPics(false);
         }
 
+        private void reloadSerialsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadSerials();
+        }
     }
 }

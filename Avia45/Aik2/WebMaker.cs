@@ -211,7 +211,23 @@ namespace Aik2
             } else if (sx == "История Авиации") {
                 sMag = "IA";
                 GetYearArt(true);
-            } else if (sx == "In Action") {
+            } else if (sx.Contains("История конструкций самолетов в СССР")) {
+                sMag = "SH";
+                sYear = "";
+                if (sx.Contains("до 1938"))
+                {
+                    sMonth = "Sha1";
+                }
+                else if (sx.Contains("1938-1950"))
+                {
+                    sMonth = "Sha2";
+                }
+                else
+                {
+                    sMonth = "Sha3";
+                }
+            }
+            else if (sx == "In Action") {
                 sMag = "IN";
                 GetYearArt(true);
             } else if (sx == "Jane's All the World Aircraft") {
@@ -298,6 +314,7 @@ namespace Aik2
             ss = a.Serie;
             if (!string.IsNullOrEmpty(ss)) s += $"  /{ss}/";
             if ((a.NN ?? 0) != 0) s += $" ({a.NN})";
+            else if ((a.NNN ?? 0) != 0) s += $" ({a.NNN})";
             return s;
         }
 
@@ -328,6 +345,10 @@ namespace Aik2
                     Result = "Flight" + GetYear(a); break;
                 case "HI":
                     Result = "Aviation Historian" + GetYear(a); break;
+                case "SH":
+                    Result = a.Author + ' ' + a.Name; ww1 = true; break;
+                case "RM":
+                    Result = a.Name; ww1 = true; break;
                 case "IA":
                     Result = "История Авиации" + GetYear(a); break;
                 case "IN":
@@ -393,6 +414,10 @@ namespace Aik2
                     Result = "Flight"; break;
                 case "HI":
                     Result = "Aviation Historian"; break;
+                case "SH":
+                    Result = "История конструкций самолетов в СССР"; break;
+                case "RM":
+                    Result = "Russian Aviation Museum"; break;
                 case "IA":
                     Result = "История Авиации"; break;
                 case "IN":
@@ -1844,7 +1869,9 @@ namespace Aik2
                         .Replace("%Author%", craft.a.Author)
                         .Replace("%Name%", craft.a.Name)
                         .Replace("%Serie%", craft.a.Serie)
-                        .Replace("%NN%", (craft.a.NN ?? 0) == 0 ? "" : craft.a.NN.ToString())
+                        .Replace("%NN%", (craft.a.NN ?? 0) == 0 
+                            ? (craft.a.NNN ?? 0) == 0 ? "" : craft.a.NNN.ToString() 
+                            : craft.a.NN.ToString())
                         .Replace("%Photos%", craft.aCnt.ToString())
                         .Replace("%ArtLink%", $"../Arts/Art{craft.a.ArtId}.htm")
                         .ToString());
@@ -2187,7 +2214,9 @@ namespace Aik2
                     .Replace("%Author%", craft.a.Author)
                     .Replace("%Name%", craft.a.Name)
                     .Replace("%Serie%", craft.a.Serie)
-                    .Replace("%NN%", (craft.a.NN ?? 0) == 0 ? "" : craft.a.NN.ToString())
+                    .Replace("%NN%", (craft.a.NN ?? 0) == 0
+                        ? (craft.a.NNN ?? 0) == 0 ? "" : craft.a.NNN.ToString()
+                        : craft.a.NN.ToString())
                     .Replace("%Photos%", craft.aCnt.ToString())
                     .Replace("%ArtLink%", $"../Arts/Art{craft.a.ArtId}.htm")
                     .Replace("%PicPath%", craft.a.pic?.Replace("\\", "/"))
@@ -2482,41 +2511,6 @@ namespace Aik2
         }
 
 
-        private string GetMagPic(string magpic, out string Result) {
-            Result = "";
-            var div = "";
-            switch (magpic) {
-                case "AE": Result = "Air Enthusiast"; break;
-                case "AH": Result = "АэроХобби"; break;
-                case "AI": Result = "Air Pictorial"; break;
-                case "AK": Result = "Авиация и Космонавтика"; break;
-                case "AM": Result = "АвиаМастер"; break;
-                case "AN": Result = "Air International"; break;
-                case "AP": Result = "АвиаПарк"; break;
-                case "AS": Result = "АС"; break;
-                case "AV": Result = "Авиация и Время"; break;
-                case "FT": Result = "Flight"; break;
-                case "HI": Result = "Aviation Historian"; break;
-                case "IA": Result = "История Авиации"; break;
-                case "IN": Result = "In Action"; break;
-                case "JS": Result = "Jane's All the World Aircraft"; break;
-                case "MA": Result = "Мир Авиации"; break;
-                case "ME": Result = "My photos"; break;
-                case "MK": Result = "Моделист-Конструктор"; break;
-                case "MM": Result = "Мировая Авиация"; break;
-                case "MY": Result = "Aeroplane Monthly"; break;
-                case "OS": Result = "Изд-во Osprey"; break;
-                case "GL": Result = "Изд-во Kookaburra"; break;
-                case "SC": Result = "Изд-во Schiffer"; break;
-            }
-
-            if (!string.IsNullOrEmpty(Result))
-                div = "&nbsp;" +
-                    $"<span class=\"ru smallest\" title=\"Фото: {Result}\">{magpic}</span>" +
-                    $"<span class=\"en smallest\" title=\"Photos: {Result}\" style=\"display:none\">{magpic}</span>";
-            return div;
-        }
-
         private void LoadDir(string sPath, string ssPath) {
 
             _lInfo.Text = sPath;
@@ -2530,7 +2524,8 @@ namespace Aik2
                 var sr = Path.GetFileName(dir);
                 LoadDir(sPath + "\\" + sr, ssPath + "\\" + sr);
             }
-            var files = Directory.GetFiles(sPath, "*.jpg");
+            var files = Directory.GetFiles(sPath, "*.jpg").ToList();
+            files.AddRange(Directory.GetFiles(sPath, "*.gif").ToList());
             foreach (var f in files) {
                 var file = Path.GetFileName(f);
                 if (File.Exists(ssPath + "\\" + file)) {
@@ -2569,7 +2564,7 @@ namespace Aik2
                         graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                         graphics.DrawImage(srcImage, new Rectangle(0, 0, w, h));
 
-                        var jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                        var jpgEncoder = GetEncoder(Path.GetExtension(file).ToLower() == ".gif" ? ImageFormat.Gif : ImageFormat.Jpeg);
                         var myEncoder = System.Drawing.Imaging.Encoder.Quality;
                         var myEncoderParameters = new EncoderParameters(1);
                         var myEncoderParameter = new EncoderParameter(myEncoder, 80L);
@@ -2969,7 +2964,7 @@ namespace Aik2
             for (i = 1; i <= 10; i++)
                 CreatePage(crftList, "Arts.htm", "Arts4.htm", false, i, 14, "Name", 0);
 
-            crftList = IBQuery1Crft.OrderBy(x => x.a.Serie).ThenBy(x => x.a.NN).ThenBy(x => x.a.Name).ThenBy(x => x.a.Author).ThenBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.m?.Template).ToList();
+            crftList = IBQuery1Crft.OrderBy(x => x.a.Serie).ThenBy(x => x.a.SerieSort).ToList();
             CreatePage(crftList, "Arts.htm", "Arts5.htm", false, 0, 15, "Serie", 1);
             for (i = 1; i <= chunks[15].Count; i++)
                 CreatePage(crftList, "Arts.htm", "Arts5.htm", false, i, 15, "Serie", 1);
@@ -3680,7 +3675,7 @@ namespace Aik2
             for (i = 1; i <= 10; i++)
                 CreatePageArt(crftList, "Arts.htm", "Arts4.htm", i, 14, "Name", 0);
 
-            crftList = IBQuery1Crft.OrderBy(x => x.a.Serie).ThenBy(x => x.a.NN).ThenBy(x => x.a.Name).ThenBy(x => x.a.Author).ThenBy(x => x.a.IYear).ThenBy(x => x.a.IMonth).ThenBy(x => x.m?.Template).ToList();
+            crftList = IBQuery1Crft.OrderBy(x => x.a.Serie).ThenBy(x => x.a.SerieSort).ToList();
             CreatePageArt(crftList, "Arts.htm", "Arts5.htm", 0, 15, "Serie", 1);
             for (i = 1; i <= chunks[15].Count; i++)
                 CreatePageArt(crftList, "Arts.htm", "Arts5.htm", i, 15, "Serie", 1);
@@ -3938,29 +3933,17 @@ namespace Aik2
                     prevArtDb = (
                         from a in _ctx.Arts
                         where
-                            a.Mag == ibq1Aa.Mag &&
                             a.Serie == ibq1Aa.Serie &&
-                            (a.IYear < ibq1Aa.IYear ||
-                             a.IYear == ibq1Aa.IYear && (
-                                a.IMonth.CompareTo(ibq1Aa.IMonth) < 0 ||
-                                a.IMonth == ibq1Aa.IMonth && (
-                                    a.Author.CompareTo(ibq1Aa.Author) < 0 ||
-                                    (a.Author == ibq1Aa.Author && a.Name.CompareTo(ibq1Aa.Name) < 0))))
-                        orderby a.IYear descending, a.IMonth descending, a.Author descending, a.Name descending
+                            string.Compare(a.SerieSort, ibq1Aa.SerieSort) < 0
+                        orderby a.SerieSort descending
                         select a
                         ).FirstOrDefault();
                     nextArtDb = (
                         from a in _ctx.Arts
                         where
-                            a.Mag == ibq1Aa.Mag &&
                             a.Serie == ibq1Aa.Serie &&
-                            (a.IYear > ibq1Aa.IYear ||
-                             a.IYear == ibq1Aa.IYear && (
-                                a.IMonth.CompareTo(ibq1Aa.IMonth) > 0 ||
-                                a.IMonth == ibq1Aa.IMonth && (
-                                    a.Author.CompareTo(ibq1Aa.Author) > 0 ||
-                                    (a.Author == ibq1Aa.Author && a.Name.CompareTo(ibq1Aa.Name) > 0))))
-                        orderby a.IYear, a.IMonth, a.Author, a.Name 
+                            string.Compare(a.SerieSort, ibq1Aa.SerieSort) > 0
+                        orderby a.SerieSort 
                         select a
                         ).FirstOrDefault();
                 }
