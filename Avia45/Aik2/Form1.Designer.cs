@@ -126,7 +126,6 @@
             this.mnuAltZ = new System.Windows.Forms.ToolStripMenuItem();
             this.calcWordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reloadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadSerialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.craftsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nextCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.priorCraftInMagToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -982,7 +981,6 @@
             // 
             // cbSerial
             // 
-            this.cbSerial.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cbSerial.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbSerial.Dock = System.Windows.Forms.DockStyle.Top;
             this.cbSerial.DropDownWidth = 300;
@@ -990,6 +988,7 @@
             this.cbSerial.Name = "cbSerial";
             this.cbSerial.Size = new System.Drawing.Size(148, 23);
             this.cbSerial.TabIndex = 0;
+            this.cbSerial.TextChanged += new System.EventHandler(this.cbSerial_TextChanged);
             this.cbSerial.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSerial_KeyDown);
             // 
             // panel8
@@ -1016,7 +1015,6 @@
             // 
             // cbSerial2
             // 
-            this.cbSerial2.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cbSerial2.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbSerial2.Dock = System.Windows.Forms.DockStyle.Top;
             this.cbSerial2.DropDownWidth = 300;
@@ -1024,6 +1022,7 @@
             this.cbSerial2.Name = "cbSerial2";
             this.cbSerial2.Size = new System.Drawing.Size(148, 23);
             this.cbSerial2.TabIndex = 0;
+            this.cbSerial2.TextChanged += new System.EventHandler(this.cbSerial_TextChanged);
             this.cbSerial2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbSerial_KeyDown);
             // 
             // pLinkTable
@@ -1281,8 +1280,7 @@
             this.miscToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.focusToolStripMenuItem,
             this.calcWordsToolStripMenuItem,
-            this.reloadToolStripMenuItem1,
-            this.reloadSerialsToolStripMenuItem});
+            this.reloadToolStripMenuItem1});
             this.miscToolStripMenuItem.Name = "miscToolStripMenuItem";
             this.miscToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.miscToolStripMenuItem.Text = "Misc";
@@ -1296,7 +1294,7 @@
             this.mnuAltS,
             this.mnuAltZ});
             this.focusToolStripMenuItem.Name = "focusToolStripMenuItem";
-            this.focusToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.focusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.focusToolStripMenuItem.Text = "Focus";
             // 
             // mnuAlt1
@@ -1342,7 +1340,7 @@
             // calcWordsToolStripMenuItem
             // 
             this.calcWordsToolStripMenuItem.Name = "calcWordsToolStripMenuItem";
-            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
+            this.calcWordsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.calcWordsToolStripMenuItem.Text = "Calc words";
             this.calcWordsToolStripMenuItem.Click += new System.EventHandler(this.calcWordsToolStripMenuItem_Click);
             // 
@@ -1350,17 +1348,9 @@
             // 
             this.reloadToolStripMenuItem1.Name = "reloadToolStripMenuItem1";
             this.reloadToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(185, 22);
+            this.reloadToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.reloadToolStripMenuItem1.Text = "Reload";
             this.reloadToolStripMenuItem1.Click += new System.EventHandler(this.reloadToolStripMenuItem_Click);
-            // 
-            // reloadSerialsToolStripMenuItem
-            // 
-            this.reloadSerialsToolStripMenuItem.Name = "reloadSerialsToolStripMenuItem";
-            this.reloadSerialsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.reloadSerialsToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.reloadSerialsToolStripMenuItem.Text = "Reload serials";
-            this.reloadSerialsToolStripMenuItem.Click += new System.EventHandler(this.reloadSerialsToolStripMenuItem_Click);
             // 
             // craftsToolStripMenuItem
             // 
@@ -1815,7 +1805,6 @@
         private System.Windows.Forms.ListBox lbSerials2;
         private System.Windows.Forms.ComboBox cbSerial2;
         private System.Windows.Forms.ToolStripMenuItem mnuAltZ;
-        private System.Windows.Forms.ToolStripMenuItem reloadSerialsToolStripMenuItem;
     }
 }
 

@@ -35,6 +35,7 @@ namespace Aik2
         private int? _lockedPicId = null;
         private bool _isPicReadonly = false;
         private string serialFilter = "";
+        private bool _inComboText = false;
 
         public void InitPicGrid()
         {
@@ -1489,23 +1490,23 @@ namespace Aik2
             LoadPics(true);
         }
 
-        private void LoadSerials()
-        {
-            var serials = _ctx.vwSerials.OrderBy(x => x.SerialCraft).Select(x => x.SerialCraft).ToArray();
-            cbSerial.Items.Clear();
-            cbSerial.Items.AddRange(serials);
-            cbSerial2.Items.Clear();
-            cbSerial2.Items.AddRange(serials);
-        }
-
         private void cbSerial_KeyDown(object sender, KeyEventArgs e)
         {
             var cb = (ComboBox)sender;
             if (e.KeyCode == Keys.Enter)
             {
-                if (!string.IsNullOrEmpty(cb.Text) && _selectedPic != null)
+                var text = "";
+                try
                 {
-                    var sText = cb.Text.Trim().ToUpper();
+                    text = cb.Text;
+                }
+                catch {
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(text) && _selectedPic != null)
+                {
+                    var sText = text.Trim().ToUpper();
                     var i = sText.IndexOf(' ');
                     if (i > 0)
                     {
@@ -1526,15 +1527,14 @@ namespace Aik2
                     {
                         _ctx.Serials.Remove(ser);
                     }
-                    //LoadSerials();
                     RefreshSerials();
                 }
                 cb.Text = "";
 
                 e.Handled = true;
+                e.SuppressKeyPress = true;
             }
         }
-
 
         private void lbSerials_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1553,7 +1553,6 @@ namespace Aik2
                     {
                         _ctx.Serials.Remove(toDelete);
                         _ctx.SaveChanges();
-                        //LoadSerials();
                         RefreshSerials();
                     }
                 }
@@ -1623,9 +1622,49 @@ namespace Aik2
             LoadPics(false);
         }
 
-        private void reloadSerialsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void cbSerial_TextChanged(object sender, EventArgs e)
         {
-            LoadSerials();
+            var lbSerials = (ComboBox)sender;
+            if (lbSerials.SelectedIndex >= 0)
+            {
+                return;
+            }
+            var cursorPos = lbSerials.SelectionStart;
+            var text = lbSerials.Text;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                if (!_inComboText)
+                {
+                    lbSerials.DroppedDown = false;
+                    lbSerials.Items.Clear();
+                    lbSerials.SelectionStart = cursorPos;
+                }
+                return;
+            }
+            _inComboText = true;
+            var ttext = text.Trim();
+            var i = ttext.IndexOf(' ');
+            if (i >= 0)
+            {
+                ttext = ttext.Substring(0, i);
+            }
+            lbSerials.Items.Clear();
+            var serials = _ctx.vwSerials.Where(x => x.Serial.StartsWith(ttext)).OrderBy(x => x.Serial).ThenBy(x => x.Craft).ThenBy(x => x.Source).Select(x => new { x.Serial, x.Source, x.Craft }).Take(100).ToArray();
+            if (serials.Any())
+            {
+                lbSerials.Items.AddRange(serials.Select(x => $"{x.Serial} {(x.Source == "6" ? "" : "^ ")} {x.Craft}").ToArray());
+                lbSerials.SelectedIndex = -1;
+                lbSerials.DroppedDown = true;
+            }
+            else
+            {
+                lbSerials.DroppedDown = false;
+            }
+            lbSerials.SelectedIndex = -1;
+            lbSerials.Text = text;
+            lbSerials.SelectionStart = cursorPos;
+            lbSerials.SelectionLength = 0;
+            _inComboText = false;
         }
     }
 }

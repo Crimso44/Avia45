@@ -48,8 +48,6 @@ namespace Aik2
             LoadCrafts();
             LoadPics(true);
 
-            LoadSerials();
-
             tabControl1.SelectedIndex = 1;
         }
 
@@ -533,7 +531,7 @@ namespace Aik2
             int row;
             if (chPicSelCraft.Checked)
             {
-                var craft = _ctx.vwPics.AsNoTracking().Single(x => x.PicId == picId);
+                var craft = _ctx.vwPics.AsNoTracking().SingleOrDefault(x => x.PicId == picId);
                 if (craft != null) {
                     var craftId = craft.CraftId;
                     if (_selectedCraft == null || _selectedCraft.CraftId != craftId)
@@ -677,7 +675,10 @@ namespace Aik2
                     LoadCrafts();
                     edCraftText.SelectionStart = 0;
                     edCraftText.SelectionLength = edCraftText.TextLength;
-                    edCraftText.SelectionFont = new Font(edCraftText.SelectionFont, FontStyle.Regular);
+                    if (edPicText.SelectionFont != null)
+                    {
+                        edCraftText.SelectionFont = new Font(edCraftText.SelectionFont, FontStyle.Regular);
+                    }
                     edCraftText.SelectionColor = Color.Black;
                     edCraftText.SelectionBackColor = Color.White;
                     break;
@@ -686,7 +687,10 @@ namespace Aik2
                     LoadPics(false);
                     edPicText.SelectionStart = 0;
                     edPicText.SelectionLength = edPicText.TextLength;
-                    edPicText.SelectionFont = new Font(edPicText.SelectionFont, FontStyle.Regular);
+                    if (edPicText.SelectionFont != null)
+                    {
+                        edPicText.SelectionFont = new Font(edPicText.SelectionFont, FontStyle.Regular);
+                    }
                     edPicText.SelectionColor = Color.Black;
                     edPicText.SelectionBackColor = Color.White;
                     break;

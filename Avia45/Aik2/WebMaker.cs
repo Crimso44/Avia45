@@ -390,6 +390,7 @@ namespace Aik2
 
         private string GetMagName(string s)
         {
+            if (s == "") return "";
             string Result;
             switch (s) {
                 case "AE":
@@ -442,6 +443,10 @@ namespace Aik2
                     Result = "Air-Britain Archive"; break;
                 case "MI":
                     Result = "Air-Britain Aeromilitaria"; break;
+                case "GL":
+                    Result = "The World's Sailplanes"; break;
+                case "OS":
+                    Result = "Aviation Pioneers"; break;
                 default:
                     if (s.IndexOf("{") >= 0) {
                         var i = s.IndexOf("{");
@@ -1123,19 +1128,27 @@ namespace Aik2
                             }
                         }
 
-                        sxy +=
-                            $"<li class=\"ltabs-{cnt} text-selector{(cnt==0 ? " selected" : "")}\" onclick=\"ShowText(&#39;tabs-{cnt}&#39;)\">" +
-                            sx + sxz + "</li>\n";
-                        sxx +=
-                            $"<div class=\"tabs-{cnt} text{(cnt == 0 ? "" : " hidden")}\">\n" +
-                            "<p>" + sx + "</p>\n";
+                        var isShow = !sx.StartsWith("- ");
+
+                        if (isShow)
+                        {
+                            sxy +=
+                                $"<li class=\"ltabs-{cnt} text-selector{(cnt == 0 ? " selected" : "")}\" onclick=\"ShowText(&#39;tabs-{cnt}&#39;)\">" +
+                                sx + sxz + "</li>\n";
+                            sxx +=
+                                $"<div class=\"tabs-{cnt} text{(cnt == 0 ? "" : " hidden")}\">\n" +
+                                "<p>" + sx + "</p>\n";
+                        }
                         i = ss.IndexOf("*/");
-                        var sn = ss.Substring(0, i);
-                        sxx += "<p class=\"main-text\">" + sn + "</p>\n"+
-                            $"<a href=\"#\" class=\"show-more\">{GetSpanRuEn("Показать полностью", "Show all")}</a>" +
-                            "</div>\n";
+                        if (isShow)
+                        {
+                            var sn = ss.Substring(0, i);
+                            sxx += "<p class=\"main-text\">" + sn + "</p>\n" +
+                                $"<a href=\"#\" class=\"show-more\">{GetSpanRuEn("Показать полностью", "Show all")}</a>" +
+                                "</div>\n";
+                            cnt++;
+                        }
                         ss = ss.Substring(i + 2);
-                        cnt++;
 
                         i = ss.IndexOf("/*");
                     }
@@ -1173,7 +1186,7 @@ namespace Aik2
             {
                 sxy =
                     $"<a href=\"{craft1.Wiki}\" target=\"_blank\" rel=\"nofollow\">" +
-                    "Wiki</a>\n";
+                    " <img class=\"link\" src=\"/Site/Partners/Wiki_ico.gif\"> Wiki </a>\n";
             }
             sBeg = sBeg.Replace("%Wiki%", sxy);
 
@@ -1182,7 +1195,7 @@ namespace Aik2
             {
                 sxy +=
                    $"<a href=\"{craft1.Airwar}\" target=\"_blank\" rel=\"nofollow\">" +
-                   GetSpanRuEn("УголокНеба", "Airwar") + "</a>\n";
+                   " <img class=\"link\" src=\"/Site/Partners/airwar_ico.gif\"> " + GetSpanRuEn("УголокНеба", "Airwar") + " </a>\n";
             }
             sBeg = sBeg.Replace("%Airwar%", sxy);
 
@@ -1191,7 +1204,7 @@ namespace Aik2
             {
                 sxy +=
                    $"<a style=\"background-color:#e6e6de; color: black; font-size: 16px; font-family:'Times New Roman'\" href=\"http://flyingmachines.ru/Site2/Crafts/Craft{craft1.FlyingM}.htm\" target=\"_blank\" rel=\"nofollow\">" +
-                   "TheirFlyingMachines</a>\n";
+                   " TheirFlyingMachines </a>\n";
             }
             sBeg = sBeg.Replace("%FlyingM%", sxy);
             
@@ -1374,6 +1387,10 @@ namespace Aik2
 
             sb.Replace("%FilterChip%", filterChip);
 
+            if (bigpic == "")
+            {
+                bigpic = "no_photo.jpg";
+            }
             lBicPics.InsertPairSortedById(new Pair<int> { Name = bigpic, Id = craft1.CraftId });
             lMagPics.InsertPairSortedById(new Pair<int> { Name = magpic, Id = craft1.CraftId });
 
@@ -1845,7 +1862,7 @@ namespace Aik2
                         : "";
                     var sCraftLink = (craft.c.Same.HasValue ? (craft.cc?.CraftId ?? -1) : craft.c.CraftId).ToString();
                     var magCode = (magpic == "") || (magpic == "-") ? "" : magpic;
-                    var magName = "";
+                    var magName = GetMagName(magCode);
                     var sTextLen = (craft.c.Same.HasValue ? craft.cc?.CText?.Length ?? 0 : craft.c.CText?.Length ?? 0).ToString();
 
                     // %Country% %CountryEn% %Construct% %Name% %Year% 
@@ -2383,6 +2400,10 @@ namespace Aik2
                 {
                     var el = lBicPics[iEl];
                     bigpic = el.Name;
+                    if (bigpic == "")
+                    {
+                        bigpic = "no_photo.jpg";
+                    }
                 }
                 else MessageBox.Show($"BigPic {craft.c.CraftId}");
 
@@ -2400,7 +2421,7 @@ namespace Aik2
                     : "";
                 var sCraftLink = (craft.c.Same.HasValue ? (craft.cc?.CraftId ?? -1) : craft.c.CraftId).ToString();
                 var magCode = (magpic == "") || (magpic == "-") ? "" : magpic;
-                var magName = "";
+                var magName = GetMagName(magCode);
                 var sTextLen = (craft.c.Same.HasValue ? craft.cc?.CText?.Length ?? 0 : craft.c.CText?.Length ?? 0).ToString();
 
                 var stype = 
@@ -3278,7 +3299,7 @@ namespace Aik2
 
 
             var serLetters = _ctx.Database
-                .SqlQuery<string>("select serial from dbo.GetSerialStatistics(3000)").ToList();
+                .SqlQuery<string>("select serial from dbo.GetSerialStatistics(3000, '6')").ToList();
             templ = string.Join(";", serLetters);
             s = sPath + $"Site\\Serials\\Index.dat";
             ss = sPath + $"Upload\\Site\\Serials\\Index.dat";
@@ -3307,7 +3328,7 @@ namespace Aik2
                 var contentBld = new StringBuilder();
                 foreach (var letter in listLetters)
                 {
-                    var sers = _ctx.vwSerials.Where(x => x.Serial.StartsWith(letter)).OrderBy(x => x.Serial).Select(x => new { x.Serial, x.CraftId }).ToList();
+                    var sers = _ctx.vwSerials.Where(x => x.Serial.StartsWith(letter) && x.Source == "6").OrderBy(x => x.Serial).Select(x => new { x.Serial, x.CraftId }).ToList();
                     foreach (var ser in sers)
                     {
                         contentBld.Append($"{ser.Serial},{ser.CraftId};");
@@ -3591,8 +3612,8 @@ namespace Aik2
             var craftQry = (
                 from c in _ctx.Crafts
                 from p in _ctx.Pics.Where(p => c.CraftId == p.CraftId && !Const.Arts.Copyrighted.Contains(p.ArtId) && !(p.Copyright ?? false)).DefaultIfEmpty()
-                group c by c into g
-                select new { c = g.Key, cnt = g.Count() });
+                group p by c into g
+                select new { c = g.Key, cnt = g.Count(x => x != null) });
 
             var IBQuery1Crft = (
                 from c in craftQry
